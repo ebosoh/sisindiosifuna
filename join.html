@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Join the Movement — SISI NDIO SIFUNA</title>
+    <meta name="description"
+        content="Register as a SISI NDIO SIFUNA volunteer. Takes under 2 minutes. Sign up by County, Constituency, and Ward." />
+    <meta name="theme-color" content="#BE0027" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+
+    <!-- TOP APP BAR -->
+    <header class="app-bar" role="banner">
+        <div class="app-bar__logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                    style="width:36px;height:36px">
+                    <circle cx="20" cy="20" r="20" fill="#000" />
+                    <circle cx="20" cy="20" r="17" fill="#006600" />
+                    <path d="M20 8 L28 12 L28 22 Q28 30 20 34 Q12 30 12 22 L12 12 Z" fill="#CE1126" />
+                    <path d="M20 10 L26 13.5 L26 22 Q26 29 20 32 Q14 29 14 22 L14 13.5 Z" fill="#fff" />
+                    <line x1="20" y1="5" x2="20" y2="35" stroke="#000" stroke-width="2" />
+                    <line x1="10" y1="8" x2="30" y2="32" stroke="#000" stroke-width="1.5" />
+                    <line x1="30" y1="8" x2="10" y2="32" stroke="#000" stroke-width="1.5" />
+                </svg>
+                <div class="app-bar__name">SISI NDIO<span> SIFUNA</span></div>
+            </a>
+        </div>
+        <nav class="desktop-nav" aria-label="Main navigation">
+            <a href="index.html">Home</a>
+            <a href="rallies.html">Rallies</a>
+            <a href="tasks.html">Tasks</a>
+            <a href="resources.html">Resources</a>
+            <a href="about.html">About</a>
+            <a href="join.html" class="btn btn-primary btn-sm active">Join Now 🇰🇪</a>
+        </nav>
+    </header>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero" aria-label="Join page header">
+        <h1>Join the Movement ✊</h1>
+        <p>Register as a volunteer in under 2 minutes. No app download needed — just fill in the form below.</p>
+    </section>
+
+    <main class="inner-page">
+        <!-- Live counter pill -->
+        <div class="text-center" style="margin-bottom:2rem">
+            <span class="badge badge-live" style="font-size:.85rem;padding:.4rem 1.2rem">
+                🇰🇪 <span id="stat-volunteers">…</span> Kenyans have already joined!
+            </span>
+        </div>
+
+        <!-- Ad Banner -->
+        <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:2rem">
+            <div class="ad-placeholder">
+                <span>📢</span><span>Advertisement — contact HQ to place your ad here</span>
+            </div>
+        </div>
+
+        <!-- REGISTRATION FORM -->
+        <form id="register-form" class="card" novalidate aria-label="Volunteer registration form">
+            <div class="card__body">
+                <h2 style="margin-bottom:1.5rem;font-size:1.4rem">Your Details</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Full Name <span class="required">*</span></label>
+                        <input class="form-control" type="text" id="fullName" name="fullName"
+                            placeholder="e.g. Jane Wanjiku" autocomplete="name" required />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+                        <input class="form-control" type="tel" id="phone" name="phone" placeholder="07XX XXX XXX"
+                            autocomplete="tel" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address <span
+                            style="color:var(--grey-400);font-weight:400">(optional)</span></label>
+                    <input class="form-control" type="email" id="email" name="email" placeholder="jane@example.com"
+                        autocomplete="email" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="whatsapp">WhatsApp Number</label>
+                    <input class="form-control" type="tel" id="whatsapp" name="whatsapp"
+                        placeholder="Same as phone or different" autocomplete="tel" />
+                    <span class="form-hint">For urgent rally alerts via WhatsApp</span>
+                </div>
+
+                <hr style="border:none;border-top:1px solid var(--grey-200);margin:1.5rem 0" />
+                <h3 style="margin-bottom:1rem;font-size:1.1rem">Your Location <span class="required">*</span></h3>
+                <p style="font-size:.85rem;color:var(--grey-400);margin-bottom:1rem">Using official IEBC 2022 data to
+                    map you to your voting area.</p>
+
+                <div class="form-group">
+                    <label class="form-label" for="county">County <span class="required">*</span></label>
+                    <select class="form-control" id="county" name="county" required>
+                        <option value="">Select County</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="constituency">Constituency <span class="required">*</span></label>
+                    <select class="form-control" id="constituency" name="constituency" disabled required>
+                        <option value="">Select Constituency</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="ward">Ward <span class="required">*</span></label>
+                    <select class="form-control" id="ward" name="ward" disabled required>
+                        <option value="">Select Ward</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="role">How Would You Like to Help?</label>
+                    <select class="form-control" id="role" name="role">
+                        <option value="general">General Volunteer</option>
+                        <option value="marshal">Rally Marshal</option>
+                        <option value="mobiliser">Ward Mobiliser</option>
+                        <option value="media">Social Media Champion</option>
+                        <option value="youth">Youth Coordinator</option>
+                        <option value="women">Women's Champion</option>
+                    </select>
+                </div>
+
+                <div
+                    style="background:var(--grey-100);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.5rem;font-size:.82rem;color:var(--grey-600)">
+                    🔒 Your information is kept private and used only for campaign coordination. We do not sell or share
+                    your data with third parties.
+                </div>
+
+                <button type="submit" id="register-btn" class="btn btn-primary w-full btn-lg">
+                    ✊ Become a Patriot Volunteer
+                </button>
+            </div>
+        </form>
+
+        <!-- SUCCESS SCREEN (hidden until form submitted) -->
+        <div id="success-screen" class="card text-center" style="display:none;padding:2rem">
+            <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
+            <h2 style="color:var(--kenya-green);margin-bottom:1rem">You're In, Patriot!</h2>
+            <p style="margin-bottom:1.5rem">Welcome to the SISI NDIO SIFUNA movement! Watch your WhatsApp for updates
+                about rallies and events in your ward.</p>
+            <div style="display:flex;flex-direction:column;gap:.75rem;align-items:center">
+                <button id="share-btn" class="btn btn-primary btn-lg">📣 Share the Movement</button>
+                <a href="tasks.html" class="btn btn-green btn-lg">🏆 Start Your Patriot Tasks</a>
+                <a href="rallies.html" class="btn btn-secondary"
+                    style="color:var(--kenya-black);border-color:var(--kenya-black)">📅 Find a Rally Near You</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" role="contentinfo" style="margin-top:2rem">
+        <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
+        <div class="footer__bottom" style="max-width:800px;padding:0 1rem">
+            <span>© 2026 SISI NDIO SIFUNA</span>
+            <span>Made with 🇰🇪 in Kenya</span>
+        </div>
+    </footer>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+        <a href="index.html" class="bottom-nav__item"><span class="bottom-nav__icon">🏠</span><span
+                class="bottom-nav__label">Home</span></a>
+        <a href="rallies.html" class="bottom-nav__item"><span class="bottom-nav__icon">📅</span><span
+                class="bottom-nav__label">Rallies</span></a>
+        <a href="join.html" class="bottom-nav__item bottom-nav__item--join active"><span
+                class="bottom-nav__icon">✊</span><span class="bottom-nav__label">Join</span></a>
+        <a href="tasks.html" class="bottom-nav__item"><span class="bottom-nav__icon">🏆</span><span
+                class="bottom-nav__label">Tasks</span></a>
+        <a href="resources.html" class="bottom-nav__item"><span class="bottom-nav__icon">📦</span><span
+                class="bottom-nav__label">Resources</span></a>
+    </nav>
+
+    <script src="iebc-data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

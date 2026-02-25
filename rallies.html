@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Rallies & Events — SISI NDIO SIFUNA</title>
+    <meta name="description"
+        content="Find upcoming SISI NDIO SIFUNA rallies and events near you across all 47 counties of Kenya." />
+    <meta name="theme-color" content="#006600" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="main.css" />
+    <style>
+        .filter-bar {
+            background: var(--kenya-white);
+            border-bottom: 1px solid var(--grey-200);
+            padding: 1rem 1.25rem;
+            position: sticky;
+            top: 56px;
+            z-index: 90;
+            display: flex;
+            gap: .75rem;
+            align-items: center;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            flex-shrink: 0;
+            padding: .4rem 1rem;
+            border-radius: 9999px;
+            border: 2px solid var(--grey-200);
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 150ms ease;
+            background: var(--kenya-white);
+            white-space: nowrap;
+        }
+
+        .filter-chip.active,
+        .filter-chip:hover {
+            background: var(--kenya-red);
+            border-color: var(--kenya-red);
+            color: var(--kenya-white);
+        }
+
+        .events-count {
+            font-size: .82rem;
+            color: var(--grey-400);
+            font-weight: 600;
+            white-space: nowrap;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .map-embed {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: var(--radius-lg);
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .map-embed {
+                height: 420px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="app-bar" role="banner">
+        <div class="app-bar__logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                    style="width:36px;height:36px">
+                    <circle cx="20" cy="20" r="20" fill="#000" />
+                    <circle cx="20" cy="20" r="17" fill="#006600" />
+                    <path d="M20 8 L28 12 L28 22 Q28 30 20 34 Q12 30 12 22 L12 12 Z" fill="#CE1126" />
+                    <path d="M20 10 L26 13.5 L26 22 Q26 29 20 32 Q14 29 14 22 L14 13.5 Z" fill="#fff" />
+                    <line x1="20" y1="5" x2="20" y2="35" stroke="#000" stroke-width="2" />
+                    <line x1="10" y1="8" x2="30" y2="32" stroke="#000" stroke-width="1.5" />
+                    <line x1="30" y1="8" x2="10" y2="32" stroke="#000" stroke-width="1.5" />
+                </svg>
+                <div class="app-bar__name">SISI NDIO<span> SIFUNA</span></div>
+            </a>
+        </div>
+        <nav class="desktop-nav" aria-label="Main navigation">
+            <a href="index.html">Home</a>
+            <a href="rallies.html" class="active">Rallies</a>
+            <a href="tasks.html">Tasks</a>
+            <a href="resources.html">Resources</a>
+            <a href="about.html">About</a>
+            <a href="join.html" class="btn btn-primary btn-sm">Join Now 🇰🇪</a>
+        </nav>
+    </header>
+
+    <section class="page-hero" aria-label="Rallies page header">
+        <h1>📅 Rallies & Events</h1>
+        <p>Find upcoming SISI NDIO SIFUNA meetups near you. Get directions, mark your calendar, and show up strong.</p>
+    </section>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar" role="group" aria-label="Filter events by county">
+        <button class="filter-chip active" id="filter-all" data-filter="all">🇰🇪 All Counties</button>
+        <button class="filter-chip" data-filter="Nairobi">Nairobi</button>
+        <button class="filter-chip" data-filter="Mombasa">Mombasa</button>
+        <button class="filter-chip" data-filter="Kisumu">Kisumu</button>
+        <button class="filter-chip" data-filter="Nakuru">Nakuru</button>
+        <button class="filter-chip" data-filter="Uasin Gishu">Eldoret</button>
+        <button class="filter-chip" data-filter="Garissa">Garissa</button>
+        <span class="events-count" id="events-count" aria-live="polite"></span>
+    </div>
+
+    <main style="max-width:900px;margin:0 auto;padding:1.5rem 1.25rem 2rem">
+        <!-- View Toggle -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+            <h2 style="font-size:1.1rem;font-weight:700">Upcoming Events</h2>
+            <div style="display:flex;gap:.5rem">
+                <button id="view-list" class="btn btn-sm" style="background:var(--kenya-red);color:#fff;min-width:auto"
+                    aria-pressed="true">☰ List</button>
+                <button id="view-map" class="btn btn-sm" style="border:2px solid var(--grey-200);min-width:auto"
+                    aria-pressed="false">🗺️ Map</button>
+            </div>
+        </div>
+
+        <!-- Ad Banner -->
+        <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:1.5rem">
+            <div class="ad-placeholder"><span>📢</span><span>Advertisement — contact HQ</span></div>
+        </div>
+
+        <!-- List View -->
+        <div id="events-list" class="events-list" aria-live="polite">
+            <div class="skeleton" style="height:80px;border-radius:12px;margin-bottom:1rem"></div>
+            <div class="skeleton" style="height:80px;border-radius:12px;margin-bottom:1rem"></div>
+            <div class="skeleton" style="height:80px;border-radius:12px"></div>
+        </div>
+
+        <!-- Map View -->
+        <iframe id="map-view" class="map-embed" src="https://maps.google.com/maps?q=Kenya&output=embed&z=6"
+            title="Kenya rally map" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+
+        <!-- No results -->
+        <div id="no-events" style="display:none;text-align:center;padding:3rem 1rem">
+            <div style="font-size:3rem;margin-bottom:1rem">📭</div>
+            <h3>No events in this county yet</h3>
+            <p style="color:var(--grey-400);margin:.5rem 0 1.5rem">Check back soon or view all counties.</p>
+            <button class="btn btn-primary" id="show-all-btn">View All Events</button>
+        </div>
+
+        <div class="text-center" style="margin-top:2.5rem">
+            <a href="join.html" class="btn btn-primary btn-lg">✊ Join to Get Rally Alerts</a>
+        </div>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
+        <div class="footer__bottom" style="max-width:900px;padding:0 1.25rem">
+            <span>© 2026 SISI NDIO SIFUNA</span>
+            <span>Made with 🇰🇪 in Kenya</span>
+        </div>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+        <a href="index.html" class="bottom-nav__item"><span class="bottom-nav__icon">🏠</span><span
+                class="bottom-nav__label">Home</span></a>
+        <a href="rallies.html" class="bottom-nav__item active"><span class="bottom-nav__icon">📅</span><span
+                class="bottom-nav__label">Rallies</span></a>
+        <a href="join.html" class="bottom-nav__item bottom-nav__item--join"><span class="bottom-nav__icon">✊</span><span
+                class="bottom-nav__label">Join</span></a>
+        <a href="tasks.html" class="bottom-nav__item"><span class="bottom-nav__icon">🏆</span><span
+                class="bottom-nav__label">Tasks</span></a>
+        <a href="resources.html" class="bottom-nav__item"><span class="bottom-nav__icon">📦</span><span
+                class="bottom-nav__label">Resources</span></a>
+    </nav>
+
+    <script src="iebc-data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Filter chips
+        let currentFilter = 'all';
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.filter;
+                filterEvents();
+            });
+        });
+        document.getElementById('show-all-btn')?.addEventListener('click', () => {
+            document.querySelector('[data-filter="all"]').click();
+        });
+
+        function filterEvents() {
+            const cards = document.querySelectorAll('.event-card');
+            let visible = 0;
+            cards.forEach(card => {
+                const county = card.querySelector('.event-card__meta span:nth-child(3)')?.textContent.replace('🗺️ ', '') || '';
+                const show = currentFilter === 'all' || county === currentFilter;
+                card.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            const noEl = document.getElementById('no-events');
+            if (noEl) noEl.style.display = visible === 0 ? 'block' : 'none';
+            const countEl = document.getElementById('events-count');
+            if (countEl) countEl.textContent = `${visible} event${visible !== 1 ? 's' : ''}`;
+        }
+
+        // View toggle
+        document.getElementById('view-list')?.addEventListener('click', () => {
+            document.getElementById('events-list').style.display = '';
+            document.getElementById('map-view').style.display = 'none';
+            document.getElementById('view-list').style.background = 'var(--kenya-red)';
+            document.getElementById('view-list').style.color = '#fff';
+            document.getElementById('view-map').style.background = '';
+            document.getElementById('view-map').style.color = '';
+        });
+        document.getElementById('view-map')?.addEventListener('click', () => {
+            document.getElementById('events-list').style.display = 'none';
+            document.getElementById('map-view').style.display = 'block';
+            document.getElementById('view-map').style.background = 'var(--kenya-red)';
+            document.getElementById('view-map').style.color = '#fff';
+            document.getElementById('view-list').style.background = '';
+            document.getElementById('view-list').style.color = '';
+        });
+
+        // After events load, filter and count
+        const origLoad = window.loadEvents;
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(filterEvents, 1000);
+        });
+    </script>
+</body>
+
+</html>

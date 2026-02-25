@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Task Board — SISI NDIO SIFUNA</title>
+    <meta name="description"
+        content="Complete patriot tasks and earn your Patriot Score. Every action brings Kenya closer to change." />
+    <meta name="theme-color" content="#006600" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+
+    <header class="app-bar" role="banner">
+        <div class="app-bar__logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:.75rem;text-decoration:none">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+                    style="width:36px;height:36px">
+                    <circle cx="20" cy="20" r="20" fill="#000" />
+                    <circle cx="20" cy="20" r="17" fill="#006600" />
+                    <path d="M20 8 L28 12 L28 22 Q28 30 20 34 Q12 30 12 22 L12 12 Z" fill="#CE1126" />
+                    <path d="M20 10 L26 13.5 L26 22 Q26 29 20 32 Q14 29 14 22 L14 13.5 Z" fill="#fff" />
+                    <line x1="20" y1="5" x2="20" y2="35" stroke="#000" stroke-width="2" />
+                    <line x1="10" y1="8" x2="30" y2="32" stroke="#000" stroke-width="1.5" />
+                    <line x1="30" y1="8" x2="10" y2="32" stroke="#000" stroke-width="1.5" />
+                </svg>
+                <div class="app-bar__name">SISI NDIO<span> SIFUNA</span></div>
+            </a>
+        </div>
+        <nav class="desktop-nav" aria-label="Main navigation">
+            <a href="index.html">Home</a>
+            <a href="rallies.html">Rallies</a>
+            <a href="tasks.html" class="active">Tasks</a>
+            <a href="resources.html">Resources</a>
+            <a href="about.html">About</a>
+            <a href="join.html" class="btn btn-primary btn-sm">Join Now 🇰🇪</a>
+        </nav>
+    </header>
+
+    <section class="page-hero" style="background:var(--kenya-green)" aria-label="Task board header">
+        <h1>🏆 Patriot Task Board</h1>
+        <p>Every action you take moves Kenya forward. Complete tasks, earn points, and rise through the Patriot ranks.
+        </p>
+    </section>
+
+    <main style="max-width:700px;margin:0 auto;padding:1.5rem 1.25rem 2rem">
+
+        <!-- Score Widget -->
+        <div class="score-widget reveal">
+            <div class="stat-card__live-dot" style="justify-content:center;margin-bottom:.5rem">YOUR SCORE</div>
+            <div class="score-widget__num" id="patriot-score">0</div>
+            <div class="score-widget__label">Patriot Points</div>
+            <div class="score-level" id="patriot-level">Patriot Recruit 🇰🇪</div>
+        </div>
+
+        <!-- Levels Guide -->
+        <div class="card reveal" style="margin-bottom:1.5rem">
+            <div class="card__body">
+                <h3 style="font-size:1rem;margin-bottom:1rem">🎖️ Patriot Levels</h3>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem">
+                    <div style="font-size:.82rem"><span class="badge badge-green">0 pts</span> Patriot Recruit 🇰🇪
+                    </div>
+                    <div style="font-size:.82rem"><span class="badge badge-green">30 pts</span> Patriot Soldier ⚔️</div>
+                    <div style="font-size:.82rem"><span class="badge badge-gold">70 pts</span> Patriot Captain 🛡️</div>
+                    <div style="font-size:.82rem"><span class="badge badge-gold">120 pts</span> Patriot General 🌟</div>
+                    <div style="font-size:.82rem;grid-column:span 2;text-align:center"><span class="badge badge-red">160
+                            pts</span> SISI Legend 👑</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Banner -->
+        <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:1.5rem">
+            <div class="ad-placeholder"><span>📢</span><span>Advertisement — contact HQ</span></div>
+        </div>
+
+        <!-- Task List -->
+        <h2 style="font-size:1.1rem;margin-bottom:1rem">Your Tasks</h2>
+        <div id="task-list" class="task-list" aria-label="Volunteer task checklist" role="list">
+            <!-- Rendered by app.js PatriotScore class -->
+        </div>
+
+        <!-- Progress Bar -->
+        <div style="margin-top:2rem;background:var(--grey-200);border-radius:9999px;height:10px;overflow:hidden">
+            <div id="progress-bar"
+                style="height:100%;background:linear-gradient(90deg,var(--kenya-green),var(--kenya-gold));border-radius:9999px;width:0%;transition:width .6s ease">
+            </div>
+        </div>
+        <p style="font-size:.75rem;color:var(--grey-400);text-align:center;margin-top:.5rem">Complete all tasks to reach
+            SISI Legend status</p>
+
+        <div class="text-center" style="margin-top:2rem">
+            <a href="join.html" class="btn btn-primary btn-lg">✊ Register if You Haven't Yet</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
+        <div class="footer__bottom" style="max-width:700px;padding:0 1.25rem">
+            <span>© 2026 SISI NDIO SIFUNA</span><span>Made with 🇰🇪 in Kenya</span>
+        </div>
+    </footer>
+
+    <nav class="bottom-nav" aria-label="Mobile navigation">
+        <a href="index.html" class="bottom-nav__item"><span class="bottom-nav__icon">🏠</span><span
+                class="bottom-nav__label">Home</span></a>
+        <a href="rallies.html" class="bottom-nav__item"><span class="bottom-nav__icon">📅</span><span
+                class="bottom-nav__label">Rallies</span></a>
+        <a href="join.html" class="bottom-nav__item bottom-nav__item--join"><span class="bottom-nav__icon">✊</span><span
+                class="bottom-nav__label">Join</span></a>
+        <a href="tasks.html" class="bottom-nav__item active"><span class="bottom-nav__icon">🏆</span><span
+                class="bottom-nav__label">Tasks</span></a>
+        <a href="resources.html" class="bottom-nav__item"><span class="bottom-nav__icon">📦</span><span
+                class="bottom-nav__label">Resources</span></a>
+    </nav>
+
+    <script src="iebc-data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Progress bar update
+        function updateProgress() {
+            const score = parseInt(document.getElementById('patriot-score')?.textContent || 0);
+            const maxScore = 160;
+            const pct = Math.min((score / maxScore) * 100, 100);
+            const bar = document.getElementById('progress-bar');
+            if (bar) bar.style.width = pct + '%';
+        }
+        // Observe score changes
+        const scoreObs = new MutationObserver(updateProgress);
+        document.addEventListener('DOMContentLoaded', () => {
+            const scoreEl = document.getElementById('patriot-score');
+            if (scoreEl) scoreObs.observe(scoreEl, { childList: true, characterData: true, subtree: true });
+            updateProgress();
+        });
+    </script>
+</body>
+
+</html>
