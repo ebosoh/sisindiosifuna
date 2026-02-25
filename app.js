@@ -5,7 +5,7 @@
 
 // ─── Configuration ──────────────────────────────────────────────
 // TODO: Replace with your deployed Google Apps Script Web App URL
-const GAS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzgs828l0ZAlubq1envxuYrhECyYjUn8g-RE-Wfq5C93f5AyBAmJwVRq4SdQ_dwxo9jHA/exec';
 
 // Polling interval for live stats (30 seconds)
 const POLL_INTERVAL = 30000;
