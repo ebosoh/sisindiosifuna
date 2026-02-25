@@ -322,18 +322,21 @@ function renderResourceCard(r) {
 function renderVideoCard(v) {
     let thumb = v.thumbnailUrl;
     let platform = 'video';
-    const url = v.url.toLowerCase();
+    const url = v.url.trim();
+    const urlLower = url.toLowerCase();
 
     // Platform detection
-    if (url.includes('youtube.com') || url.includes('youtu.be')) platform = 'youtube';
-    else if (url.includes('tiktok.com')) platform = 'tiktok';
-    else if (url.includes('facebook.com') || url.includes('fb.watch')) platform = 'facebook';
-    else if (url.includes('instagram.com')) platform = 'instagram';
-    else if (url.includes('t.co') || url.includes('x.com') || url.includes('twitter.com')) platform = 'x';
+    if (urlLower.includes('youtube.com') || urlLower.includes('youtu.be')) platform = 'youtube';
+    else if (urlLower.includes('tiktok.com')) platform = 'tiktok';
+    else if (urlLower.includes('facebook.com') || urlLower.includes('fb.watch')) platform = 'facebook';
+    else if (urlLower.includes('instagram.com')) platform = 'instagram';
+    else if (urlLower.includes('t.co') || urlLower.includes('x.com') || urlLower.includes('twitter.com')) platform = 'x';
 
     // Auto YouTube Thumbnail
     if (!thumb && platform === 'youtube') {
-        const id = v.url.split('v=')[1]?.split('&')[0] || v.url.split('be/')[1]?.split('?')[0];
+        const ytRegex = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+        const match = url.match(ytRegex);
+        const id = (match && match[2].length === 11) ? match[2] : null;
         if (id) thumb = `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
     }
 
@@ -349,13 +352,16 @@ function renderVideoCard(v) {
     const brand = brands[platform];
 
     const preview = thumb
-        ? `<img src="${thumb}" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;">`
-        : `<div style="font-size:2.5rem">${brand.icon}</div>`;
+        ? `<img src="${thumb}" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.querySelector('.fallback-icon').style.display='block'">`
+        : `<div class="fallback-icon" style="font-size:2.5rem">${brand.icon}</div>`;
+
+    const iconOverlay = thumb ? `<div class="fallback-icon" style="font-size:2.5rem;display:none">${brand.icon}</div>` : '';
 
     return `
     <div class="resource-card reveal">
         <div class="resource-card__thumb" style="background:${brand.color};padding:0;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">
             ${preview}
+            ${iconOverlay}
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1)">
                 <div style="width:46px;height:46px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.2)">▶</div>
             </div>
