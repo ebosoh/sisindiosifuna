@@ -229,6 +229,146 @@ function renderEventCard(ev) {
     </div>`;
 }
 
+// ─── Resource Toolkit Loader ─────────────────────────────────────
+const DEMO_RESOURCES = [
+    { id: 101, category: 'Posters', title: 'Main Campaign Poster A4', format: 'WebP', size: '~120 KB', url: '#', thumbnailUrl: '', description: 'Main visibility poster' },
+    { id: 102, category: 'Posters', title: 'WhatsApp Story Poster', format: 'WebP', size: '~80 KB', url: '#', thumbnailUrl: '', description: 'Optimised for mobile sharing' },
+    { id: 103, category: 'Stickers', title: 'SISI NDIO SIFUNA Sticker Pack', format: 'WhatsApp', size: '18 Stickers', url: '#', thumbnailUrl: '', description: 'Official WhatsApp stickers' },
+    { id: 104, category: 'Talking Points', title: 'Door-to-Door Canvassing Guide', format: 'PDF', size: '~350 KB', url: '#', thumbnailUrl: '', description: 'Step-by-step guide for volunteers' },
+    { id: 105, category: 'Videos', title: 'Main Campaign Ad (30s)', format: 'Video', size: '~4 MB', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', thumbnailUrl: '', description: 'High energy campaign video' },
+    { id: 106, category: 'Videos', title: 'Youth Rally TikTok', format: 'Video', size: 'TikTok', url: 'https://www.tiktok.com/@user/video/123', thumbnailUrl: '', description: 'Viral youth mobilisation video' },
+    { id: 107, category: 'Videos', title: 'Principal Message FB', format: 'Video', size: 'FB Live', url: 'https://www.facebook.com/watch/?v=456', thumbnailUrl: '', description: 'Principal address to the nation' }
+];
+
+async function loadResources() {
+    const posterGrid = $('#posters-grid');
+    const stickersGrid = $('#stickers-grid');
+    const talkingGrid = $('#talking-grid');
+    const videosGrid = $('#videos-grid');
+
+    if (!posterGrid && !stickersGrid && !talkingGrid && !videosGrid) return;
+
+    let resources = DEMO_RESOURCES;
+    try {
+        if (!GAS_API_URL.includes('YOUR_SCRIPT_ID')) {
+            const res = await fetch(`${GAS_API_URL}?action=getResources`);
+            const data = await res.json();
+            if (Array.isArray(data) && data.length) resources = data;
+        }
+    } catch (_) { /* use demo resources */ }
+
+    // Grouping
+    const groups = {
+        'Posters': resources.filter(r => r.category === 'Posters' || r.category === 'Poster'),
+        'Stickers': resources.filter(r => r.category === 'Stickers' || r.category === 'Sticker'),
+        'Talking Points': resources.filter(r => r.category === 'Talking Points' || r.category === 'Talking Point' || r.category === 'Script'),
+        'Videos': resources.filter(r => r.category === 'Videos' || r.category === 'Video')
+    };
+
+    if (posterGrid) posterGrid.innerHTML = groups['Posters'].map(r => renderResourceCard(r)).join('');
+    if (stickersGrid) {
+        const stickers = groups['Stickers'];
+        if (stickers.length) {
+            stickersGrid.innerHTML = stickers.map(r => `
+                <div class="card reveal">
+                    <div class="card__body">
+                        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+                            <div style="font-size:3rem;line-height:1">🎉🇰🇪✊🌟💪🗳️</div>
+                            <div>
+                                <h4 style="margin-bottom:.5rem">${r.title}</h4>
+                                <p style="font-size:.85rem;color:var(--grey-600);margin-bottom:1rem">${r.description || ''}</p>
+                                <a href="${r.url}" class="btn btn-primary">💬 Add to WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+    if (talkingGrid) talkingGrid.innerHTML = groups['Talking Points'].map(r => `
+        <div class="card reveal">
+            <div class="card__body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+                <div>
+                    <h4 style="margin-bottom:.25rem">${r.title}</h4>
+                    <p style="font-size:.82rem;color:var(--grey-400)">${r.format} · ${r.size}</p>
+                </div>
+                <a href="${r.url}" class="btn btn-sm btn-outline-red" download>⬇ Download ${r.format}</a>
+            </div>
+        </div>
+    `).join('');
+    if (videosGrid) videosGrid.innerHTML = groups['Videos'].map(r => renderVideoCard(r)).join('');
+
+    initScrollReveal();
+}
+
+function renderResourceCard(r) {
+    let icon = '📌';
+    let gradient = 'linear-gradient(135deg,#000,#CE1126)';
+    if (r.title.toLowerCase().includes('whatsapp')) { icon = '📱'; gradient = 'linear-gradient(135deg,#006600,#CE1126)'; }
+    if (r.title.toLowerCase().includes('youth')) { icon = '🛡️'; gradient = 'linear-gradient(135deg,#CE1126,#000)'; }
+    if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
+
+    return `
+    <div class="resource-card reveal">
+        <div class="resource-card__thumb" style="background:${gradient}">${icon}</div>
+        <div class="resource-card__body">
+            <div class="resource-card__title">${r.title}</div>
+            <div class="resource-card__size">${r.format} · ${r.size}</div>
+        </div>
+        <a href="${r.url}" class="resource-card__dl" download>⬇ Download</a>
+    </div>`;
+}
+
+function renderVideoCard(v) {
+    let thumb = v.thumbnailUrl;
+    let platform = 'video';
+    const url = v.url.toLowerCase();
+
+    // Platform detection
+    if (url.includes('youtube.com') || url.includes('youtu.be')) platform = 'youtube';
+    else if (url.includes('tiktok.com')) platform = 'tiktok';
+    else if (url.includes('facebook.com') || url.includes('fb.watch')) platform = 'facebook';
+    else if (url.includes('instagram.com')) platform = 'instagram';
+    else if (url.includes('t.co') || url.includes('x.com') || url.includes('twitter.com')) platform = 'x';
+
+    // Auto YouTube Thumbnail
+    if (!thumb && platform === 'youtube') {
+        const id = v.url.split('v=')[1]?.split('&')[0] || v.url.split('be/')[1]?.split('?')[0];
+        if (id) thumb = `https://img.youtube.com/vi/${id}/mqdefault.jpg`;
+    }
+
+    // Platform Branding
+    const brands = {
+        'youtube': { icon: '🎬', color: '#FF0000' },
+        'tiktok': { icon: '🎵', color: '#000000' },
+        'facebook': { icon: '👥', color: '#1877F2' },
+        'instagram': { icon: '📸', color: '#E4405F' },
+        'x': { icon: '🐦', color: '#000000' },
+        'video': { icon: '▶', color: 'var(--kenya-red)' }
+    };
+    const brand = brands[platform];
+
+    const preview = thumb
+        ? `<img src="${thumb}" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;">`
+        : `<div style="font-size:2.5rem">${brand.icon}</div>`;
+
+    return `
+    <div class="resource-card reveal">
+        <div class="resource-card__thumb" style="background:${brand.color};padding:0;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">
+            ${preview}
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1)">
+                <div style="width:46px;height:46px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.2)">▶</div>
+            </div>
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;text-transform:uppercase;font-weight:bold;letter-spacing:0.5px">${platform}</div>
+        </div>
+        <div class="resource-card__body">
+            <div class="resource-card__title">${v.title}</div>
+            <div class="resource-card__size">${v.format} · ${v.size}</div>
+        </div>
+        <a href="${v.url}" target="_blank" rel="noopener" class="resource-card__dl">▶ Open on ${platform}</a>
+    </div>`;
+}
+
 // ─── Patriot Score (Task Board) ──────────────────────────────────
 const TASKS = [
     { id: 't1', title: 'Share SISI NDIO SIFUNA on WhatsApp', points: 10, icon: '📱' },
@@ -391,4 +531,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Page-specific init
     if ($('#events-list')) loadEvents();
     if ($('#task-list')) new PatriotScore();
+    if ($('#posters-grid') || $('#stickers-grid') || $('#talking-grid') || $('#videos-grid')) loadResources();
 });
