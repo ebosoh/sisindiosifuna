@@ -197,11 +197,15 @@ async function loadEvents(containerId = 'events-list') {
     } catch (_) { /* use demo events */ }
 
     container.innerHTML = events.map(ev => renderEventCard(ev)).join('');
+    // Re-trigger reveal for new cards
+    initScrollReveal();
     window.dispatchEvent(new CustomEvent('eventsLoaded'));
 }
 
 function renderEventCard(ev) {
-    const d = new Date(ev.date);
+    // Robust date parsing to avoid timezone shifts (e.g. from YYYY-MM-DD)
+    const dateStr = ev.date?.includes('T') ? ev.date : `${ev.date}T00:00:00`;
+    const d = new Date(dateStr);
     const day = d.getDate();
     const month = d.toLocaleString('en-KE', { month: 'short' }).toUpperCase();
     const statusBadge = ev.status === 'confirmed'
