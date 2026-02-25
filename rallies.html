@@ -140,7 +140,7 @@
 
         <!-- Ad Banner -->
         <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:1.5rem">
-            <div class="ad-placeholder"><span>📢</span><span>Advertisement — contact HQ</span></div>
+            <div class="ad-placeholder"><span>📢</span><span></span></div>
         </div>
 
         <!-- List View -->
@@ -210,7 +210,8 @@
             const cards = document.querySelectorAll('.event-card');
             let visible = 0;
             cards.forEach(card => {
-                const county = card.querySelector('.event-card__meta span:nth-child(3)')?.textContent.replace('🗺️ ', '') || '';
+                const countySpan = card.querySelector('.event-card__meta span:nth-child(3)');
+                const county = countySpan ? countySpan.textContent.replace('🗺️', '').trim() : '';
                 const show = currentFilter === 'all' || county === currentFilter;
                 card.style.display = show ? '' : 'none';
                 if (show) visible++;
@@ -239,10 +240,10 @@
             document.getElementById('view-list').style.color = '';
         });
 
-        // After events load, filter and count
-        const origLoad = window.loadEvents;
+        // Initial load and filter
+        window.addEventListener('eventsLoaded', filterEvents);
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(filterEvents, 1000);
+            if (document.querySelectorAll('.event-card').length) filterEvents();
         });
     </script>
 </body>

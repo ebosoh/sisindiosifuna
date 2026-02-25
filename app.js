@@ -197,6 +197,7 @@ async function loadEvents(containerId = 'events-list') {
     } catch (_) { /* use demo events */ }
 
     container.innerHTML = events.map(ev => renderEventCard(ev)).join('');
+    window.dispatchEvent(new CustomEvent('eventsLoaded'));
 }
 
 function renderEventCard(ev) {
