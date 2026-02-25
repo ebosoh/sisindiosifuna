@@ -27,23 +27,19 @@ Then open: `http://localhost:8001`
 ```
 SISI NDIO SIFUNA/
 ├── index.html              ← Landing page (hero + live counters + events)
+├── about.html              ← Campaign mission & values
+├── join.html               ← Volunteer registration form
+├── rallies.html            ← Rally & event tracker
+├── resources.html          ← Campaign resource downloads
+├── tasks.html              ← Patriot Score task board
+├── main.css                ← Full design system (Kenyan flag colours)
+├── app.js                  ← Core logic (live stats, forms, task board)
+├── iebc-data.js            ← All 47 counties, constituencies & wards
 ├── manifest.json           ← Browser theme config (no install prompts)
 ├── sw.js                   ← Silent service worker (cache for 3G speed)
+├── favicon.svg             ← SVG logo and favicon
 ├── .gitignore
 ├── README.md
-├── css/
-│   └── main.css            ← Full design system (Kenyan flag colours)
-├── js/
-│   ├── app.js              ← Core logic (live stats, forms, task board)
-│   └── iebc-data.js        ← All 47 counties, constituencies & wards
-├── pages/
-│   ├── join.html           ← Volunteer registration form
-│   ├── rallies.html        ← Rally & event tracker
-│   ├── tasks.html          ← Patriot Score task board
-│   ├── resources.html      ← Campaign resource downloads
-│   └── about.html          ← Campaign mission & values
-├── assets/
-│   └── icons/              ← SVG logo and favicon
 └── backend/
     ├── Code.gs             ← Google Apps Script REST API
     └── README.md           ← Backend setup instructions
@@ -74,7 +70,7 @@ See [`backend/README.md`](backend/README.md) for full instructions. In short:
 1. Create a Google Sheet with 3 tabs: `Volunteers`, `Events`, `SiteStats`
 2. Open Apps Script, paste `Code.gs`, and set `SHEET_ID`
 3. Deploy as a Web App (access: Anyone)
-4. In `js/app.js` Line 5, replace `YOUR_SCRIPT_ID` with your deployment URL
+4. In `app.js` Line 8, replace `YOUR_SCRIPT_ID` with your deployment URL
 
 ---
 
@@ -122,7 +118,7 @@ When scaling beyond Google Sheets (~50k rows):
 | Database | Google Sheets | PostgreSQL / Firestore |
 | Notifications | GAS stub | Live Twilio / Meta WhatsApp API |
 
-Only `GAS_API_URL` in `js/app.js` needs updating — zero HTML changes.
+Only `GAS_API_URL` in `app.js` needs updating — zero HTML changes.
 
 ---
 

@@ -7,14 +7,14 @@ const CACHE_NAME = 'sisi-v1';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
-    '/pages/join.html',
-    '/pages/rallies.html',
-    '/pages/tasks.html',
-    '/pages/resources.html',
-    '/pages/about.html',
-    '/css/main.css',
-    '/js/app.js',
-    '/js/iebc-data.js',
+    '/join.html',
+    '/rallies.html',
+    '/tasks.html',
+    '/resources.html',
+    '/about.html',
+    '/main.css',
+    '/app.js',
+    '/iebc-data.js',
     '/manifest.json',
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap'
 ];

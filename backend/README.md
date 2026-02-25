@@ -33,7 +33,7 @@
 
 ## Step 5: Connect to the Frontend
 
-1. Open `js/app.js` in the project
+1. Open `app.js` in the project
 2. Find line 5:  
    ```js
    const GAS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
