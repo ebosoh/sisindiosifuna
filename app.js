@@ -146,6 +146,10 @@ async function registerVolunteer(formData) {
         const data = await res.json();
         if (data.status === 'success' || data.result === 'success') {
             showSuccessScreen();
+        } else if (data.status === 'duplicate') {
+            // Already registered — warn the user and let them fix their details
+            showToast('⚠️ ' + (data.message || 'You are already registered.'), 'error', 5000);
+            if (btn) { btn.disabled = false; btn.textContent = originalText; }
         } else {
             throw new Error(data.message || 'Registration failed');
         }
