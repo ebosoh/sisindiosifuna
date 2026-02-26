@@ -522,15 +522,16 @@ function initShare() {
     const btn = $('#share-btn');
     if (!btn) return;
     btn.addEventListener('click', async () => {
+        const CAMPAIGN_URL = 'https://www.sisindiosifuna.org';
         const shareData = {
             title: 'SISI NDIO SIFUNA 🇰🇪',
             text: 'I just joined the SISI NDIO SIFUNA volunteer movement! Join the movement at:',
-            url: window.location.origin
+            url: CAMPAIGN_URL
         };
         if (navigator.share) {
             try { await navigator.share(shareData); } catch (_) { }
         } else {
-            await navigator.clipboard.writeText(window.location.origin);
+            await navigator.clipboard.writeText(CAMPAIGN_URL);
             showToast('🔗 Link copied to clipboard!');
         }
     });
