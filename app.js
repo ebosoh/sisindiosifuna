@@ -14,6 +14,19 @@ const POLL_INTERVAL = 30000;
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
+/**
+ * Converts Google Drive share links to direct direct download/view links
+ * for use in <img> tags or direct downloads.
+ */
+function getDirectDriveUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    if (url.includes('drive.google.com')) {
+        const match = url.match(/[-\w]{25,}/); // Extracts the file ID
+        if (match) return `https://drive.google.com/uc?export=view&id=${match[0]}`;
+    }
+    return url;
+}
+
 // ─── Toast Notification ──────────────────────────────────────────
 function showToast(msg, type = 'success', duration = 3500) {
     let toast = $('#toast');
@@ -235,8 +248,8 @@ function renderEventCard(ev) {
 
 // ─── Resource Toolkit Loader ─────────────────────────────────────
 const DEMO_RESOURCES = [
-    { id: 101, category: 'Posters', title: 'Main Campaign Poster A4', format: 'WebP', size: '~120 KB', url: '#', thumbnailUrl: '', description: 'Main visibility poster' },
-    { id: 102, category: 'Posters', title: 'WhatsApp Story Poster', format: 'WebP', size: '~80 KB', url: '#', thumbnailUrl: '', description: 'Optimised for mobile sharing' },
+    { id: 101, category: 'Posters', title: 'Main Campaign Poster A4', format: 'WebP', size: '~120 KB', url: 'poster_main_a4.png', thumbnailUrl: 'poster_main_a4.png', description: 'Main visibility poster — print A4' },
+    { id: 102, category: 'Posters', title: 'WhatsApp Story Poster', format: 'WebP', size: '~80 KB', url: 'https://drive.google.com/file/d/1BfS_i3L2X8_SAMPLE_ID/view?usp=sharing', thumbnailUrl: 'https://drive.google.com/file/d/1BfS_i3L2X8_SAMPLE_ID/view?usp=sharing', description: 'Optimised for mobile sharing — Powered by Google Drive' },
     { id: 103, category: 'Stickers', title: 'SISI NDIO SIFUNA Sticker Pack', format: 'WhatsApp', size: '18 Stickers', url: 'https://wa.me/message/XXXXXXXXXXXXXXX', thumbnailUrl: '', description: 'Official WhatsApp stickers — tap to add' },
     { id: 104, category: 'Talking Points', title: 'Door-to-Door Canvassing Guide', format: 'PDF', size: '~350 KB', url: '#', thumbnailUrl: '', description: 'Step-by-step guide for volunteers' },
     { id: 105, category: 'Videos', title: 'Main Campaign Ad (30s)', format: 'Video', size: '~4 MB', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', thumbnailUrl: '', description: 'High energy campaign video' },
@@ -325,6 +338,37 @@ function renderResourceCard(r) {
     if (r.title.toLowerCase().includes('youth')) { icon = '🛡️'; gradient = 'linear-gradient(135deg,#CE1126,#000)'; }
     if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
 
+    const hasThumb = r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '';
+    const thumbSrc = getDirectDriveUrl(r.thumbnailUrl);
+    const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null));
+    const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
+
+    if (hasThumb) {
+        // ── Image-preview card ──────────────────────────────────
+        return `
+        <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
+            <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
+                <img src="${thumbSrc}" alt="${r.title}"
+                     loading="lazy"
+                     style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease"
+                     onmouseover="this.style.transform='scale(1.05)'"
+                     onmouseout="this.style.transform='scale(1)'"
+                     onerror="this.style.display='none';this.parentElement.querySelector('.img-fallback').style.display='flex'">
+                <div class="img-fallback" style="display:none;position:absolute;inset:0;background:${gradient};align-items:center;justify-content:center;font-size:3rem">${icon}</div>
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%)"></div>
+                <a ${dlAttr} class="resource-card__dl"
+                   style="position:absolute;bottom:10px;right:10px;border-radius:8px;padding:.4rem .9rem;font-size:.8rem">
+                    ⬇ Download
+                </a>
+            </div>
+            <div class="resource-card__body" style="border-radius:0 0 12px 12px">
+                <div class="resource-card__title">${r.title}</div>
+                <div class="resource-card__size">${r.format} · ${r.size}</div>
+            </div>
+        </div>`;
+    }
+
+    // ── Fallback gradient card (no thumbnail) ───────────────────
     return `
     <div class="resource-card reveal">
         <div class="resource-card__thumb" style="background:${gradient}">${icon}</div>
@@ -332,12 +376,12 @@ function renderResourceCard(r) {
             <div class="resource-card__title">${r.title}</div>
             <div class="resource-card__size">${r.format} · ${r.size}</div>
         </div>
-        <a href="${r.url}" class="resource-card__dl" download>⬇ Download</a>
+        <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
     </div>`;
 }
 
 function renderVideoCard(v) {
-    let thumb = v.thumbnailUrl;
+    let thumb = getDirectDriveUrl(v.thumbnailUrl);
     let platform = 'video';
     const url = v.url.trim();
     const urlLower = url.toLowerCase();
