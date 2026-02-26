@@ -15,14 +15,19 @@ const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
 /**
- * Converts Google Drive share links to direct direct download/view links
- * for use in <img> tags or direct downloads.
+ * Converts Google Drive share links to direct direct download/view links.
+ * @param {string} url - The original Drive URL.
+ * @param {boolean} isThumb - If true, returns a high-performing thumbnail URL for <img> tags.
  */
-function getDirectDriveUrl(url) {
+function getDirectDriveUrl(url, isThumb = false) {
     if (!url || typeof url !== 'string') return url;
     if (url.includes('drive.google.com')) {
         const match = url.match(/[-\w]{25,}/); // Extracts the file ID
-        if (match) return `https://drive.google.com/uc?export=view&id=${match[0]}`;
+        if (match) {
+            const id = match[0];
+            if (isThumb) return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+            return `https://drive.google.com/uc?export=download&id=${id}`;
+        }
     }
     return url;
 }
@@ -339,8 +344,8 @@ function renderResourceCard(r) {
     if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
 
     const hasThumb = r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '';
-    const thumbSrc = getDirectDriveUrl(r.thumbnailUrl);
-    const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null));
+    const thumbSrc = getDirectDriveUrl(r.thumbnailUrl, true);
+    const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
     const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
 
     if (hasThumb) {
@@ -381,7 +386,7 @@ function renderResourceCard(r) {
 }
 
 function renderVideoCard(v) {
-    let thumb = getDirectDriveUrl(v.thumbnailUrl);
+    let thumb = getDirectDriveUrl(v.thumbnailUrl, true);
     let platform = 'video';
     const url = v.url.trim();
     const urlLower = url.toLowerCase();
