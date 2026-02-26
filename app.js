@@ -10,6 +10,9 @@ const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzgs828l0ZAlubq1env
 // Polling interval for live stats (30 seconds)
 const POLL_INTERVAL = 30000;
 
+// PWA Install Prompt state
+let deferredPrompt = null;
+
 // ─── DOM Helpers ─────────────────────────────────────────────────
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -56,7 +59,28 @@ function applyPersonalization() {
         const icon = $('.bottom-nav__icon', mobileJoin);
         if (label) label.textContent = 'Patriot';
         if (icon) icon.textContent = '🫡';
+        if (icon) icon.textContent = '🫡';
         mobileJoin.href = 'tasks.html';
+    }
+
+    // 1.1 Support for "Install App" prompt for recognizing volunteers
+    const installBadge = $('#install-badge');
+    if (deferredPrompt && !installBadge) {
+        const heroBadgeContainer = $('.hero__content');
+        if (heroBadgeContainer) {
+            const badge = document.createElement('button');
+            badge.id = 'install-badge';
+            badge.className = 'patriot-badge patriot-badge--gold reveal';
+            badge.innerHTML = '📲 Install Official App';
+            badge.style.marginTop = 'var(--sp-2)';
+            badge.onclick = async () => {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') deferredPrompt = null;
+                badge.remove();
+            };
+            heroBadgeContainer.insertBefore(badge, heroBadgeContainer.querySelector('.hero__badge').nextSibling);
+        }
     }
 
     // 2. Personalize Hero Sections (Home & Others)
@@ -687,6 +711,29 @@ document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNav();
     initShare();
     applyPersonalization();
+
+    // ─── Service Worker & PWA Installation ───────────────────────
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('SW Registered'))
+            .catch(err => console.error('SW Registration Failed:', err));
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent Chrome 67 and earlier from automatically showing the prompt
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Optionally update UI to notify user they can install PWA
+        applyPersonalization();
+    });
+
+    window.addEventListener('appinstalled', () => {
+        deferredPrompt = null;
+        console.log('PWA was installed');
+        const installBadge = $('#install-badge');
+        if (installBadge) installBadge.remove();
+    });
 
     // Page-specific init
     if ($('#events-list')) loadEvents();
