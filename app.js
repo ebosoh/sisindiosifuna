@@ -233,7 +233,7 @@ function renderEventCard(ev) {
 const DEMO_RESOURCES = [
     { id: 101, category: 'Posters', title: 'Main Campaign Poster A4', format: 'WebP', size: '~120 KB', url: '#', thumbnailUrl: '', description: 'Main visibility poster' },
     { id: 102, category: 'Posters', title: 'WhatsApp Story Poster', format: 'WebP', size: '~80 KB', url: '#', thumbnailUrl: '', description: 'Optimised for mobile sharing' },
-    { id: 103, category: 'Stickers', title: 'SISI NDIO SIFUNA Sticker Pack', format: 'WhatsApp', size: '18 Stickers', url: '#', thumbnailUrl: '', description: 'Official WhatsApp stickers' },
+    { id: 103, category: 'Stickers', title: 'SISI NDIO SIFUNA Sticker Pack', format: 'WhatsApp', size: '18 Stickers', url: 'https://wa.me/message/XXXXXXXXXXXXXXX', thumbnailUrl: '', description: 'Official WhatsApp stickers — tap to add' },
     { id: 104, category: 'Talking Points', title: 'Door-to-Door Canvassing Guide', format: 'PDF', size: '~350 KB', url: '#', thumbnailUrl: '', description: 'Step-by-step guide for volunteers' },
     { id: 105, category: 'Videos', title: 'Main Campaign Ad (30s)', format: 'Video', size: '~4 MB', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', thumbnailUrl: '', description: 'High energy campaign video' },
     { id: 106, category: 'Videos', title: 'Youth Rally TikTok', format: 'Video', size: 'TikTok', url: 'https://www.tiktok.com/@user/video/123', thumbnailUrl: '', description: 'Viral youth mobilisation video' },
@@ -277,12 +277,25 @@ async function loadResources() {
                             <div>
                                 <h4 style="margin-bottom:.5rem">${r.title}</h4>
                                 <p style="font-size:.85rem;color:var(--grey-600);margin-bottom:1rem">${r.description || ''}</p>
-                                <a href="${r.url}" class="btn btn-primary">💬 Add to WhatsApp</a>
+                                <a href="${r.url}" class="btn btn-primary wa-sticker-btn"
+                                   target="_blank" rel="noopener noreferrer"
+                                   data-url="${r.url}">💬 Add to WhatsApp</a>
                             </div>
                         </div>
                     </div>
                 </div>
             `).join('');
+
+            // Handle placeholder URLs gracefully
+            stickersGrid.querySelectorAll('.wa-sticker-btn').forEach(btn => {
+                const url = btn.dataset.url || '';
+                if (!url || url === '#' || url.includes('XXXXXXX')) {
+                    btn.addEventListener('click', e => {
+                        e.preventDefault();
+                        showToast('⏳ Sticker pack coming soon — check back shortly!', 'success', 4000);
+                    });
+                }
+            });
         }
     }
     if (talkingGrid) talkingGrid.innerHTML = groups['Talking Points'].map(r => `
