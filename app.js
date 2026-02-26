@@ -32,6 +32,71 @@ function getDirectDriveUrl(url, isThumb = false) {
     return url;
 }
 
+/**
+ * Identity & Personalization System
+ * Remembers the volunteer and recognizes their contribution across the platform.
+ */
+function applyPersonalization() {
+    const name = localStorage.getItem('sisi_volunteer_name');
+    if (!name) return;
+
+    // 1. Update Header Call-to-Action
+    const desktopJoin = $('.desktop-nav .btn-primary');
+    if (desktopJoin) {
+        desktopJoin.textContent = `Salute, ${name.split(' ')[0]} 🇰🇪`;
+        desktopJoin.href = 'tasks.html';
+        desktopJoin.style.background = 'transparent';
+        desktopJoin.style.border = '2px solid var(--kenya-red)';
+        desktopJoin.style.color = 'var(--kenya-red)';
+    }
+
+    const mobileJoin = $('.bottom-nav__item--join');
+    if (mobileJoin) {
+        const label = $('.bottom-nav__label', mobileJoin);
+        const icon = $('.bottom-nav__icon', mobileJoin);
+        if (label) label.textContent = 'Patriot';
+        if (icon) icon.textContent = '🫡';
+        mobileJoin.href = 'tasks.html';
+    }
+
+    // 2. Personalize Hero Sections (Home & Others)
+    const heroTitle = $('.page-hero h1, .hero__title');
+    const heroDesc = $('.page-hero p, .hero__sub');
+    const isHome = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.includes('index');
+
+    if (heroTitle && isHome) {
+        heroTitle.innerHTML = `Karibu Sana, <span style="color:var(--kenya-red-bright)">${name.split(' ')[0]}</span>! 🇰🇪`;
+        if (heroDesc) heroDesc.innerHTML = `You are a <strong>Certified Patriot</strong>. Thank you for standing for this noble cause.`;
+
+        // Add a badge if it doesn't exist
+        const heroBadge = $('.hero__badge');
+        if (heroBadge) {
+            heroBadge.innerHTML = `<span class="dot" aria-hidden="true"></span> CERTIFIED PATRIOT — VOLUNTEER ID: #${Math.floor(Math.random() * 9000) + 1000}`;
+            heroBadge.classList.add('patriot-badge--gold');
+        }
+    }
+
+    // 3. Page specific hero sub-text
+    if (window.location.pathname.includes('resources.html')) {
+        const resHero = $('.page-hero p');
+        if (resHero) resHero.textContent = `Patriot ${name.split(' ')[0]}, use these tools to spread the movement.`;
+    }
+    if (window.location.pathname.includes('tasks.html')) {
+        const taskHero = $('.page-hero p');
+        if (taskHero) taskHero.textContent = `Salute Patriot ${name.split(' ')[0]}! Complete tasks to earn your Legend status.`;
+    }
+
+    // 4. Success Screen Personalization
+    const successTitle = $('#success-screen h2');
+    const successMsg = $('#success-screen p');
+    if (successTitle) {
+        successTitle.textContent = `Salute, Patriot ${name.split(' ')[0]}!`;
+    }
+    if (successMsg) {
+        successMsg.innerHTML = `You are now a registered volunteer in the <strong>SISI NDIO SIFUNA</strong> movement. Your commitment to this noble cause is what will move Kenya forward. <br><br> <span class="noble-cause-msg">"Pamoja Tunajenga Taifa Letu!"</span>`;
+    }
+}
+
 // ─── Toast Notification ──────────────────────────────────────────
 function showToast(msg, type = 'success', duration = 3500) {
     let toast = $('#toast');
@@ -163,6 +228,8 @@ async function registerVolunteer(formData) {
         });
         const data = await res.json();
         if (data.status === 'success' || data.result === 'success') {
+            const fullName = formData.get('fullName');
+            if (fullName) localStorage.setItem('sisi_volunteer_name', fullName);
             showSuccessScreen();
         } else if (data.status === 'duplicate') {
             // Already registered — warn the user and let them fix their details
@@ -174,6 +241,8 @@ async function registerVolunteer(formData) {
     } catch (err) {
         // If GAS not yet configured, simulate success for demo
         if (GAS_API_URL.includes('YOUR_SCRIPT_ID')) {
+            const fullName = formData.get('fullName');
+            if (fullName) localStorage.setItem('sisi_volunteer_name', fullName);
             showSuccessScreen();
         } else {
             showToast('⚠️ ' + (err.message || 'Please try again.'), 'error');
@@ -193,6 +262,7 @@ function showSuccessScreen() {
         animateCounter(volEl, prevStats.volunteers, prevStats.volunteers + 1);
         prevStats.volunteers += 1;
     }
+    applyPersonalization();
 }
 
 // ─── Rally Events Loader ─────────────────────────────────────────
@@ -600,6 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     highlightActiveNav();
     initShare();
+    applyPersonalization();
 
     // Page-specific init
     if ($('#events-list')) loadEvents();
