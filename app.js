@@ -76,7 +76,23 @@ function applyPersonalization() {
         }
     }
 
-    // 3. Page specific hero sub-text
+    // 3. Page specific hero sub-text / Hiding Join elements
+    if (isHome) {
+        const heroJoinBtn = $('#hero-join-btn');
+        if (heroJoinBtn) heroJoinBtn.style.display = 'none';
+
+        // Hide the big bottom Join CTA section
+        const bottomJoinSec = $('section[aria-labelledby="join-cta-heading"]');
+        if (bottomJoinSec) bottomJoinSec.style.display = 'none';
+
+        // Hide other join links in cards
+        $$('a[href="join.html"]').forEach(el => {
+            if (!el.closest('.app-bar') && !el.closest('.bottom-nav')) {
+                el.style.display = 'none';
+            }
+        });
+    }
+
     if (window.location.pathname.includes('resources.html')) {
         const resHero = $('.page-hero p');
         if (resHero) resHero.textContent = `Patriot ${name.split(' ')[0]}, use these tools to spread the movement.`;
