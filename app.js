@@ -444,6 +444,7 @@ async function loadResources() {
     if (videosGrid) videosGrid.innerHTML = groups['Videos'].map(r => renderVideoCard(r)).join('');
 
     initScrollReveal();
+    fetchTikTokThumbnails();
 }
 
 function renderResourceCard(r) {
@@ -533,8 +534,11 @@ function renderVideoCard(v) {
 
     const iconOverlay = thumb ? `<div class="fallback-icon" style="font-size:2.5rem;display:none">${brand.icon}</div>` : '';
 
+    // If it's TikTok and has no thumb, mark it for async loading
+    const asyncAttr = (!thumb && platform === 'tiktok') ? `data-async-tiktok="${url}"` : '';
+
     return `
-    <div class="resource-card reveal">
+    <div class="resource-card reveal" ${asyncAttr}>
         <div class="resource-card__thumb" style="background:${brand.color};padding:0;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">
             ${preview}
             ${iconOverlay}
@@ -549,6 +553,35 @@ function renderVideoCard(v) {
         </div>
         <a href="${v.url}" target="_blank" rel="noopener" class="resource-card__dl">▶ Open on ${platform}</a>
     </div>`;
+}
+
+/**
+ * Async TikTok Thumbnail Fetching
+ * Calls the backend proxy to get real thumbnails for TikTok videos.
+ */
+async function fetchTikTokThumbnails() {
+    const targets = $$('[data-async-tiktok]');
+    if (!targets.length) return;
+
+    for (const card of targets) {
+        const url = card.dataset.asyncTiktok;
+        try {
+            const res = await fetch(`${GAS_API_URL}?action=getTikTokThumbnail&url=${encodeURIComponent(url)}`);
+            const data = await res.json();
+            if (data.status === 'success' && data.thumbnail_url) {
+                const thumbEl = $('.resource-card__thumb', card);
+                if (thumbEl) {
+                    thumbEl.innerHTML = `
+                        <img src="${data.thumbnail_url}" alt="TikTok Preview" style="width:100%;height:100%;object-fit:cover;">
+                        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1)">
+                            <div style="width:46px;height:46px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.2)">▶</div>
+                        </div>
+                        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;text-transform:uppercase;font-weight:bold;letter-spacing:0.5px">tiktok</div>
+                    `;
+                }
+            }
+        } catch (_) { /* skip failed ones */ }
+    }
 }
 
 // ─── Patriot Score (Task Board) ──────────────────────────────────
