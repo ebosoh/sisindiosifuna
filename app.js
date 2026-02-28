@@ -719,20 +719,72 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error('SW Registration Failed:', err));
     }
 
+    /**
+     * PWA Install Popup Implementation
+     */
+    function showInstallPopup() {
+        if (!deferredPrompt) return;
+
+        // Don't show if already dismissed in this session
+        if (sessionStorage.getItem('sisi_install_dismissed')) return;
+
+        let popup = $('#install-popup');
+        if (!popup) {
+            popup = document.createElement('div');
+            popup.id = 'install-popup';
+            popup.className = 'install-popup';
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const actionText = isMobile ? 'your mobile screen' : 'your desktop';
+
+            popup.innerHTML = `
+                <div class="install-popup__content">
+                    <div class="install-popup__icon">📲</div>
+                    <div class="install-popup__text">
+                        <h4>SISI NDIO SIFUNA</h4>
+                        <p>Add SISI NDIO SIFUNA on ${actionText} for faster access.</p>
+                    </div>
+                </div>
+                <div class="install-popup__actions">
+                    <button id="install-close" class="btn btn-secondary btn-sm">Later</button>
+                    <button id="install-confirm" class="btn btn-primary btn-sm">Add Now</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+
+            $('#install-confirm').onclick = async () => {
+                popup.classList.remove('visible');
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to install prompt: ${outcome}`);
+                deferredPrompt = null;
+            };
+
+            $('#install-close').onclick = () => {
+                popup.classList.remove('visible');
+                sessionStorage.setItem('sisi_install_dismissed', 'true');
+            };
+        }
+
+        setTimeout(() => popup.classList.add('visible'), 1000);
+    }
+
     window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent Chrome 67 and earlier from automatically showing the prompt
         e.preventDefault();
-        // Stash the event so it can be triggered later.
         deferredPrompt = e;
-        // Optionally update UI to notify user they can install PWA
+        // Show popup after a delay
+        showInstallPopup();
+        // Also update existing hero badges if any
         applyPersonalization();
     });
 
     window.addEventListener('appinstalled', () => {
         deferredPrompt = null;
-        console.log('PWA was installed');
+        const popup = $('#install-popup');
+        if (popup) popup.classList.remove('visible');
         const installBadge = $('#install-badge');
         if (installBadge) installBadge.remove();
+        showToast('✅ App installed successfully!');
     });
 
     // Page-specific init
