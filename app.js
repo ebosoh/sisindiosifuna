@@ -27,13 +27,18 @@ function getDirectDriveUrl(url, isThumb = false) {
     if (!url || typeof url !== 'string') return url;
     const cleanUrl = url.trim();
     if (cleanUrl.includes('drive.google.com') || cleanUrl.includes('docs.google.com')) {
-        // Robust ID extraction for /file/d/ID/view, /open?id=ID, /uc?id=ID
-        const match = cleanUrl.match(/(?:\/d\/|id=)([-\w]{20,})/);
+        // Robust ID extraction for /file/d/ID, /id=ID, /uc?id=ID, /open?id=ID
+        const match = cleanUrl.match(/(?:\/d\/|id=|\/uc\?|folders\/)([-\w]{20,})/);
         if (match) {
             const id = match[1];
+            if (cleanUrl.includes('folders/')) {
+                console.warn('A2HS: Drive Folder link detected — folders cannot be thumbnails.');
+                return cleanUrl;
+            }
             if (isThumb) {
-                // Secondary endpoint which is often more reliable for cross-origin <img> tags
-                return `https://lh3.googleusercontent.com/d/${id}?sz=w1000`;
+                // Return a primary and a fallback URL to try in <img> tag
+                // But for a single string return, we'll use the most compatible one
+                return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
             }
             return `https://drive.google.com/uc?export=view&id=${id}`;
         }
@@ -460,17 +465,20 @@ function renderResourceCard(r) {
     if (r.title.toLowerCase().includes('youth')) { icon = '🛡️'; gradient = 'linear-gradient(135deg,#CE1126,#000)'; }
     if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
 
-    const isDriveUrl = r.url && (r.url.includes('drive.google.com') || r.url.includes('docs.google.com'));
-    const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl);
+    const isDriveUrl = r.url && (r.url.includes('drive.google.com') || r.url.includes('docs.google.com') || r.url.includes('googleusercontent.com'));
+    const isGenericUrl = r.url && (r.url.startsWith('http') || r.url.startsWith('https'));
+    const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl || (r.category.toLowerCase().includes('poster') && isGenericUrl));
 
-    // Debug for thumbnails
-    if (isDriveUrl) console.log('A2HS: Detected Drive Resource:', { title: r.title, url: r.url });
+    // Diagnostic logs for Posters
+    if (r.category.toLowerCase().includes('poster')) {
+        console.log(`A2HS: Poster "${r.title}" - isDrive: ${isDriveUrl}, isImage: ${isImageUrl}`);
+    }
 
     const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
     const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
     const thumbSrc = getDirectDriveUrl(rawThumb, true);
 
-    if (isDriveUrl) console.log('A2HS: Drive Thumbnail Generated:', { thumbSrc });
+    if (isDriveUrl) console.log('A2HS: Drive Thumbnail Generated:', { title: r.title, thumbSrc });
     const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
     const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
 
@@ -479,12 +487,23 @@ function renderResourceCard(r) {
         return `
         <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
             <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
-                <img src="${thumbSrc}" alt="${r.title}"
-                     loading="lazy"
-                     style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease"
-                     onmouseover="this.style.transform='scale(1.05)'"
-                     onmouseout="this.style.transform='scale(1)'"
-                     onerror="this.style.display='none';this.parentElement.querySelector('.img-fallback').style.display='flex'">
+                 <img src="${thumbSrc}" alt="${r.title}"
+                      loading="lazy"
+                      style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease"
+                      onmouseover="this.style.transform='scale(1.05)'"
+                      onmouseout="this.style.transform='scale(1)'"
+                      onerror="
+                        console.error('A2HS: Image load failed:', this.src);
+                        if (this.src.includes('googleusercontent')) {
+                            const idMatch = this.src.match(/\/d\/([-\w]+)/);
+                            if (idMatch) {
+                                this.src = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w1000';
+                                return;
+                            }
+                        }
+                        this.style.display='none';
+                        this.parentElement.querySelector('.img-fallback').style.display='flex';
+                      ">
                 <div class="img-fallback" style="display:none;position:absolute;inset:0;background:${gradient};align-items:center;justify-content:center;font-size:3rem">${icon}</div>
                 <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%)"></div>
                 <a ${dlAttr} class="resource-card__dl"
@@ -859,6 +878,15 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             if (!originalPrompt) deferredPrompt = null;
         }, 6000);
+    };
+
+    window.debugResources = () => {
+        console.log('A2HS: Diagnostic - Listing all loaded resources:');
+        if (typeof DEMO_RESOURCES !== 'undefined') {
+            console.table(DEMO_RESOURCES.map(r => ({ id: r.id, title: r.title, category: r.category, url: r.url, thumb: r.thumbnailUrl })));
+        } else {
+            console.log('A2HS: resources not found or not yet loaded.');
+        }
     };
 
     window.addEventListener('beforeinstallprompt', (e) => {
