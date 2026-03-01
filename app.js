@@ -26,10 +26,11 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 function getDirectDriveUrl(url, isThumb = false) {
     if (!url || typeof url !== 'string') return url;
     if (url.includes('drive.google.com')) {
-        const match = url.match(/[-\w]{25,}/); // Extracts the file ID
+        // Robust ID extraction for both /file/d/ID/view and ?id=ID formats
+        const match = url.match(/(?:\/d\/|id=)([-\w]{25,})/);
         if (match) {
-            const id = match[0];
-            if (isThumb) return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+            const id = match[1];
+            if (isThumb) return `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
             return `https://drive.google.com/uc?export=download&id=${id}`;
         }
     }
@@ -455,7 +456,8 @@ function renderResourceCard(r) {
     if (r.title.toLowerCase().includes('youth')) { icon = '🛡️'; gradient = 'linear-gradient(135deg,#CE1126,#000)'; }
     if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
 
-    const isImageUrl = r.url && (r.url.toLowerCase().endsWith('.png') || r.url.toLowerCase().endsWith('.jpg') || r.url.toLowerCase().endsWith('.jpeg') || r.url.toLowerCase().endsWith('.webp'));
+    const isDriveUrl = r.url && r.url.includes('drive.google.com');
+    const isImageUrl = r.url && (r.url.toLowerCase().endsWith('.png') || r.url.toLowerCase().endsWith('.jpg') || r.url.toLowerCase().endsWith('.jpeg') || r.url.toLowerCase().endsWith('.webp') || isDriveUrl);
     const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
     const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
     const thumbSrc = getDirectDriveUrl(rawThumb, true);
