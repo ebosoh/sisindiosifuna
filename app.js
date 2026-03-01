@@ -455,8 +455,10 @@ function renderResourceCard(r) {
     if (r.title.toLowerCase().includes('youth')) { icon = '🛡️'; gradient = 'linear-gradient(135deg,#CE1126,#000)'; }
     if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
 
-    const hasThumb = r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '';
-    const thumbSrc = getDirectDriveUrl(r.thumbnailUrl, true);
+    const isImageUrl = r.url && (r.url.toLowerCase().endsWith('.png') || r.url.toLowerCase().endsWith('.jpg') || r.url.toLowerCase().endsWith('.jpeg') || r.url.toLowerCase().endsWith('.webp'));
+    const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
+    const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
+    const thumbSrc = getDirectDriveUrl(rawThumb, true);
     const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
     const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
 
