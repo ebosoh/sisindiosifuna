@@ -759,13 +759,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!deferredPrompt) return;
 
         // Don't show if already dismissed in this session
-        if (sessionStorage.getItem('sisi_install_dismissed')) return;
+        // ONLY show on homepage
+        const isHomepage = window.location.pathname === '/' ||
+            window.location.pathname.endsWith('index.html') ||
+            window.location.pathname === '';
+
+        if (!isHomepage) {
+            console.log('A2HS: Suppressing popup on non-homepage');
+            return;
+        }
+
+        if (localStorage.getItem('installPopupDismissed')) return;
 
         let popup = $('#install-popup');
         if (!popup) {
             popup = document.createElement('div');
             popup.id = 'install-popup';
-            popup.className = 'install-popup';
 
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             const actionText = isMobile ? 'your mobile screen' : 'your desktop';
