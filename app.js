@@ -12,6 +12,7 @@ const POLL_INTERVAL = 30000;
 
 // PWA Install Prompt state
 let deferredPrompt = null;
+console.log('A2HS: app.js loaded version 3.0 ( диагностика)');
 
 // ─── DOM Helpers ─────────────────────────────────────────────────
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -747,34 +748,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Service Worker & PWA Installation ───────────────────────
     if ('serviceWorker' in navigator) {
+        console.log('A2HS: Attempting to register SW...');
         navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('SW Registered'))
-            .catch(err => console.error('SW Registration Failed:', err));
+            .then(reg => {
+                console.log('A2HS: SW Registered successfully:', reg.scope);
+            })
+            .catch(err => console.error('A2HS: SW Registration Failed:', err));
     }
 
     /**
      * PWA Install Popup Implementation
      */
     function showInstallPopup() {
+        console.log('A2HS: Calling showInstallPopup. deferredPrompt status:', !!deferredPrompt);
         if (!deferredPrompt) return;
 
-        // Don't show if already dismissed in this session
         // ONLY show on homepage
-        const isHomepage = window.location.pathname === '/' ||
-            window.location.pathname.endsWith('index.html') ||
-            window.location.pathname === '';
+        const path = window.location.pathname;
+        const isHomepage = path === '/' ||
+            path.endsWith('/') ||
+            path.toLowerCase().includes('index.html') ||
+            path === '';
 
-        if (!isHomepage) {
-            console.log('A2HS: Suppressing popup on non-homepage');
-            return;
-        }
+        console.log('A2HS: Homepage check:', { path, isHomepage });
 
-        if (localStorage.getItem('installPopupDismissed')) return;
+        if (!isHomepage) return;
+
+        // Check both session and local storage for dismissal
+        const sessionDismissed = sessionStorage.getItem('sisi_install_dismissed');
+        const localDismissed = localStorage.getItem('sisi_install_dismissed');
+        console.log('A2HS: Dismissal check:', { sessionDismissed, localDismissed });
+
+        if (sessionDismissed || localDismissed) return;
 
         let popup = $('#install-popup');
         if (!popup) {
             popup = document.createElement('div');
             popup.id = 'install-popup';
+            popup.className = 'install-popup';
 
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             const actionText = isMobile ? 'your mobile screen' : 'your desktop';
@@ -804,6 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             $('#install-close').onclick = () => {
                 popup.classList.remove('visible');
+                // Store in sessionStorage so it doesn't show again this session
                 sessionStorage.setItem('sisi_install_dismissed', 'true');
             };
         }
@@ -812,6 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('A2HS: beforeinstallprompt event fired!');
         e.preventDefault();
         deferredPrompt = e;
         // Show popup after a delay
