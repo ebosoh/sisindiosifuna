@@ -823,6 +823,17 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => popup.classList.add('visible'), 1000);
     }
 
+    // ─── Debug Helper ───────────────────────────────────────────
+    // Call debugShowBanner() from the console to test visibility
+    window.debugShowBanner = () => {
+        console.log('A2HS: Manually triggering banner for UI testing...');
+        // Mock a prompt object if it doesn't exist
+        if (!deferredPrompt) {
+            deferredPrompt = { prompt: () => console.log('Mock Prompt Triggered'), userChoice: Promise.resolve({ outcome: 'accepted' }) };
+        }
+        showInstallPopup();
+    };
+
     window.addEventListener('beforeinstallprompt', (e) => {
         console.log('A2HS: beforeinstallprompt event fired!');
         e.preventDefault();

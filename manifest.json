@@ -2,7 +2,7 @@
   "name": "SISI NDIO SIFUNA",
   "short_name": "SISI",
   "description": "Kenya's grassroot volunteer mobilisation platform",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "theme_color": "#006600",
   "background_color": "#000000",
