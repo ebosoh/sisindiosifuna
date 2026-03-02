@@ -489,8 +489,8 @@ async function loadResources() {
                 const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
 
                 const thumbHtml = hasThumb
-                    ? `<img src="${thumbSrc}" alt="${r.title}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;background:#f0f0f0">`
-                    : `<div style="font-size:3.5rem;line-height:1;width:80px;height:80px;display:flex;align-items:center;justify-content:center">🇰🇪</div>`;
+                    ? `<img src="${thumbSrc}" alt="${r.title}" style="object-fit:contain;border-radius:8px;background:#f0f0f0">`
+                    : `<div style="font-size:3.5rem;line-height:1;display:flex;align-items:center;justify-content:center">🇰🇪</div>`;
 
                 return `
                 <div class="card reveal sticker-card" style="display:flex;flex-direction:column">
