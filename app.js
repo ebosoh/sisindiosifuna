@@ -515,16 +515,16 @@ async function loadResources() {
         }
     }
     if (talkingGrid) talkingGrid.innerHTML = groups['Talking Points'].map(r => `
-                    < div class="card reveal" >
-                        <div class="card__body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                            <div>
-                                <h4 style="margin-bottom:.25rem">${r.title}</h4>
-                                <p style="font-size:.82rem;color:var(--grey-400)">${r.format} · ${r.size}</p>
-                            </div>
-                            <a href="${r.url}" class="btn btn-sm btn-outline-red" download>⬇ Download ${r.format}</a>
+                <div class="card reveal">
+                    <div class="card__body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+                        <div>
+                            <h4 style="margin-bottom:.25rem">${r.title}</h4>
+                            <p style="font-size:.82rem;color:var(--grey-400)">${r.format} · ${r.size}</p>
                         </div>
-        </div >
-                    `).join('');
+                        <a href="${r.url}" class="btn btn-sm btn-outline-red" download>⬇ Download ${r.format}</a>
+                    </div>
+                </div>
+                `).join('');
     if (videosGrid) videosGrid.innerHTML = groups['Videos'].map(r => renderVideoCard(r)).join('');
 
     initScrollReveal();
@@ -558,7 +558,7 @@ function renderResourceCard(r) {
     if (hasThumb) {
         // ── Image-preview card ──────────────────────────────────
         return `
-                    < div class="resource-card reveal" style = "overflow:hidden;flex-direction:column" >
+        <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
             <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
                  <img src="${thumbSrc}" alt="${r.title}"
                       loading="lazy"
@@ -588,19 +588,19 @@ function renderResourceCard(r) {
                 <div class="resource-card__title">${r.title}</div>
                 <div class="resource-card__size">${r.format} · ${r.size}</div>
             </div>
-        </div > `;
+        </div>`;
     }
 
     // ── Fallback gradient card (no thumbnail) ───────────────────
     return `
-                    < div class="resource-card reveal" >
+    <div class="resource-card reveal">
         <div class="resource-card__thumb" style="background:${gradient}">${icon}</div>
         <div class="resource-card__body">
             <div class="resource-card__title">${r.title}</div>
             <div class="resource-card__size">${r.format} · ${r.size}</div>
         </div>
         <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
-    </div > `;
+    </div>`;
 }
 
 function renderVideoCard(v) {
