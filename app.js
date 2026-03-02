@@ -503,7 +503,7 @@ async function loadResources() {
                         </div>
                     </div>
                     <div class="sticker-card__footer">
-                        <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-primary btn-xs">
+                        <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-green btn-xs">
                             💬 Share
                         </button>
                         ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-xs" download>⬇ Download</a>` : ''}
