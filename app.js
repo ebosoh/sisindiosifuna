@@ -395,20 +395,29 @@ async function shareSticker(title, url) {
     // 1. Try Native File Share (Mobile/Supported)
     if (navigator.canShare && navigator.share) {
         try {
-            const response = await fetch(directUrl);
+            console.log('A2HS: Attempting to fetch image for sharing:', directUrl);
+            const response = await fetch(directUrl, { mode: 'cors' });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
             const blob = await response.blob();
             const file = new File([blob], `${title.replace(/\s+/g, '_')}.png`, { type: blob.type });
 
             if (navigator.canShare({ files: [file] })) {
+                console.log('A2HS: Native sharing started with file.');
                 await navigator.share({
                     files: [file],
                     title: title,
                     text: `Check out this sticker from SISI NDIO SIFUNA! ✊🇰🇪`
                 });
                 return;
+            } else {
+                console.warn('A2HS: Browser says it cannot share this specific file object.');
             }
         } catch (err) {
-            console.warn('A2HS: Native file share failed/unsupported:', err);
+            console.error('A2HS: Share-as-file failed:', err);
+            if (err.message.toLocaleLowerCase().includes('fetch') || err.name === 'TypeError') {
+                showToast('ℹ️ Sharing as link (the image source is protected by security)', 'info', 3000);
+            }
         }
     }
 
