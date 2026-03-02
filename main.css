@@ -620,37 +620,6 @@ p {
   transform: translateY(-2px);
 }
 
-/* Traveling Glow Animation */
-.btn-glow {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-glow::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(to right,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent);
-  transform: skewX(-25deg);
-  animation: sweep 3s infinite linear;
-}
-
-@keyframes sweep {
-  0% {
-    left: -100%;
-  }
-
-  100% {
-    left: 150%;
-  }
-}
-
 .btn-secondary {
   background: transparent;
   color: var(--kenya-white);
@@ -1770,5 +1739,37 @@ select.form-control {
 
   .install-popup.visible {
     transform: translate(-50%, 0);
+  }
+}
+
+/* Traveling Glow Animation */
+.btn-glow {
+  position: relative;
+  overflow: hidden !important;
+  z-index: 1;
+}
+
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent);
+  animation: glowSweep 3s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes glowSweep {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
   }
 }

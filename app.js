@@ -14,6 +14,15 @@ const POLL_INTERVAL = 30000;
 let deferredPrompt = null;
 console.log('A2HS: app.js loaded version 3.0 ( диагностика)');
 
+// ─── GA4 Analytics Helper ────────────────────────────────────────
+// Fires a Custom Event to Google Analytics 4. Safe-fails if GA not loaded.
+function trackEvent(eventName, params = {}) {
+    if (typeof gtag === 'function') {
+        gtag('event', eventName, params);
+        console.log(`GA4: Tracked event "${eventName}"`, params);
+    }
+}
+
 /**
  * Share the App URL
  */
@@ -28,11 +37,13 @@ async function shareApp() {
         if (navigator.share) {
             await navigator.share(shareData);
             console.log('A2HS: App shared successfully');
+            trackEvent('share_movement', { method: 'native_share' });
         } else {
             // Fallback for desktop: Copy to clipboard or open a simple link
             const shareUrl = shareData.url;
             await navigator.clipboard.writeText(shareUrl);
             showToast('✅ Link copied to clipboard! Share it with your friends.', 'success');
+            trackEvent('share_movement', { method: 'clipboard' });
         }
     } catch (err) {
         console.error('A2HS: Share failed:', err);
@@ -179,6 +190,8 @@ function applyPersonalization() {
     }
 }
 
+// 4. Success Screen Personalization
+
 // ─── Toast Notification ──────────────────────────────────────────
 function showToast(msg, type = 'success', duration = 3500) {
     let toast = $('#toast');
@@ -312,6 +325,13 @@ async function registerVolunteer(formData) {
         if (data.status === 'success' || data.result === 'success') {
             const fullName = formData.get('fullName');
             if (fullName) localStorage.setItem('sisi_volunteer_name', fullName);
+            // ─── GA4: Track Volunteer Registration ─────────────────
+            trackEvent('volunteer_registered', {
+                county: formData.get('county') || 'unknown',
+                constituency: formData.get('constituency') || 'unknown',
+                ward: formData.get('ward') || 'unknown',
+                role: formData.get('role') || 'general'
+            });
             showSuccessScreen();
         } else if (data.status === 'duplicate') {
             // Already registered — warn the user and let them fix their details
@@ -371,6 +391,8 @@ async function loadEvents(containerId = 'events-list') {
     } catch (_) { /* use demo events */ }
 
     container.innerHTML = events.map(ev => renderEventCard(ev)).join('');
+    // ─── GA4: Track Rally Page Views ──────────────────────────────
+    trackEvent('rallies_viewed', { event_count: events.length });
     // Re-trigger reveal for new cards
     initScrollReveal();
     window.dispatchEvent(new CustomEvent('eventsLoaded'));
@@ -405,8 +427,8 @@ function renderEventCard(ev) {
 
 // ─── Resource Toolkit Loader ─────────────────────────────────────
 const DEMO_RESOURCES = [
-    { id: 101, category: 'Posters', title: 'Main Campaign Poster A4', format: 'WebP', size: '~120 KB', url: 'poster_main_a4.png', thumbnailUrl: 'poster_main_a4.png', description: 'Main visibility poster — print A4' },
-    { id: 102, category: 'Posters', title: 'WhatsApp Story Poster', format: 'WebP', size: '~80 KB', url: 'https://drive.google.com/file/d/1BfS_i3L2X8_SAMPLE_ID/view?usp=sharing', thumbnailUrl: 'https://drive.google.com/file/d/1BfS_i3L2X8_SAMPLE_ID/view?usp=sharing', description: 'Optimised for mobile sharing — Powered by Google Drive' },
+    { id: 101, category: 'Posters', title: 'Main Campaign Poster A4', format: 'WebP', size: '~120 KB', url: 'Poster 1.png', thumbnailUrl: 'Poster 1.png', description: 'Main visibility poster — print A4' },
+    { id: 102, category: 'Posters', title: 'Campaign Story Poster', format: 'WebP', size: '~80 KB', url: 'Poster 2.png', thumbnailUrl: 'Poster 2.png', description: 'Optimised for mobile sharing' },
     { id: 103, category: 'Stickers', title: 'SISI NDIO SIFUNA Sticker Pack', format: 'WhatsApp', size: '18 Stickers', url: 'https://wa.me/message/XXXXXXXXXXXXXXX', thumbnailUrl: '', description: 'Official WhatsApp stickers — tap to add' },
     { id: 104, category: 'Talking Points', title: 'Door-to-Door Canvassing Guide', format: 'PDF', size: '~350 KB', url: '#', thumbnailUrl: '', description: 'Step-by-step guide for volunteers' },
     { id: 105, category: 'Videos', title: 'Main Campaign Ad (30s)', format: 'Video', size: '~4 MB', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', thumbnailUrl: '', description: 'High energy campaign video' },
@@ -438,8 +460,10 @@ async function shareSticker(title, url) {
                 await navigator.share({
                     files: [file],
                     title: title,
-                    text: `Check out this sticker from SISI NDIO SIFUNA! ✊🇰🇪`
+                    text: `Check out this sticker from SISI NDIO SIFUNA! \u270a\ud83c\uddf0\ud83c\uddea`
                 });
+                // ─── GA4: Track sticker share ───────────────────────────────
+                trackEvent('sticker_shared', { method: 'native_file', sticker_title: title });
                 return;
             } else {
                 console.warn('A2HS: Browser says it cannot share this specific file object.');
@@ -456,6 +480,8 @@ async function shareSticker(title, url) {
     const shareText = `Check out this ${title} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}`;
     const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(waUrl, '_blank');
+    // ─── GA4: Track fallback WhatsApp share ───────────────────────
+    trackEvent('sticker_shared', { method: 'whatsapp_link', sticker_title: title });
 }
 
 async function loadResources() {
@@ -499,8 +525,41 @@ async function loadResources() {
     });
 
     if (posterGrid) {
-        if (groups['Posters'].length) {
-            posterGrid.innerHTML = groups['Posters'].map(r => renderResourceCard(r)).join('');
+        const posters = groups['Posters'];
+        if (posters.length) {
+            posterGrid.innerHTML = posters.map(r => {
+                const isDriveUrl = r.url && (r.url.includes('drive.google.com') || r.url.includes('docs.google.com') || r.url.includes('googleusercontent.com'));
+                const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl);
+                const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
+                const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
+                const thumbSrc = getDirectDriveUrl(rawThumb, true);
+                const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
+                const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
+
+                if (hasThumb) {
+                    return `
+                    <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
+                        <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
+                             <img src="${thumbSrc}" alt="${r.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+                             <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%)"></div>
+                             <a ${dlAttr} class="resource-card__dl" style="position:absolute;bottom:10px;right:10px;border-radius:8px;padding:.4rem .9rem;font-size:.8rem">⬇ Download</a>
+                        </div>
+                        <div class="resource-card__body" style="border-radius:0 0 12px 12px">
+                            <div class="resource-card__title">${r.title}</div>
+                            <div class="resource-card__size">${r.format} · ${r.size}</div>
+                        </div>
+                    </div>`;
+                }
+                return `
+                <div class="resource-card reveal">
+                    <div class="resource-card__thumb" style="background:var(--kenya-red)">📌</div>
+                    <div class="resource-card__body">
+                        <div class="resource-card__title">${r.title}</div>
+                        <div class="resource-card__size">${r.format} · ${r.size}</div>
+                    </div>
+                    <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
+                </div>`;
+            }).join('');
         } else {
             posterGrid.innerHTML = '<p class="text-center" style="grid-column:1/-1;color:var(--grey-500);padding:2rem">No posters available.</p>';
         }
@@ -514,10 +573,6 @@ async function loadResources() {
                 const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
                 const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
                 const thumbSrc = getDirectDriveUrl(rawThumb, true);
-
-                // WhatsApp Share Logic
-                const shareText = `Check out this ${r.title} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${window.location.host}${window.location.pathname.replace('resources.html', '')}${r.url}`;
-                const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
 
                 const thumbHtml = hasThumb
                     ? `<img src="${thumbSrc}" alt="${r.title}" style="object-fit:contain;border-radius:8px;background:#f0f0f0">`
@@ -560,79 +615,10 @@ async function loadResources() {
 
     initScrollReveal();
     fetchTikTokThumbnails();
+    // ─── GA4: Track Resources Page Views ──────────────────────────
+    trackEvent('resources_page_viewed', { resource_count: resources.length });
 }
 
-function renderResourceCard(r) {
-    let icon = '📌';
-    let gradient = 'linear-gradient(135deg,#000,#CE1126)';
-    if (r.title.toLowerCase().includes('whatsapp')) { icon = '📱'; gradient = 'linear-gradient(135deg,#006600,#CE1126)'; }
-    if (r.title.toLowerCase().includes('youth')) { icon = '🛡️'; gradient = 'linear-gradient(135deg,#CE1126,#000)'; }
-    if (r.title.toLowerCase().includes('women')) { icon = '👩'; gradient = 'linear-gradient(135deg,#000,#006600)'; }
-
-    const isDriveUrl = r.url && (r.url.includes('drive.google.com') || r.url.includes('docs.google.com') || r.url.includes('googleusercontent.com'));
-    const isGenericUrl = r.url && (r.url.startsWith('http') || r.url.startsWith('https'));
-    const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl || (r.category.toLowerCase().includes('poster') && isGenericUrl));
-
-    // Diagnostic logs for Posters
-    if (r.category.toLowerCase().includes('poster')) {
-        console.log(`A2HS: Poster "${r.title}" - isDrive: ${isDriveUrl}, isImage: ${isImageUrl} `);
-    }
-
-    const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
-    const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
-    const thumbSrc = getDirectDriveUrl(rawThumb, true);
-
-    if (isDriveUrl) console.log('A2HS: Drive Thumbnail Generated:', { title: r.title, thumbSrc });
-    const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
-    const dlAttr = dlUrl ? `href = "${dlUrl}" download` : `href = "#" onclick = "event.preventDefault();"`;
-
-    if (hasThumb) {
-        // ── Image-preview card ──────────────────────────────────
-        return `
-        <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
-            <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
-                 <img src="${thumbSrc}" alt="${r.title}"
-                      loading="lazy"
-                      style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease"
-                      onmouseover="this.style.transform='scale(1.05)'"
-                      onmouseout="this.style.transform='scale(1)'"
-                      onerror="
-                        console.error('A2HS: Image load failed:', this.src);
-                        if (this.src.includes('googleusercontent')) {
-                            const idMatch = this.src.match(/\/d\/([-\w]+)/);
-                            if (idMatch) {
-                                this.src = 'https://drive.google.com/thumbnail?id=' + idMatch[1] + '&sz=w1000';
-                                return;
-                            }
-                        }
-                        this.style.display='none';
-                        this.parentElement.querySelector('.img-fallback').style.display='flex';
-                      ">
-                <div class="img-fallback" style="display:none;position:absolute;inset:0;background:${gradient};align-items:center;justify-content:center;font-size:3rem">${icon}</div>
-                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%)"></div>
-                <a ${dlAttr} class="resource-card__dl"
-                   style="position:absolute;bottom:10px;right:10px;border-radius:8px;padding:.4rem .9rem;font-size:.8rem">
-                    ⬇ Download
-                </a>
-            </div>
-            <div class="resource-card__body" style="border-radius:0 0 12px 12px">
-                <div class="resource-card__title">${r.title}</div>
-                <div class="resource-card__size">${r.format} · ${r.size}</div>
-            </div>
-        </div>`;
-    }
-
-    // ── Fallback gradient card (no thumbnail) ───────────────────
-    return `
-    <div class="resource-card reveal">
-        <div class="resource-card__thumb" style="background:${gradient}">${icon}</div>
-        <div class="resource-card__body">
-            <div class="resource-card__title">${r.title}</div>
-            <div class="resource-card__size">${r.format} · ${r.size}</div>
-        </div>
-        <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
-    </div>`;
-}
 
 function renderVideoCard(v) {
     let thumb = getDirectDriveUrl(v.thumbnailUrl, true);
@@ -1009,7 +995,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (popup) popup.classList.remove('visible');
         const installBadge = $('#install-badge');
         if (installBadge) installBadge.remove();
-        showToast('✅ App installed successfully!');
+        showToast('\u2705 App installed successfully!');
+        // ─── GA4: Track PWA Installation ─────────────────────────────
+        trackEvent('pwa_installed');
     });
 
     // Page-specific init
