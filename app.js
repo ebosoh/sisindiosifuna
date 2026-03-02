@@ -493,18 +493,17 @@ async function loadResources() {
                     : `<div style="font-size:3.5rem;line-height:1;width:80px;height:80px;display:flex;align-items:center;justify-content:center">🇰🇪</div>`;
 
                 return `
-                <div class="card reveal">
-                    <div class="card__body">
-                        <div style="display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap">
-                            <div class="sticker-preview">${thumbHtml}</div>
-                            <div style="flex:1;min-width:200px">
-                                <h4 style="margin-bottom:.25rem">${r.title}</h4>
-                                <p style="font-size:.82rem;color:var(--grey-600);margin-bottom:.75rem">${r.description || ''}</p>
-                                <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-                                    <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-primary btn-sm">
-                                        💬 Share Sticker
+                <div class="card reveal sticker-card">
+                    <div class="card__body" style="padding:var(--sp-3)">
+                        <div class="sticker-card__content">
+                            <div class="sticker-card__preview">${thumbHtml}</div>
+                            <div class="sticker-card__info">
+                                <h4 class="sticker-card__title">${r.title}</h4>
+                                <div class="sticker-card__actions">
+                                    <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-primary btn-xs">
+                                        💬 Share
                                     </button>
-                                    ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-sm" download>⬇ Download</a>` : ''}
+                                    ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-xs" download>⬇</a>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -516,16 +515,16 @@ async function loadResources() {
         }
     }
     if (talkingGrid) talkingGrid.innerHTML = groups['Talking Points'].map(r => `
-        <div class="card reveal">
-            <div class="card__body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                <div>
-                    <h4 style="margin-bottom:.25rem">${r.title}</h4>
-                    <p style="font-size:.82rem;color:var(--grey-400)">${r.format} · ${r.size}</p>
-                </div>
-                <a href="${r.url}" class="btn btn-sm btn-outline-red" download>⬇ Download ${r.format}</a>
-            </div>
-        </div>
-    `).join('');
+                    < div class="card reveal" >
+                        <div class="card__body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+                            <div>
+                                <h4 style="margin-bottom:.25rem">${r.title}</h4>
+                                <p style="font-size:.82rem;color:var(--grey-400)">${r.format} · ${r.size}</p>
+                            </div>
+                            <a href="${r.url}" class="btn btn-sm btn-outline-red" download>⬇ Download ${r.format}</a>
+                        </div>
+        </div >
+                    `).join('');
     if (videosGrid) videosGrid.innerHTML = groups['Videos'].map(r => renderVideoCard(r)).join('');
 
     initScrollReveal();
@@ -545,7 +544,7 @@ function renderResourceCard(r) {
 
     // Diagnostic logs for Posters
     if (r.category.toLowerCase().includes('poster')) {
-        console.log(`A2HS: Poster "${r.title}" - isDrive: ${isDriveUrl}, isImage: ${isImageUrl}`);
+        console.log(`A2HS: Poster "${r.title}" - isDrive: ${isDriveUrl}, isImage: ${isImageUrl} `);
     }
 
     const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
@@ -554,12 +553,12 @@ function renderResourceCard(r) {
 
     if (isDriveUrl) console.log('A2HS: Drive Thumbnail Generated:', { title: r.title, thumbSrc });
     const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
-    const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
+    const dlAttr = dlUrl ? `href = "${dlUrl}" download` : `href = "#" onclick = "event.preventDefault();"`;
 
     if (hasThumb) {
         // ── Image-preview card ──────────────────────────────────
         return `
-        <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
+                    < div class="resource-card reveal" style = "overflow:hidden;flex-direction:column" >
             <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
                  <img src="${thumbSrc}" alt="${r.title}"
                       loading="lazy"
@@ -589,19 +588,19 @@ function renderResourceCard(r) {
                 <div class="resource-card__title">${r.title}</div>
                 <div class="resource-card__size">${r.format} · ${r.size}</div>
             </div>
-        </div>`;
+        </div > `;
     }
 
     // ── Fallback gradient card (no thumbnail) ───────────────────
     return `
-    <div class="resource-card reveal">
+                    < div class="resource-card reveal" >
         <div class="resource-card__thumb" style="background:${gradient}">${icon}</div>
         <div class="resource-card__body">
             <div class="resource-card__title">${r.title}</div>
             <div class="resource-card__size">${r.format} · ${r.size}</div>
         </div>
         <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
-    </div>`;
+    </div > `;
 }
 
 function renderVideoCard(v) {
