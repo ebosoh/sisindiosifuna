@@ -493,20 +493,20 @@ async function loadResources() {
                     : `<div style="font-size:3.5rem;line-height:1;width:80px;height:80px;display:flex;align-items:center;justify-content:center">🇰🇪</div>`;
 
                 return `
-                <div class="card reveal sticker-card">
-                    <div class="card__body" style="padding:var(--sp-3)">
+                <div class="card reveal sticker-card" style="display:flex;flex-direction:column">
+                    <div class="card__body" style="padding:var(--sp-3);flex:1">
                         <div class="sticker-card__content">
                             <div class="sticker-card__preview">${thumbHtml}</div>
                             <div class="sticker-card__info">
                                 <h4 class="sticker-card__title">${r.title}</h4>
-                                <div class="sticker-card__actions">
-                                    <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-primary btn-xs">
-                                        💬 Share
-                                    </button>
-                                    ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-xs" download>⬇</a>` : ''}
-                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="sticker-card__footer">
+                        <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-primary btn-xs">
+                            💬 Share
+                        </button>
+                        ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-xs" download>⬇ Download</a>` : ''}
                     </div>
                 </div>`;
             }).join('');

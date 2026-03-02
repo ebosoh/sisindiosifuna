@@ -1184,10 +1184,19 @@ select.form-control {
   height: 2.2em;
 }
 
-.sticker-card__actions {
+.sticker-card__footer {
   display: flex;
-  gap: var(--sp-1);
+  gap: var(--sp-2);
   justify-content: center;
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--grey-100);
+  border-top: 1px solid var(--grey-200);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.sticker-card__footer .btn {
+  flex: 1;
+  white-space: nowrap;
 }
 
 .btn-xs {
