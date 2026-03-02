@@ -433,33 +433,40 @@ async function loadResources() {
     if (stickersGrid) {
         const stickers = groups['Stickers'];
         if (stickers.length) {
-            stickersGrid.innerHTML = stickers.map(r => `
+            stickersGrid.innerHTML = stickers.map(r => {
+                const isDriveUrl = r.url && (r.url.includes('drive.google.com') || r.url.includes('docs.google.com') || r.url.includes('googleusercontent.com'));
+                const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl);
+                const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
+                const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
+                const thumbSrc = getDirectDriveUrl(rawThumb, true);
+
+                // WhatsApp Share Logic
+                const shareText = `Check out this ${r.title} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${window.location.host}${window.location.pathname.replace('resources.html', '')}${r.url}`;
+                const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+
+                const thumbHtml = hasThumb
+                    ? `<img src="${thumbSrc}" alt="${r.title}" style="width:80px;height:80px;object-fit:contain;border-radius:8px;background:#f0f0f0">`
+                    : `<div style="font-size:3.5rem;line-height:1;width:80px;height:80px;display:flex;align-items:center;justify-content:center">🇰🇪</div>`;
+
+                return `
                 <div class="card reveal">
                     <div class="card__body">
-                        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
-                            <div style="font-size:3rem;line-height:1">🎉🇰🇪✊🌟💪🗳️</div>
-                            <div>
-                                <h4 style="margin-bottom:.5rem">${r.title}</h4>
-                                <p style="font-size:.85rem;color:var(--grey-600);margin-bottom:1rem">${r.description || ''}</p>
-                                <a href="${r.url}" class="btn btn-primary wa-sticker-btn"
-                                   target="_blank" rel="noopener noreferrer"
-                                   data-url="${r.url}">💬 Add to WhatsApp</a>
+                        <div style="display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap">
+                            <div class="sticker-preview">${thumbHtml}</div>
+                            <div style="flex:1;min-width:200px">
+                                <h4 style="margin-bottom:.25rem">${r.title}</h4>
+                                <p style="font-size:.82rem;color:var(--grey-600);margin-bottom:.75rem">${r.description || ''}</p>
+                                <div style="display:flex;gap:.5rem">
+                                    <a href="${waUrl}" class="btn btn-primary btn-sm" target="_blank" rel="noopener">
+                                        💬 Share on WhatsApp
+                                    </a>
+                                    ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-sm" download>⬇ Got it</a>` : ''}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
-
-            // Handle placeholder URLs gracefully
-            stickersGrid.querySelectorAll('.wa-sticker-btn').forEach(btn => {
-                const url = btn.dataset.url || '';
-                if (!url || url === '#' || url.includes('XXXXXXX')) {
-                    btn.addEventListener('click', e => {
-                        e.preventDefault();
-                        showToast('⏳ Sticker pack coming soon — check back shortly!', 'success', 4000);
-                    });
-                }
-            });
+                </div>`;
+            }).join('');
         } else {
             stickersGrid.innerHTML = '<p class="text-center" style="grid-column:1/-1;color:var(--grey-500);padding:2rem">No WhatsApp stickers available yet.</p>';
         }
