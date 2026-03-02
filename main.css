@@ -620,6 +620,37 @@ p {
   transform: translateY(-2px);
 }
 
+/* Traveling Glow Animation */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
+  transform: skewX(-25deg);
+  animation: sweep 3s infinite linear;
+}
+
+@keyframes sweep {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 150%;
+  }
+}
+
 .btn-secondary {
   background: transparent;
   color: var(--kenya-white);

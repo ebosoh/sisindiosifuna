@@ -14,6 +14,31 @@ const POLL_INTERVAL = 30000;
 let deferredPrompt = null;
 console.log('A2HS: app.js loaded version 3.0 ( диагностика)');
 
+/**
+ * Share the App URL
+ */
+async function shareApp() {
+    const shareData = {
+        title: 'SISI NDIO SIFUNA 🇰🇪',
+        text: 'Join Kenya\'s fastest-growing volunteer movement! ✊',
+        url: window.location.origin + window.location.pathname.replace(/index\.html$/, '')
+    };
+
+    try {
+        if (navigator.share) {
+            await navigator.share(shareData);
+            console.log('A2HS: App shared successfully');
+        } else {
+            // Fallback for desktop: Copy to clipboard or open a simple link
+            const shareUrl = shareData.url;
+            await navigator.clipboard.writeText(shareUrl);
+            showToast('✅ Link copied to clipboard! Share it with your friends.', 'success');
+        }
+    } catch (err) {
+        console.error('A2HS: Share failed:', err);
+    }
+}
+
 // ─── DOM Helpers ─────────────────────────────────────────────────
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
@@ -145,6 +170,12 @@ function applyPersonalization() {
     }
     if (successMsg) {
         successMsg.innerHTML = `You are now a registered volunteer in the <strong>SISI NDIO SIFUNA</strong> movement. Your commitment to this noble cause is what will move Kenya forward. <br><br> <span class="noble-cause-msg">"Pamoja Tunajenga Taifa Letu!"</span>`;
+    }
+
+    // Initialize Global Share Button
+    const shareBtn = $('#share-movement-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', shareApp);
     }
 }
 
