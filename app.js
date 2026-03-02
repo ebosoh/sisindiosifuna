@@ -383,6 +383,41 @@ const DEMO_RESOURCES = [
     { id: 107, category: 'Videos', title: 'Principal Message FB', format: 'Video', size: 'FB Live', url: 'https://www.facebook.com/watch/?v=456', thumbnailUrl: '', description: 'Principal address to the nation' }
 ];
 
+/**
+ * Universal Sharing System
+ * Attempts native file sharing on mobile, falls back to text/link sharing.
+ */
+async function shareSticker(title, url) {
+    const directUrl = getDirectDriveUrl(url);
+    const domain = window.location.origin;
+    const fullUrl = url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${directUrl}`;
+
+    // 1. Try Native File Share (Mobile/Supported)
+    if (navigator.canShare && navigator.share) {
+        try {
+            const response = await fetch(directUrl);
+            const blob = await response.blob();
+            const file = new File([blob], `${title.replace(/\s+/g, '_')}.png`, { type: blob.type });
+
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: title,
+                    text: `Check out this sticker from SISI NDIO SIFUNA! ✊🇰🇪`
+                });
+                return;
+            }
+        } catch (err) {
+            console.warn('A2HS: Native file share failed/unsupported:', err);
+        }
+    }
+
+    // 2. Fallback: Text Share (WhatsApp Web / Other)
+    const shareText = `Check out this ${title} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}`;
+    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+    window.open(waUrl, '_blank');
+}
+
 async function loadResources() {
     const posterGrid = $('#posters-grid');
     const stickersGrid = $('#stickers-grid');
@@ -456,11 +491,11 @@ async function loadResources() {
                             <div style="flex:1;min-width:200px">
                                 <h4 style="margin-bottom:.25rem">${r.title}</h4>
                                 <p style="font-size:.82rem;color:var(--grey-600);margin-bottom:.75rem">${r.description || ''}</p>
-                                <div style="display:flex;gap:.5rem">
-                                    <a href="${waUrl}" class="btn btn-primary btn-sm" target="_blank" rel="noopener">
-                                        💬 Share on WhatsApp
-                                    </a>
-                                    ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-sm" download>⬇ Got it</a>` : ''}
+                                <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                                    <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-primary btn-sm">
+                                        💬 Share Sticker
+                                    </button>
+                                    ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-sm" download>⬇ Download</a>` : ''}
                                 </div>
                             </div>
                         </div>
