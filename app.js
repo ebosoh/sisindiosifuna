@@ -400,15 +400,36 @@ async function loadResources() {
         }
     } catch (_) { /* use demo resources */ }
 
-    // Grouping
+    // Case-insensitive, trimmed grouping
+    const getGroup = (cat) => resources.filter(r => {
+        const rCat = (r.category || '').toLowerCase().trim();
+        const target = cat.toLowerCase();
+        if (target === 'talking points') return rCat === 'talking points' || rCat === 'talking point' || rCat === 'script';
+        return rCat === target || rCat === target.slice(0, -1); // matches 'Posters' and 'Poster'
+    });
+
     const groups = {
-        'Posters': resources.filter(r => r.category === 'Posters' || r.category === 'Poster'),
-        'Stickers': resources.filter(r => r.category === 'Stickers' || r.category === 'Sticker'),
-        'Talking Points': resources.filter(r => r.category === 'Talking Points' || r.category === 'Talking Point' || r.category === 'Script'),
-        'Videos': resources.filter(r => r.category === 'Videos' || r.category === 'Video')
+        'Posters': getGroup('Posters'),
+        'Stickers': getGroup('Stickers'),
+        'Talking Points': getGroup('Talking Points'),
+        'Videos': getGroup('Videos')
     };
 
-    if (posterGrid) posterGrid.innerHTML = groups['Posters'].map(r => renderResourceCard(r)).join('');
+    // Diagnostic Logs for Resource Counts
+    console.log('A2HS: Resource Groups Loaded:', {
+        Posters: groups['Posters'].length,
+        Stickers: groups['Stickers'].length,
+        TalkingPoints: groups['Talking Points'].length,
+        Videos: groups['Videos'].length
+    });
+
+    if (posterGrid) {
+        if (groups['Posters'].length) {
+            posterGrid.innerHTML = groups['Posters'].map(r => renderResourceCard(r)).join('');
+        } else {
+            posterGrid.innerHTML = '<p class="text-center" style="grid-column:1/-1;color:var(--grey-500);padding:2rem">No posters available.</p>';
+        }
+    }
     if (stickersGrid) {
         const stickers = groups['Stickers'];
         if (stickers.length) {
@@ -439,6 +460,8 @@ async function loadResources() {
                     });
                 }
             });
+        } else {
+            stickersGrid.innerHTML = '<p class="text-center" style="grid-column:1/-1;color:var(--grey-500);padding:2rem">No WhatsApp stickers available yet.</p>';
         }
     }
     if (talkingGrid) talkingGrid.innerHTML = groups['Talking Points'].map(r => `
