@@ -1996,3 +1996,77 @@ select.form-control {
   font-size: 0.8rem;
   opacity: 0.8;
 }
+
+/* --- Volunteer Map Enhancements ----------------------------- */
+.map-county {
+  transition: all var(--ease-std);
+  cursor: pointer;
+}
+
+.map-county:hover {
+  stroke-width: 1.5px;
+  stroke: var(--kenya-white);
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
+  z-index: 10;
+}
+
+.map-tooltip {
+  position: fixed;
+  padding: var(--sp-2) var(--sp-4);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ease-fast), transform var(--ease-fast);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transform: translateY(10px);
+}
+
+.map-tooltip.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.map-tooltip b {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--kenya-black);
+  text-transform: uppercase;
+}
+
+.map-tooltip span {
+  font-size: 0.85rem;
+  color: var(--kenya-green);
+  font-weight: 600;
+}
+
+.map-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--grey-600);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}

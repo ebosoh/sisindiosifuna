@@ -928,33 +928,55 @@ async function initVolunteerMap() {
     }
 
     const updateMapUI = (stats = {}) => {
-        const maxVolunteers = Math.max(...Object.values(stats), 1);
+        const counts = Object.values(stats);
+        const maxVolunteers = Math.max(...counts, 1);
+
+        // Multi-hue sequential scale for better clarity
+        // Grey (0) -> Pale Green -> Signal Green -> Deep Forest -> Gold (Viral)
+        const getColorScale = (count) => {
+            if (count === 0) return 'var(--grey-200)';
+            const ratio = count / maxVolunteers;
+            if (ratio < 0.25) return '#dcfce7'; // Pale Green
+            if (ratio < 0.5) return '#4ade80';  // Mid Green
+            if (ratio < 0.75) return '#166534'; // Deep Green
+            return '#fbbf24'; // Gold (High growth)
+        };
+
         const pathsHTML = KENYA_MAP_DATA.paths.map(p => {
-            const count = stats[p.id] || 0;
-            const alpha = count === 0 ? 0.05 : 0.2 + (count / maxVolunteers) * 0.8;
-            const color = count === 0 ? 'var(--grey-100)' : `rgba(0, 102, 0, ${alpha})`;
-            return `<path id="county-${p.id.replace(/\s+/g, '-')}" d="${p.d}" fill="${color}" stroke="white" stroke-width="0.5" data-name="${p.id}" data-count="${count}" />`;
+            const count = stats[p.id.toUpperCase()] || stats[p.id] || 0;
+            const color = getColorScale(count);
+            return `<path id="county-${p.id.replace(/\s+/g, '-')}" class="map-county" d="${p.d}" fill="${color}" stroke="white" stroke-width="0.3" data-name="${p.id}" data-count="${count}" />`;
         }).join('');
 
         container.innerHTML = `
-            <svg viewBox="${KENYA_MAP_DATA.viewBox}" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
+            <svg viewBox="${KENYA_MAP_DATA.viewBox}" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.05));">
                 ${pathsHTML}
             </svg>
+            <div class="map-legend">
+                <div class="legend-item"><div class="legend-color" style="background: var(--grey-200)"></div> 0</div>
+                <div class="legend-item"><div class="legend-color" style="background: #dcfce7"></div> Growing</div>
+                <div class="legend-item"><div class="legend-color" style="background: #4ade80"></div> Active</div>
+                <div class="legend-item"><div class="legend-color" style="background: #166534"></div> Strong</div>
+                <div class="legend-item"><div class="legend-color" style="background: #fbbf24"></div> Peak</div>
+            </div>
         `;
 
         $$('path', container).forEach(path => {
             path.addEventListener('mouseenter', (e) => {
                 const name = path.getAttribute('data-name');
-                const count = path.getAttribute('data-count');
-                tooltip.innerHTML = `<b>${name}</b><span>${count} Volunteers</span>`;
+                const count = parseInt(path.getAttribute('data-count')).toLocaleString();
+                tooltip.innerHTML = `<b>${name}</b><span>${count} Active Volunteers</span>`;
                 tooltip.classList.add('show');
             });
             path.addEventListener('mousemove', (e) => {
-                tooltip.style.left = (e.clientX + 10) + 'px';
-                tooltip.style.top = (e.clientY + 10) + 'px';
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
             });
             path.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
-            path.addEventListener('click', () => showToast(`🇰🇪 ${path.getAttribute('data-name')} is standing with SIFUNA!`));
+            path.addEventListener('click', () => {
+                const name = path.getAttribute('data-name');
+                showToast(`🇰🇪 ${name} is standing strong with Sifuna!`);
+            });
         });
     };
 
