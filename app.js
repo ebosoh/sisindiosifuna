@@ -932,7 +932,6 @@ async function initVolunteerMap() {
         const maxVolunteers = Math.max(...counts, 1);
 
         // Multi-hue sequential scale for better clarity
-        // Grey (0) -> Pale Green -> Signal Green -> Deep Forest -> Gold (Viral)
         const getColorScale = (count) => {
             if (count === 0) return 'var(--grey-200)';
             const ratio = count / maxVolunteers;
@@ -945,11 +944,13 @@ async function initVolunteerMap() {
         const pathsHTML = KENYA_MAP_DATA.paths.map(p => {
             const count = stats[p.id.toUpperCase()] || stats[p.id] || 0;
             const color = getColorScale(count);
-            return `<path id="county-${p.id.replace(/\s+/g, '-')}" class="map-county" d="${p.d}" fill="${color}" stroke="white" stroke-width="0.3" data-name="${p.id}" data-count="${count}" />`;
+            // Increased baseline stroke-width for better boundary definition
+            return `<path id="county-${p.id.replace(/\s+/g, '-')}" class="map-county" d="${p.d}" fill="${color}" stroke="white" stroke-width="0.8" data-name="${p.id}" data-count="${count}" />`;
         }).join('');
 
+        // Deeper drop-shadow to emphasize the "National Outline"
         container.innerHTML = `
-            <svg viewBox="${KENYA_MAP_DATA.viewBox}" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.05));">
+            <svg viewBox="${KENYA_MAP_DATA.viewBox}" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block; filter: drop-shadow(0 12px 35px rgba(0,0,0,0.18));">
                 ${pathsHTML}
             </svg>
             <div class="map-legend">
