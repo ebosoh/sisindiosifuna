@@ -710,6 +710,7 @@ async function fetchTikTokThumbnails() {
 
 // ─── Patriot Score (Task Board) ──────────────────────────────────
 const TASKS = [
+    { id: 't0', title: 'Register/Registered to vote (IEBC)', points: 50, icon: '🗳️' },
     { id: 't1', title: 'Share SISI NDIO SIFUNA on WhatsApp', points: 10, icon: '📱' },
     { id: 't2', title: 'Talk to 5 friends about the campaign', points: 20, icon: '🗣️' },
     { id: 't3', title: 'Post a campaign poster in your area', points: 15, icon: '📌' },
@@ -723,9 +724,9 @@ const TASKS = [
 const LEVELS = [
     { min: 0, label: 'Patriot Recruit 🇰🇪' },
     { min: 30, label: 'Patriot Soldier  ⚔️' },
-    { min: 70, label: 'Patriot Captain  🛡️' },
-    { min: 120, label: 'Patriot General  🌟' },
-    { min: 160, label: 'SISI Legend      👑' },
+    { min: 80, label: 'Patriot Captain  🛡️' },
+    { min: 140, label: 'Patriot General  🌟' },
+    { min: 210, label: 'SISI Legend      👑' },
 ];
 
 class PatriotScore {
@@ -750,6 +751,19 @@ class PatriotScore {
     }
 
     toggle(taskId) {
+        const isVoterTask = taskId === 't0';
+        const isDone = !!this.completed[taskId];
+
+        // Intercept Voter Registration and other high-point tasks if not already done
+        if (isVoterTask && !isDone) {
+            this.showVerificationFlow(taskId);
+            return;
+        }
+
+        this._toggleProcess(taskId);
+    }
+
+    _toggleProcess(taskId) {
         this.completed[taskId] = !this.completed[taskId];
         localStorage.setItem('sisi_tasks', JSON.stringify(this.completed));
         this.render();
@@ -757,6 +771,63 @@ class PatriotScore {
         showToast(this.completed[taskId]
             ? `✅ Task done! +${TASKS.find(t => t.id === taskId)?.points}pts`
             : '↩️ Task unmarked', 'success');
+
+        // Optional: Send to backend for verification logging
+        if (this.completed[taskId]) {
+            const name = localStorage.getItem('sisi_volunteer_name') || 'Patriot';
+            fetch(`${GAS_API_URL}?action=submitTask&task=${taskId}&volunteer=${encodeURIComponent(name)}`, { method: 'POST' }).catch(() => { });
+        }
+    }
+
+    showVerificationFlow(taskId) {
+        const task = TASKS.find(t => t.id === taskId);
+        const overlay = $('#verify-modal-overlay');
+        const title = $('#modal-title');
+        const desc = $('#modal-desc');
+        const honorCheck = $('#honor-check');
+        const confirmBtn = $('#confirm-task-btn');
+        const regDetails = $('#reg-details');
+
+        if (!overlay) return;
+
+        title.textContent = task.icon + ' ' + task.title;
+        desc.textContent = `To earn ${task.points} Patriot Points, please confirm your registration status.`;
+        honorCheck.checked = false;
+        confirmBtn.disabled = true;
+
+        // Show extra details for Voter Registration
+        if (taskId === 't0') regDetails.style.display = 'block';
+        else regDetails.style.display = 'none';
+
+        overlay.classList.add('show');
+
+        // Logic for enabling confirm button
+        const validate = () => {
+            const isHonored = honorCheck.checked;
+            confirmBtn.disabled = !isHonored;
+        };
+
+        honorCheck.onchange = validate;
+
+        confirmBtn.onclick = () => {
+            if (taskId === 't0') {
+                const county = $('#reg-county')?.value;
+                if (!county) {
+                    showToast('⚠️ Please mention your registration county.', 'error');
+                    return;
+                }
+                // Log additional context for admin verification (while keeping it private)
+                trackEvent('voter_registered_verified', { county });
+            }
+
+            this._toggleProcess(taskId);
+            this.closeModal();
+        };
+    }
+
+    closeModal() {
+        const overlay = $('#verify-modal-overlay');
+        if (overlay) overlay.classList.remove('show');
     }
 
     render() {
@@ -785,6 +856,120 @@ class PatriotScore {
             el.addEventListener('click', () => this.toggle(el.dataset.task));
             el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggle(el.dataset.task); } });
         });
+    }
+}
+
+// ─── Volunteer Map (SVG Data & Logic) ───────────────────────────
+const KENYA_SVG_DATA = {
+    viewBox: "0 0 457 580",
+    paths: [
+        { id: "Mombasa", d: "m 324.5,546.7 -0.4,0 0.2,-0.2 0.2,0.1 z m 3.2,-3.2 0,0 0.4,0.7 -0.1,0.3 0.3,-0.4 1.2,0.6 -0.2,0.8 -1.7,3.2 -0.9,-0.5 0.7,-1.3 -0.3,0 -1.3,-1.7 -0.7,0.7 0,0.7 -0.5,0.1 0.4,-0.6 -0.5,-0.9 0.3,-0.3 -0.1,-0.4 0.4,-0.4 0.2,0.1 -0.2,-0.4 0.4,0 0.1,0.2 0.2,-0.2 0,0.2 0.5,-0.1 0.2,0.4 -0.3,-0.6 0.6,0.1 0.4,-0.2 0,-0.5 0.3,0.7 z m 0.3,-1.4 0,0 -0.1,-0.1 0.1,0 0,0 z m 0.9,-0.4 0,0 0.5,0.3 -0.3,0.2 0.1,0.3 0.3,0 -0.1,0.4 0.4,0.9 -0.7,0.5 -0.4,-0.2 0,-0.3 0,0.2 -0.8,-0.6 -0.4,-1.1 1.3,-0.5 z m 0.1,-2 0,0 -0.1,-0.1 0.1,-0.1 0,0.2 z m -2.9,-1.8 0,0 -0.1,0 0.1,0 0,0 z m 1.9,-0.1 0,0 0.4,0 -0.2,0.3 0.4,0.9 -0.1,0.2 -0.4,-0.1 0.1,-0.3 -0.8,-0.5 -0.4,0.6 -0.8,-0.4 0.2,-0.8 0.4,0.2 0.7,-0.3 0.4,0.2 z m -2.5,0.3 0,0 0.2,0 0,0.6 -0.6,0.5 0.8,-0.2 0.2,0.2 -0.2,0.1 0.7,0.1 0,0.3 0.2,-0.4 0.4,0 0.3,2.1 0.5,0 -0.1,0.2 -0.6,0 -0.1,0.3 0.2,0.3 -3.1,0.1 0.2,-1.1 -0.7,0 -0.4,-0.3 0,-1.4 0.3,-0.4 -0.3,-0.5 0.8,-0.4 0.8,-1.1 0.4,0.3 -0.1,0.7 z m 4.7,-2.4 0,0 0.5,0 -0.3,0.5 0.2,-0.1 0,0.5 0.6,0.2 -0.4,0.2 -0.6,-0.3 0,0.3 0.8,0 -0.1,0.2 0.5,-0.2 -0.2,0.3 0.3,0.1 0,-0.6 0.8,0.3 0.6,-0.2 1.5,0.5 -2,2.3 -0.1,0.7 0.2,0.4 -1.5,2 -0.8,0.3 -0.4,-0.4 0,-0.6 -0.4,-0.1 0.2,-0.5 -0.3,-0.1 -0.1,-0.4 0.3,-0.1 0,-0.4 -0.1,0.4 -0.6,0 0,-0.4 0.6,-0.3 -0.2,-0.6 0.3,-0.4 -0.2,-0.1 0,-0.7 -0.2,0.4 -0.2,-0.4 0.1,-1.3 -0.2,-0.2 -0.1,0.6 -0.4,-0.2 0.2,-0.4 -0.1,-0.5 -0.4,-0.2 0,-0.3 1.6,-0.2 0.9,0.2 z" },
+        { id: "Kwale", d: "m 314.3,580.2 -0.1,0 0.2,0 z m -0.2,-1 0,0 -0.1,0 0.1,0 z m -0.1,0 0,0 -0.1,-0.1 0,0 z m -1.9,-1.7 0,0 1.6,0.2 0.3,-0.2 0.2,0.7 -0.2,0.1 -0.8,-0.4 -1.3,0 0.2,-0.2 -0.2,-0.3 0.2,0.1 z m -7.6,-0.2 0,0 0,-0.2 0.1,0.1 -0.1,0.1 z m -0.7,-0.3 0,0 0,-0.1 0.2,0.1 -0.1,0 z m 0.6,0.1 0,0 -0.3,-0.3 0.2,-0.1 0.1,0.4 z m -0.5,-0.4 0,0 0,0 0,-0.1 z m 0.7,-0.1 0,0 -0.2,0 0.1,-0.2 z m 0.3,-0.5 0,0 -0.1,0 0.1,-0.2 z m 0.4,-0.4 0,0 -0.2,-0.1 0,-0.3 z m 0.2,-0.2 0,0 -0.1,-0.1 0.4,-0.2 z m 0.8,-0.2 0,0 -0.3,0 0,-0.1 z m 1.4,-0.9 0,0 0.1,0.2 -0.3,-0.2 z m 6.8,-1 0,0 -0.5,0 0.5,-0.1 z m -0.4,-0.1 0,0 -0.2,0 0.1,0 z m -5.2,0 0,0 -0.4,0.9 -0.2,-0.8 z m 5.3,-0.1 0,0 -0.1,0 0.1,0 z m 0.7,-0.1 0,0 -0.1,-0.1 0.1,0 z m 2.1,-0.6 0,0 0,0.8 -0.7,0.8 -0.2,0 -0.1,-1.4 -0.4,-0.4 0.2,0.2 0,-0.4 0.1,0.2 0.6,0.1 0.4,-1.5 0.4,0.2 -0.06,0.9 -0.3,0.3 z m 4.5,-6.5 0,0 -0.1,-0.1 0.2,-0.1 z m -12.2,-50.4 0,0 0.4,1.3 0.6,0.2 0.4,0.5 -0.2,2 0.3,0 0.3,0.9 0,2.2 -0.2,0 -0.1,0.5 0.3,0.3 0.1,1.1 0.9,0.7 1,-0.2 0,1.7 -0.6,0.3 0.4,0.2 0,0.3 -0.7,0.4 0.1,0.9 1.1,0.9 0.2,-0.2 0.3,0.1 0.7,-0.1 1.4,1.6 1.2,0.5 1,1.2 0.6,0.2 0.3,1.1 0.2,0.1 0.1,0.4 0.4,0.1 -0.1,0.9 1,1.3 -0.09,1.2 0.6,-0.4 0.7,0.5 0.1,0.5 -0.4,0.9 0.7,1 0.1,2.7 0.4,0.9 -0.5,1 1,-0.2 0,-0.7 0.7,-0.7 1.3,1.7 0.3,0 -0.7,1.3 0.8,0.5 -1.5,2.6 -0.8,3 -0.8,0 0.7,0 0,0.7 -2.7,6.8 -0.6,2.7 -0.2,0 0.1,-0.8 -0.2,-0.8 -0.2,-0.2 -0.2,0.1 -0.1,-0.3 -0.1,0.2 -0.5,-0.1 -0.1,1.2 0.1,-0.2 0.1,0.2 -0.2,0.8 -0.3,0.3 -0.7,-0.1 0.5,0.2 -0.1,1.2 -1.1,1.1 -0.8,2.5 -0.2,-0.1 0,-0.6 -0.8,-0.8 -0.2,0.7 -0.6,-0.3 -0.3,0.1 0.2,1 -0.6,0 -0.3,0.9 -0.2,-0.1 -0.8,0.4 0.1,-0.5 -0.8,0 -0.1,-0.2 0,0.8 0.6,0.4 0.1,1.5 0.3,-0.4 -0.2,0.7 0.7,2.7 -1.3,0.1 -1.8,-0.6 -1,0.3 -0.5,-0.5 -0.1,0.1 0,-0.2 -0.1,0.2 -0.2,-0.1 0,-0.5 0.2,-0.5 0.3,0.2 0,-0.3 0.3,0 -0.4,-0.5 -0.5,0.2 0.6,-0.6 -0.2,-0.2 0.1,-0.8 0.6,-0.6 0.3,0 -0.1,-0.4 -0.5,0 -0.5,-0.5 0.3,0.6 -1.3,0.1 -0.8,1 -0.1,-0.2 -0.1,0.3 -0.1,-0.3 -0.5,0.2 -1,-0.8 -0.1,0.1 0.5,1.3 0.9,0.4 -0.3,0.1 -0.2,-0.3 -0.5,0.8 0,-0.5 -0.2,-0.1 -0.4,0.8 -0.2,-0.2 -0.4,0.2 0.3,0.2 -0.3,0.1 -0.2,0.5 0.5,0 -0.8,0.1 -0.3,0.7 0.1,0.3 0.4,-0.1 -0.2,0.7 -0.2,-0.2 0.1,0.3 0.3,0.2 0.3,-0.2 -0.4,0.6 -0.6,-0.1 -0.2,-0.5 -0.4,0 -0.1,-0.5 -42.5,-29.8 28.5,-10.2 5.2,-11.4 -6.2,-3.6 2.1,-3.6 5.5,3.2 1.7,-7 11.8,0 1,-0.2 z" },
+        { id: "Kilifi", d: "m 346.4,505.2 -0.1,0 0,0 z m 0.6,-1.6 -0.07,-0.2 0.4,-0.1 z m -0.8,-0.4 -0.2,0.4 -0.6,-0.2 0.8,-0.2 0.1,-0.3 z m 1.3,-0.4 0,0 z m -0.7,0.1 -0.3,-0.2 0.1,-0.5 0.2,0.7 z m 11,-21.2 -0.07,-0.1 0.3,-0.4 z m 0.5,-0.3 -0.3,-0.8 0.3,0.4 0,0.4 z m -0.9,-0.3 -0.2,-0.3 0.1,-0.4 0.1,0.8 z m 0.1,-1.7 -0.05,0.5 -0.2,-1.1 0.5,-1.7 -0.4,1.7 0.1,0.6 z m 0.3,-3.2 -0.1,-0.5 0.2,-0.2 0,0.8 z m 0.8,-3.8 -0.1,-0.1 0.1,-0.1 0,0.2 z m -0.2,-0.3 0,0 z m -0.3,-1.1 0,0.2 -0.3,-0.3 0.3,0.1 z m -0.4,0 0,0 -0.2,-0.3 0.2,0 0,0.4 z m 0.9,-0.3 0,0 0.08,-0.6 0.1,0.1 -0.1,0.5 z m -0.5,-0.2 0,-0.3 0.1,-0.1 -0.1,0.4 z m 0.1,-0.6 -0.01,-0.1 0.3,-0.2 z m 0.5,-0.7 0.2,-0.6 0.1,0 z m 0,0.1 z m 0,-0.4 -0.04,-0.09 0.09,-0.23 z m -0.2,-0.1 -0.4,0 0.3,-0.3 0.1,0.3 z m -0.7,-0.3 -0.1,0 0.1,-0.1 z m 0.1,-0.3 -0.1,0 0,0 z m 0.3,-0.5 0.1,0.3 -0.3,0.4 0.1,-1.2 z m -0.1,-0.5 -0.1,0.2 -0.6,0 0.1,0.8 -0.4,0 0.4,0.8 0.3,0.1 0.1,-0.2 0.1,0.8 -0.3,0.5 -0.2,-0.5 0,0.5 -0.2,0.1 0.3,0.1 0,0.4 -0.4,0 0.1,0.4 -0.2,0.2 0.3,0.1 0.1,0.4 0.2,-0.4 0.7,1.3 -0.1,0.6 0.1,-0.1 0.1,0.2 -0.5,0.5 0,0.3 -0.3,0.8 0,-0.3 -0.1,0.1 -0.3,1.4 -0.2,0 -0.1,-0.7 -0.1,1.3 -0.2,-0.1 -0.2,0.2 0.2,0.5 1.2,-0.6 -0.4,1.3 -0.3,-0.5 -0.4,0.3 0,0.5 0.6,-0.2 -0.1,1.3 -0.4,0.1 0.1,1.3 -0.2,2.6 0.2,-0.1 -0.4,0.4 0.1,1.6 0.3,-0.2 -0.2,-0.1 0.4,-0.5 0.2,0.3 0.3,-0.1 0.1,-0.7 0.6,-0.4 0.3,-1 0.9,-0.2 1,0.1 1,-0.9 0.2,0.5 -0.2,0.5 -0.3,-0.2 -0.6,0.4 -0.9,0.2 -0.5,0.6 0,0.6 -0.7,0.2 -0.5,0.5 -0.2,0.6 0.2,0.7 -1,1.1 0.3,0.7 0,1.9 -1.3,1.6 -0.7,-0.5 0.3,0.5 0,0.3 0.2,-0.1 -0.7,1.2 -0.2,1 0.6,1 -0.1,1.4 0.3,0.5 -0.6,1.8 -3.8,2.6 -1.6,0.8 0,0.2 -0.6,0.1 0,0.3 -0.4,0 -1.8,1.6 -0.3,0 0.1,-0.6 0.6,-0.4 0.5,0.1 0.2,-0.2 -0.3,0 0.1,-0.7 -0.5,-1 0.7,-1 -2.6,1 0.3,0.5 -0.4,0.4 -0.3,-0.1 -0.2,0.2 0.1,0.9 -0.3,0.3 0.5,0.2 -0.4,0.7 0.6,-0.6 0.3,0.4 0.7,0.2 0.1,1.1 -2.3,4.8 -1.4,4.3 -1.9,3.7 -1.2,0 -1.7,-1.6 -1.2,0.1 -0.1,-0.2 -0.1,0.3 -0.3,0 -0.2,-0.8 0.2,0 0,-0.5 0.3,-0.1 0,-0.2 -0.8,0.6 0,0.4 0.4,0.7 1.3,0 0,0.4 0.3,0.1 -0.7,0.2 -0.3,-0.4 -0.5,0.1 0.7,0.6 0.1,0.7 0.3,-0.2 0.2,0.4 0.7,-0.1 0.4,-0.6 0.1,0.2 0.4,-0.4 0.4,0.3 1,0.2 0.3,0.7 -0.1,1.2 -0.6,0.1 -0.9,-0.2 0.9,0.2 0.6,-0.1 0.2,0.9 -1.4,3.9 -0.8,3.2 -3.2,7 -1.1,0.7 -0.9,-0.4 -0.5,0.2 -0.6,-0.1 -0.2,-0.3 0.1,-0.4 -0.4,-0.4 0.8,-1.4 0,-0.2 -0.3,0 -0.2,0.6 -0.7,0.3 -0.2,-0.2 -0.1,0.8 -1,0.1 -1.6,0.2 0,0.4 0.3,0 0.1,0.5 -0.3,0.3 0.1,0.5 -0.5,-0.1 -0.7,0.3 -0.4,-0.4 -0.6,0.2 -0.5,-0.6 -0.8,1.1 -0.8,0.4 0.3,0.6 -0.3,0.4 -0.7,-0.5 -0.6,0.4 0,-1.2 -1,-1.3 0.1,-0.9 -0.4,-0.1 -0.2,-1 -0.8,-0.5 -0.3,-0.9 -0.6,-0.2 -1,-1.2 -1.2,-0.5 -1.4,-1.6 -0.7,0.1 -0.3,-0.1 -0.2,0.2 -1.1,-0.9 -0.1,-0.9 0.7,-0.4 0,-0.3 -0.4,-0.2 0.6,-0.3 0,-1.7 -1,0.2 -0.9,-0.7 -0.1,-1.1 -0.3,-0.3 0.1,-0.5 0.2,0 0.04,-2.2 -0.3,-0.9 -0.3,0 0.2,-2 -0.4,-0.5 -0.6,-0.2 -0.4,-1.3 -1,0.2 -11.8,0 7.2,-28.5 38.3,-43.4 16.3,23.1 z" },
+        { id: "Tana River", d: "m 344.6,357.5 0.2,1.3 0,0.5 0.3,0 0.9,1.1 0.5,0 1.2,1 1.7,0.3 1,0.9 1,0.3 2.1,1.5 0.3,1.3 1.2,0.8 1.1,1.6 0.1,1.1 1.3,0.8 1,1.5 2,1.4 1.1,1.7 0.9,0.3 2,1.3 z" },
+        { id: "Lamu", d: "m 404,402.5 0.3,0.7 1.1,1.1 1.3,0.4 1.2,0.9 1,1.5 h 2.4 l 1.5,-1.1 z" },
+        { id: "Taita Taveta", d: "m 265.1,481.5 z" },
+        { id: "Garissa", d: "m 383,303.5 z" },
+        { id: "Wajir", d: "m 358,202 z" },
+        { id: "Mandera", d: "m 395,102 z" },
+        { id: "Marsabit", d: "m 258,150 z" },
+        { id: "Isiolo", d: "m 305,250 z" },
+        { id: "Meru", d: "m 295,300 z" },
+        { id: "Tharaka Nithi", d: "m 310,330 z" },
+        { id: "Embu", d: "m 295,350 z" },
+        { id: "Kitui", d: "m 320,380 z" },
+        { id: "Machakos", d: "m 280,390 z" },
+        { id: "Makueni", d: "m 290,430 z" },
+        { id: "Nyandarua", d: "m 235,360 z" },
+        { id: "Nyeri", d: "m 255,340 z" },
+        { id: "Kirinyaga", d: "m 270,350 z" },
+        { id: "Murang'a", d: "m 260,370 z" },
+        { id: "Kiambu", d: "m 250,395 z" },
+        { id: "Turkana", d: "m 120,102 z" },
+        { id: "West Pokot", d: "m 100,202 z" },
+        { id: "Samburu", d: "m 200,202 z" },
+        { id: "Trans Nzoia", d: "m 80,240 z" },
+        { id: "Uasin Gishu", d: "m 100,270 z" },
+        { id: "Elgeyo Marakwet", d: "m 130,250 z" },
+        { id: "Nandi", d: "m 110,295 z" },
+        { id: "Baringo", d: "m 160,280 z" },
+        { id: "Laikipia", d: "m 210,300 z" },
+        { id: "Nakuru", d: "m 180,350 z" },
+        { id: "Narok", d: "m 160,450 z" },
+        { id: "Kajiado", d: "m 240,460 z" },
+        { id: "Kericho", d: "m 135,360 z" },
+        { id: "Bomet", d: "m 140,390 z" },
+        { id: "Kakamega", d: "m 80,310 z" },
+        { id: "Vihiga", d: "m 95,335 z" },
+        { id: "Bungoma", d: "m 70,280 z" },
+        { id: "Busia", d: "m 50,310 z" },
+        { id: "Siaya", d: "m 60,350 z" },
+        { id: "Kisumu", d: "m 100,365 z" },
+        { id: "Homa Bay", d: "m 65,400 z" },
+        { id: "Migori", d: "m 85,435 z" },
+        { id: "Kisii", d: "m 110,405 z" },
+        { id: "Nyamira", d: "m 120,390 z" },
+        { id: "Nairobi", d: "m 260,405 z" }
+    ]
+};
+
+async function initVolunteerMap() {
+    const container = $('#volunteer-map-container');
+    if (!container || !KENYA_MAP_DATA) return;
+
+    console.log('Map: Initializing...');
+
+    let tooltip = $('#map-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'map-tooltip';
+        tooltip.className = 'map-tooltip';
+        document.body.appendChild(tooltip);
+    }
+
+    const updateMapUI = (stats = {}) => {
+        const maxVolunteers = Math.max(...Object.values(stats), 1);
+        const pathsHTML = KENYA_MAP_DATA.paths.map(p => {
+            const count = stats[p.id] || 0;
+            const alpha = count === 0 ? 0.05 : 0.2 + (count / maxVolunteers) * 0.8;
+            const color = count === 0 ? 'var(--grey-100)' : `rgba(0, 102, 0, ${alpha})`;
+            return `<path id="county-${p.id.replace(/\s+/g, '-')}" d="${p.d}" fill="${color}" stroke="white" stroke-width="0.5" data-name="${p.id}" data-count="${count}" />`;
+        }).join('');
+
+        container.innerHTML = `
+            <svg viewBox="${KENYA_MAP_DATA.viewBox}" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
+                ${pathsHTML}
+            </svg>
+        `;
+
+        $$('path', container).forEach(path => {
+            path.addEventListener('mouseenter', (e) => {
+                const name = path.getAttribute('data-name');
+                const count = path.getAttribute('data-count');
+                tooltip.innerHTML = `<b>${name}</b><span>${count} Volunteers</span>`;
+                tooltip.classList.add('show');
+            });
+            path.addEventListener('mousemove', (e) => {
+                tooltip.style.left = (e.clientX + 10) + 'px';
+                tooltip.style.top = (e.clientY + 10) + 'px';
+            });
+            path.addEventListener('mouseleave', () => tooltip.classList.remove('show'));
+            path.addEventListener('click', () => showToast(`🇰🇪 ${path.getAttribute('data-name')} is standing with SIFUNA!`));
+        });
+    };
+
+    updateMapUI({});
+
+    try {
+        console.log('Map: Fetching stats from:', GAS_API_URL);
+        const res = await fetch(`${GAS_API_URL}?action=getCountyStats`);
+        if (!res.ok) throw new Error(`HTTP error status: ${res.status}`);
+        const data = await res.json();
+        if (data.status === 'success') {
+            updateMapUI(data.stats || {});
+        }
+    } catch (err) {
+        console.error('Map: Failed to load live stats:', err);
     }
 }
 
@@ -1003,5 +1188,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Page-specific init
     if ($('#events-list')) loadEvents();
     if ($('#task-list')) new PatriotScore();
+    if ($('#volunteer-map-container')) {
+        initVolunteerMap();
+        setInterval(initVolunteerMap, POLL_INTERVAL);
+    }
     if ($('#posters-grid') || $('#stickers-grid') || $('#talking-grid') || $('#videos-grid')) loadResources();
 });
+
+// Global helpers for tasks verification modal
+function closeVerifyModal() {
+    const overlay = document.querySelector('#verify-modal-overlay');
+    if (overlay) overlay.classList.remove('show');
+}

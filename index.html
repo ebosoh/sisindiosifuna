@@ -111,6 +111,28 @@
       </div>
     </section>
 
+    <!-- ═══ VOLUNTEER MAP SECTION ══════════════════════════════════ -->
+    <section class="map-section section" aria-labelledby="map-heading">
+      <div class="container">
+        <div class="section__header text-center">
+          <div class="section__eyebrow">Our Footprint</div>
+          <h2 class="section__title" id="map-heading">Volunteer Distribution Map</h2>
+          <p class="section__desc">Across all 47 Counties, the SISI NDIO SIFUNA movement is growing. Hover to see
+            real-time density.</p>
+        </div>
+        <div class="map-container reveal">
+          <div id="volunteer-map-container" class="kenya-map">
+            <!-- SVG Injected by app.js -->
+            <div class="skeleton" style="width:100%; height:400px; border-radius:var(--radius-lg)"></div>
+          </div>
+          <div class="map-legend">
+            <span class="legend-item"><i style="background:var(--grey-100)"></i> Few</span>
+            <span class="legend-item"><i style="background:var(--kenya-green)"></i> Many</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ AD BANNER (Mobile — below hero) ════════════════════════ -->
     <div style="padding: 0 1rem;">
       <div id="ad-banner" aria-label="Advertisement">
@@ -282,6 +304,7 @@
 
   <!-- Scripts -->
   <script src="iebc-data.js"></script>
+  <script src="kenya-map-data.js"></script>
   <script src="app.js"></script>
 </body>
 

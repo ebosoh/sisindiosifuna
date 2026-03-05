@@ -78,9 +78,9 @@
                     <div style="font-size:.82rem"><span class="badge badge-green">0 pts</span> Patriot Recruit 🇰🇪
                     </div>
                     <div style="font-size:.82rem"><span class="badge badge-green">30 pts</span> Patriot Soldier ⚔️</div>
-                    <div style="font-size:.82rem"><span class="badge badge-gold">70 pts</span> Patriot Captain 🛡️</div>
-                    <div style="font-size:.82rem"><span class="badge badge-gold">120 pts</span> Patriot General 🌟</div>
-                    <div style="font-size:.82rem;grid-column:span 2;text-align:center"><span class="badge badge-red">160
+                    <div style="font-size:.82rem"><span class="badge badge-gold">80 pts</span> Patriot Captain 🛡️</div>
+                    <div style="font-size:.82rem"><span class="badge badge-gold">140 pts</span> Patriot General 🌟</div>
+                    <div style="font-size:.82rem;grid-column:span 2;text-align:center"><span class="badge badge-red">210
                             pts</span> SISI Legend 👑</div>
                 </div>
             </div>
@@ -111,6 +111,36 @@
         </div>
     </main>
 
+    <!-- Task Verification Modal -->
+    <div id="verify-modal-overlay" class="modal-overlay">
+        <div class="modal">
+            <div class="modal__header">
+                <h3 id="modal-title">Confirm Task</h3>
+                <button class="modal-close" onclick="closeVerifyModal()">×</button>
+            </div>
+            <div class="modal__body">
+                <p id="modal-desc" style="margin-bottom:1.5rem">To earn these points, please confirm you have completed
+                    this action.</p>
+
+                <div id="reg-details" style="display:none">
+                    <div class="form-group">
+                        <label>Voter Registration County</label>
+                        <input type="text" id="reg-county" class="form-control" placeholder="e.g. Nairobi">
+                    </div>
+                </div>
+
+                <label class="checkbox-group">
+                    <input type="checkbox" id="honor-check">
+                    <span>I confirm on my honor as a Patriot that I have completed this task. 🇰🇪</span>
+                </label>
+            </div>
+            <div class="modal__footer">
+                <button class="btn btn-secondary btn-sm" onclick="closeVerifyModal()">Cancel</button>
+                <button id="confirm-task-btn" class="btn btn-primary btn-sm" disabled>Confirm & Earn Pts</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
         <div class="footer__bottom" style="max-width:700px;padding:0 1.25rem">
@@ -137,7 +167,7 @@
         // Progress bar update
         function updateProgress() {
             const score = parseInt(document.getElementById('patriot-score')?.textContent || 0);
-            const maxScore = 160;
+            const maxScore = 210;
             const pct = Math.min((score / maxScore) * 100, 100);
             const bar = document.getElementById('progress-bar');
             if (bar) bar.style.width = pct + '%';
