@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>SISI NDIO SIFUNA — Kenya's Volunteer Movement</title>
+  <meta name="description"
+    content="Join the SISI NDIO SIFUNA grassroot volunteer movement. Mobilising every Kenyan, from Nairobi to the furthest village, for change." />
+  <meta name="theme-color" content="#006600" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="SISI NDIO SIFUNA 🇰🇪" />
+  <meta property="og:description" content="Join Kenya's fastest-growing volunteer movement. Sign up today!" />
+  <meta property="og:url" content="https://yourdomain.github.io/sisi-ndio-sifuna/" />
+  <meta property="og:type" content="website" />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SISI NDIO SIFUNA 🇰🇪" />
+  <!-- Manifest & Icons -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <!-- Styles -->
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+
+  <!-- ═══ TOP APP BAR ═════════════════════════════════════════════ -->
+  <header class="app-bar" role="banner">
+    <div class="app-bar__logo">
+      <!-- Inline SVG Campaign Logo -->
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="20" cy="20" r="20" fill="#000" />
+        <circle cx="20" cy="20" r="17" fill="#006600" />
+        <!-- Shield -->
+        <path d="M20 8 L28 12 L28 22 Q28 30 20 34 Q12 30 12 22 L12 12 Z" fill="#CE1126" />
+        <path d="M20 10 L26 13.5 L26 22 Q26 29 20 32 Q14 29 14 22 L14 13.5 Z" fill="#fff" />
+        <!-- Spears -->
+        <line x1="20" y1="5" x2="20" y2="35" stroke="#000" stroke-width="2" />
+        <line x1="10" y1="8" x2="30" y2="32" stroke="#000" stroke-width="1.5" />
+        <line x1="30" y1="8" x2="10" y2="32" stroke="#000" stroke-width="1.5" />
+      </svg>
+      <div class="app-bar__name">SISI NDIO<span> SIFUNA</span></div>
+    </div>
+    <!-- Desktop navigation -->
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="index.html" class="active">Home</a>
+      <a href="rallies.html">Rallies</a>
+      <a href="tasks.html">Tasks</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+      <a href="join.html" class="btn btn-primary btn-sm">Join Now 🇰🇪</a>
+    </nav>
+    <button class="app-bar__menu-btn" id="menu-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ═══ HERO SECTION ════════════════════════════════════════════ -->
+  <main>
+    <section class="hero" aria-label="Campaign hero">
+      <div class="hero__bg-pattern" aria-hidden="true"></div>
+      <div class="hero__content">
+        <div class="hero__badge"><span class="dot" aria-hidden="true"></span>🇰🇪 Volunteer Movement — Kenya 2027</div>
+        <h1 class="hero__title">
+          <span class="accent-red">SISI</span> NDIO<br>
+          <span class="accent-green">SIFUNA</span>
+        </h1>
+        <p class="hero__sub">One Million Volunteers for MOTHERLAND!</p>
+        <div style="margin-bottom: 2rem;">
+          <button id="share-movement-btn" class="btn btn-primary btn-lg btn-glow">
+            ✊ Share the Movement
+          </button>
+        </div>
+        <div class="hero__ctas">
+          <a href="join.html" class="btn btn-primary btn-lg" id="hero-join-btn">✊ Join the Movement</a>
+          <a href="rallies.html" class="btn btn-secondary btn-lg">📅 Find a Rally</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ LIVE STATS BAR ══════════════════════════════════════════ -->
+    <section class="stats-bar" aria-label="Live campaign statistics">
+      <div class="stats-bar__inner">
+        <div class="stat-card">
+          <div class="stat-card__icon" aria-hidden="true">✊</div>
+          <div class="stat-card__num stat-card__num--red" id="stat-volunteers">…</div>
+          <div class="stat-card__label">Volunteers Registered</div>
+          <div class="stat-card__live-dot" aria-live="polite">LIVE</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon" aria-hidden="true">👀</div>
+          <div class="stat-card__num stat-card__num--green" id="stat-visitors">…</div>
+          <div class="stat-card__label">Visitors Since Launch</div>
+          <div class="stat-card__live-dot" aria-live="polite">LIVE</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ VOLUNTEER MAP SECTION ══════════════════════════════════ -->
+    <section class="map-section section" aria-labelledby="map-heading">
+      <div class="container">
+        <div class="section__header text-center">
+          <div class="section__eyebrow">Our Footprint</div>
+          <h2 class="section__title" id="map-heading">Volunteer Distribution Map</h2>
+          <p class="section__desc">Across all 47 Counties, the SISI NDIO SIFUNA movement is growing. Hover to see
+            real-time density.</p>
+        </div>
+        <div class="map-container reveal">
+          <div id="volunteer-map-container" class="kenya-map">
+            <!-- SVG Injected by app.js -->
+            <div class="skeleton" style="width:100%; height:400px; border-radius:var(--radius-lg)"></div>
+          </div>
+          <div class="map-legend">
+            <span class="legend-item"><i style="background:var(--grey-100)"></i> Few</span>
+            <span class="legend-item"><i style="background:var(--kenya-green)"></i> Many</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ AD BANNER (Mobile — below hero) ════════════════════════ -->
+    <div style="padding: 0 1rem;">
+      <div id="ad-banner" aria-label="Advertisement">
+        <div class="ad-placeholder">
+          <!-- Replace this with your ad code (Google AdSense / partner) -->
+          <span>📢</span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FLAG STRIPE DIVIDER ════════════════════════════════════ -->
+    <div class="flag-stripe" aria-hidden="true"></div>
+
+    <!-- ═══ FEATURES SECTION ════════════════════════════════════════ -->
+    <section class="section" aria-labelledby="features-heading">
+      <div class="container">
+        <div class="section__header">
+          <div class="section__eyebrow">How You Can Help</div>
+          <h2 class="section__title" id="features-heading">Every Kenyan Has a Role to Play</h2>
+          <p class="section__desc">Whether you're in Nairobi or Turkana — your voice, your action, your vote matters.
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card reveal">
+            <div class="feature-card__icon feature-card__icon--red">📅</div>
+            <h4>Rally & Event Tracker</h4>
+            <p>Find upcoming SISI NDIO SIFUNA meetups near your County. Get directions directly to every venue.</p>
+            <a href="rallies.html" class="btn btn-outline-red btn-sm" style="margin-top:1rem">View Rallies →</a>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-card__icon feature-card__icon--green">🏆</div>
+            <h4>Volunteer Task Board</h4>
+            <p>Earn your Patriot Score by completing grassroot actions — posting posters, sharing content, attending
+              rallies.</p>
+            <a href="tasks.html" class="btn btn-green btn-sm" style="margin-top:1rem">Start Tasks →</a>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-card__icon feature-card__icon--black">📦</div>
+            <h4>Resource Toolkit</h4>
+            <p>Download campaign posters, WhatsApp stickers, and talking points — optimised for low data usage.</p>
+            <a href="resources.html" class="btn btn-sm" style="margin-top:1rem;border:2px solid #000;color:#000">Get
+              Resources →</a>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-card__icon feature-card__icon--red">📍</div>
+            <h4>Localised Signup</h4>
+            <p>Register with your County, Constituency, and Ward — using official IEBC data — to connect you with local
+              organisers.</p>
+            <a href="join.html" class="btn btn-primary btn-sm" style="margin-top:1rem">Register →</a>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-card__icon feature-card__icon--green">📢</div>
+            <h4>SMS & WhatsApp Alerts</h4>
+            <p>Get urgent updates on rally changes and campaign news directly to your phone — no app download needed.
+            </p>
+            <a href="join.html" class="btn btn-green btn-sm" style="margin-top:1rem">Opt In →</a>
+          </div>
+          <div class="feature-card reveal">
+            <div class="feature-card__icon feature-card__icon--black">🇰🇪</div>
+            <h4>Spread the Word</h4>
+            <p>Share the movement on WhatsApp, Facebook, TikTok, and X. Every share reaches more Kenyans.</p>
+            <button id="share-btn" class="btn btn-sm" style="margin-top:1rem;border:2px solid #000;color:#000">Share Now
+              →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ FLAG STRIPE DIVIDER ════════════════════════════════════ -->
+    <div class="flag-stripe" aria-hidden="true"></div>
+
+    <!-- ═══ UPCOMING RALLIES PREVIEW ════════════════════════════════ -->
+    <section class="section section--grey" aria-labelledby="rallies-heading">
+      <div class="container">
+        <div class="section__header">
+          <div class="section__eyebrow">Upcoming Events</div>
+          <h2 class="section__title" id="rallies-heading">Rallies Near You</h2>
+          <p class="section__desc">Join thousands of Kenyans at these mobilisation events across the Republic.</p>
+        </div>
+        <div id="events-list" class="events-list" aria-live="polite">
+          <!-- Loaded by app.js -->
+          <div class="skeleton" style="height:80px;border-radius:12px;margin-bottom:1rem"></div>
+          <div class="skeleton" style="height:80px;border-radius:12px;margin-bottom:1rem"></div>
+          <div class="skeleton" style="height:80px;border-radius:12px"></div>
+        </div>
+        <div class="text-center" style="margin-top:2rem">
+          <a href="rallies.html" class="btn btn-primary">View All Rallies →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ JOIN CTA ════════════════════════════════════════════════ -->
+    <section class="section section--black" aria-labelledby="join-cta-heading">
+      <div class="container text-center">
+        <div class="section__eyebrow" style="color:var(--kenya-gold)">Take Action Today</div>
+        <h2 class="section__title text-white" id="join-cta-heading">Kenya Needs You Now</h2>
+        <p class="section__desc" style="color:rgba(255,255,255,0.7);max-width:500px;margin:0 auto 2rem">Every volunteer
+          registered strengthens the movement. Sign up in under 2 minutes — no app download needed.</p>
+        <a href="join.html" class="btn btn-primary btn-lg">✊ Become a Volunteer</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
+  <footer class="footer" role="contentinfo">
+    <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <h3>SISI NDIO SIFUNA 🇰🇪</h3>
+        <p>A grassroot volunteer movement mobilising every Kenyan for a better tomorrow.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Get Involved</h4>
+        <ul>
+          <li><a href="join.html">Join as Volunteer</a></li>
+          <li><a href="rallies.html">Find a Rally</a></li>
+          <li><a href="tasks.html">Task Board</a></li>
+          <li><a href="resources.html">Resources</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Campaign</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="#">Contact HQ</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Follow Us</h4>
+        <ul>
+          <li><a href="#">📘 Facebook</a></li>
+          <li><a href="#">🐦 X (Twitter)</a></li>
+          <li><a href="#">🎵 TikTok</a></li>
+          <li><a href="#">📸 Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a></span>
+      <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
+          style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
+      <span>Made with 🇰🇪 in Kenya</span>
+    </div>
+  </footer>
+
+  <!-- ═══ BOTTOM NAVIGATION (Mobile) ═════════════════════════════ -->
+  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
+    <a href="index.html" class="bottom-nav__item active" aria-label="Home">
+      <span class="bottom-nav__icon" aria-hidden="true">🏠</span>
+      <span class="bottom-nav__label">Home</span>
+    </a>
+    <a href="rallies.html" class="bottom-nav__item" aria-label="Rallies">
+      <span class="bottom-nav__icon" aria-hidden="true">📅</span>
+      <span class="bottom-nav__label">Rallies</span>
+    </a>
+    <a href="join.html" class="bottom-nav__item bottom-nav__item--join" aria-label="Join Now">
+      <span class="bottom-nav__icon" aria-hidden="true">✊</span>
+      <span class="bottom-nav__label">Join</span>
+    </a>
+    <a href="tasks.html" class="bottom-nav__item" aria-label="Task Board">
+      <span class="bottom-nav__icon" aria-hidden="true">🏆</span>
+      <span class="bottom-nav__label">Tasks</span>
+    </a>
+    <a href="resources.html" class="bottom-nav__item" aria-label="Resources">
+      <span class="bottom-nav__icon" aria-hidden="true">📦</span>
+      <span class="bottom-nav__label">Resources</span>
+    </a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="iebc-data.js"></script>
+  <script src="kenya-map-data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
