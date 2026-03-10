@@ -1,313 +1,967 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
-  <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
-  </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>SISI NDIO SIFUNA — Kenya's Volunteer Movement</title>
-  <meta name="description"
-    content="Join the SISI NDIO SIFUNA grassroot volunteer movement. Mobilising every Kenyan, from Nairobi to the furthest village, for change." />
-  <meta name="theme-color" content="#006600" />
-  <!-- Open Graph -->
-  <meta property="og:title" content="SISI NDIO SIFUNA 🇰🇪" />
-  <meta property="og:description" content="Join Kenya's fastest-growing volunteer movement. Sign up today!" />
-  <meta property="og:url" content="https://yourdomain.github.io/sisi-ndio-sifuna/" />
-  <meta property="og:type" content="website" />
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SISI NDIO SIFUNA 🇰🇪" />
-  <!-- Manifest & Icons -->
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
-    rel="stylesheet" />
-  <!-- Styles -->
-  <link rel="stylesheet" href="main.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinnacle Dental Centre | Luxury Dentistry at Sarit Centre</title>
+    <meta name="description"
+        content="Experience premium dental care at Pinnacle Dental Centre, Westlands. Specialist in Invisalign, Implants, and Cosmetic Dentistry.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pinnacle: '#3198D8',
+                        seafoam: '#20C997',
+                        teal: '#17A2B8',
+                        dark: '#1E293B'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        premium: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Performance: preload first carousel image to fix LCP -->
+    <link rel="preload" as="image" href="carousel1.jpg">
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://maps.googleapis.com">
 </head>
 
-<body>
+<body class="bg-white text-dark">
 
-  <!-- ═══ TOP APP BAR ═════════════════════════════════════════════ -->
-  <header class="app-bar" role="banner">
-    <div class="app-bar__logo">
-      <!-- Inline SVG Campaign Logo -->
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="20" cy="20" r="20" fill="#000" />
-        <circle cx="20" cy="20" r="17" fill="#006600" />
-        <!-- Shield -->
-        <path d="M20 8 L28 12 L28 22 Q28 30 20 34 Q12 30 12 22 L12 12 Z" fill="#CE1126" />
-        <path d="M20 10 L26 13.5 L26 22 Q26 29 20 32 Q14 29 14 22 L14 13.5 Z" fill="#fff" />
-        <!-- Spears -->
-        <line x1="20" y1="5" x2="20" y2="35" stroke="#000" stroke-width="2" />
-        <line x1="10" y1="8" x2="30" y2="32" stroke="#000" stroke-width="1.5" />
-        <line x1="30" y1="8" x2="10" y2="32" stroke="#000" stroke-width="1.5" />
-      </svg>
-      <div class="app-bar__name">SISI NDIO<span> SIFUNA</span></div>
-    </div>
-    <!-- Desktop navigation -->
-    <nav class="desktop-nav" aria-label="Main navigation">
-      <a href="index.html" class="active">Home</a>
-      <a href="rallies.html">Rallies</a>
-      <a href="tasks.html">Tasks</a>
-      <a href="resources.html">Resources</a>
-      <a href="about.html">About</a>
-      <a href="join.html" class="btn btn-primary btn-sm">Join Now 🇰🇪</a>
+    <!-- Premium Navigation -->
+    <nav class="fixed w-full z-50 glass-effect transition-all duration-300 py-0" id="main-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-0">
+                <div class="flex-shrink-0 flex items-center">
+                    <img src="pinnacle logo1_transparent.png" alt="Pinnacle Dental Logo"
+                        class="h-16 md:h-24 w-auto mix-blend-multiply drop-shadow-sm">
+                </div>
+
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" data-nav="home"
+                            class="nav-link text-dark px-3 py-1 rounded-lg font-medium transition-all duration-300">Home</a>
+                        <a href="#about" data-nav="about"
+                            class="nav-link text-dark px-3 py-1 rounded-lg font-medium transition-all duration-300">About</a>
+                        <a href="#services" data-nav="services"
+                            class="nav-link text-dark px-3 py-1 rounded-lg font-medium transition-all duration-300">Services</a>
+
+                        <a href="#blog" data-nav="blog"
+                            class="nav-link text-dark px-3 py-1 rounded-lg font-medium transition-all duration-300">Blog</a>
+                        <a href="shop.html" data-nav="shop"
+                            class="nav-link text-dark px-3 py-1 rounded-lg font-medium transition-all duration-300">Shop</a>
+                        <a href="#contact"
+                            class="bg-pinnacle text-white px-6 py-1 rounded-full font-bold premium-transition hover:bg-teal hover:shadow-lg">Book
+                            Now</a>
+                    </div>
+                </div>
+
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-dark p-2">
+                        <i data-lucide="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 flex flex-col p-4 space-y-4">
+            <a href="index.html" data-nav-mobile="home"
+                class="nav-link-mobile text-lg font-medium px-3 py-2 rounded-lg transition-all duration-300">Home</a>
+            <a href="#about" data-nav-mobile="about"
+                class="nav-link-mobile text-lg font-medium px-3 py-2 rounded-lg transition-all duration-300">About</a>
+            <a href="#services" data-nav-mobile="services"
+                class="nav-link-mobile text-lg font-medium px-3 py-2 rounded-lg transition-all duration-300">Services</a>
+
+            <a href="#blog" data-nav-mobile="blog"
+                class="nav-link-mobile text-lg font-medium px-3 py-2 rounded-lg transition-all duration-300">Blog</a>
+            <a href="shop.html" data-nav-mobile="shop"
+                class="nav-link-mobile text-lg font-medium px-3 py-2 rounded-lg transition-all duration-300">Shop</a>
+            <a href="#contact" class="bg-pinnacle text-white text-center py-3 rounded-xl font-bold">Book Appointment</a>
+        </div>
     </nav>
-    <button class="app-bar__menu-btn" id="menu-btn" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </header>
 
-  <!-- ═══ HERO SECTION ════════════════════════════════════════════ -->
-  <main>
-    <section class="hero" aria-label="Campaign hero">
-      <div class="hero__bg-pattern" aria-hidden="true"></div>
-      <div class="hero__content">
-        <div class="hero__badge"><span class="dot" aria-hidden="true"></span>🇰🇪 Volunteer Movement — Kenya 2027</div>
-        <h1 class="hero__title">
-          <span class="accent-red">SISI</span> NDIO<br>
-          <span class="accent-green">SIFUNA</span>
-        </h1>
-        <p class="hero__sub">One Million Volunteers for MOTHERLAND!</p>
-        <div style="margin-bottom: 2rem;">
-          <button id="share-movement-btn" class="btn btn-primary btn-lg btn-glow">
-            ✊ Share the Movement
-          </button>
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center overflow-hidden">
+
+        <!-- ===== FULLSCREEN CAROUSEL BACKGROUND ===== -->
+        <div class="absolute inset-0 z-0" id="hero-carousel">
+            <!-- Slides -->
+            <div class="hero-slide active" style="background-image: url('carousel1.jpg')"></div>
+            <div class="hero-slide" style="background-image: url('carousel2.jpg')"></div>
+            <div class="hero-slide" style="background-image: url('carousel3.jpg')"></div>
+            <div class="hero-slide" style="background-image: url('carousel4.jpg')"></div>
+            <!-- Dark gradient overlay so text stays readable -->
+            <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20 z-10"></div>
         </div>
-        <div class="hero__ctas">
-          <a href="join.html" class="btn btn-primary btn-lg" id="hero-join-btn">✊ Join the Movement</a>
-          <a href="rallies.html" class="btn btn-secondary btn-lg">📅 Find a Rally</a>
+
+        <!-- ===== Anniversary Badge (Hero Top Right) ===== -->
+        <div class="absolute top-28 right-4 md:top-36 md:right-12 z-40 hover:scale-105 transition-transform cursor-pointer drop-shadow-[0_10px_20px_rgba(255,215,0,0.3)] pointer-events-auto"
+            style="animation: pulse-green 4s infinite alternate;">
+            <img src="anniversary-badge.png" alt="3 Years Anniversary" class="w-20 h-20 sm:w-28 sm:h-28 object-contain">
         </div>
-      </div>
+
+        <!-- ===== HERO CONTENT (overlaid on carousel) ===== -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+            <div class="max-w-2xl">
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur text-white rounded-full font-bold text-sm mb-6 border border-white/20">
+                    <span class="relative flex h-3 w-3">
+                        <span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-seafoam opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-seafoam"></span>
+                    </span>
+                    WORLD-CLASS DENTAL EXCELLENCE
+                </div>
+                <h1
+                    class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-premium font-bold leading-tight mb-5 text-white drop-shadow-2xl">
+                    The <span class="text-seafoam italic">SMile</span> You Deserve.
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl text-white/80 mb-8 leading-relaxed drop-shadow-lg">
+                    At Pinnacle Dental Centre, we combine state-of-the-art technology with a luxury patient experience
+                    at Sarit Centre, Westlands.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="#contact"
+                        class="bg-pinnacle text-white px-6 py-3 sm:px-10 sm:py-4 rounded-full font-bold text-base sm:text-lg text-center premium-transition hover:bg-seafoam hover:scale-105 shadow-xl shadow-pinnacle/30">
+                        Book Appointment
+                    </a>
+                    <a href="#services"
+                        class="bg-white/10 backdrop-blur border-2 border-white text-white px-6 py-3 sm:px-10 sm:py-4 rounded-full font-bold text-base sm:text-lg text-center hover:bg-white hover:text-dark transition-all">
+                        Our Services
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carousel Dots -->
+        <div class="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-3 z-20" id="carousel-dots">
+            <button class="carousel-dot w-8 h-2 rounded-full bg-white transition-all duration-300"
+                data-index="0"></button>
+            <button class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all duration-300"
+                data-index="1"></button>
+            <button class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all duration-300"
+                data-index="2"></button>
+            <button class="carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all duration-300"
+                data-index="3"></button>
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-20">
+            <span class="text-sm font-medium text-white/60 uppercase tracking-widest">Scroll</span>
+            <i data-lucide="chevron-down" class="text-white/60"></i>
+        </div>
     </section>
 
-    <!-- ═══ LIVE STATS BAR ══════════════════════════════════════════ -->
-    <section class="stats-bar" aria-label="Live campaign statistics">
-      <div class="stats-bar__inner">
-        <div class="stat-card">
-          <div class="stat-card__icon" aria-hidden="true">✊</div>
-          <div class="stat-card__num stat-card__num--red" id="stat-volunteers">…</div>
-          <div class="stat-card__label">Volunteers Registered</div>
-          <div class="stat-card__live-dot" aria-live="polite">LIVE</div>
+
+    <!-- Achievements Section -->
+    <section id="achievements" class="py-24 bg-dark relative overflow-hidden">
+        <!-- Subtle background glows -->
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-pinnacle/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-seafoam/10 rounded-full blur-3xl pointer-events-none">
         </div>
-        <div class="stat-card">
-          <div class="stat-card__icon" aria-hidden="true">👀</div>
-          <div class="stat-card__num stat-card__num--green" id="stat-visitors">…</div>
-          <div class="stat-card__label">Visitors Since Launch</div>
-          <div class="stat-card__live-dot" aria-live="polite">LIVE</div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <p class="text-seafoam font-bold uppercase tracking-[0.3em] text-sm mb-3">Our Milestones</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+
+                <!-- Stat 1 -->
+                <div
+                    class="stat-card group text-center bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8 hover:border-pinnacle/50 hover:bg-white/10 transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-pinnacle/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-pinnacle transition-colors duration-500">
+                        <svg class="w-7 h-7 text-pinnacle group-hover:text-white transition-colors duration-500"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="font-premium font-bold text-white mb-2">
+                        <span class="counter text-5xl md:text-6xl" data-target="10" data-suffix="">0</span><span
+                            class="text-pinnacle text-4xl font-bold">+</span>
+                    </div>
+                    <p class="text-gray-400 font-medium uppercase tracking-widest text-xs mt-2">Years Experience</p>
+                </div>
+
+                <!-- Stat 2 -->
+                <div
+                    class="stat-card group text-center bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8 hover:border-seafoam/50 hover:bg-white/10 transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-seafoam/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-seafoam transition-colors duration-500">
+                        <svg class="w-7 h-7 text-seafoam group-hover:text-white transition-colors duration-500"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
+                        </svg>
+                    </div>
+                    <div class="font-premium font-bold text-white mb-2">
+                        <span class="counter text-5xl md:text-6xl" data-target="5" data-suffix="">0</span><span
+                            class="text-seafoam text-4xl font-bold">+</span>
+                    </div>
+                    <p class="text-gray-400 font-medium uppercase tracking-widest text-xs mt-2">Specialists</p>
+                </div>
+
+                <!-- Stat 3 -->
+                <div
+                    class="stat-card group text-center bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8 hover:border-teal/50 hover:bg-white/10 transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-teal/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-teal transition-colors duration-500">
+                        <svg class="w-7 h-7 text-teal group-hover:text-white transition-colors duration-500" fill="none"
+                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="font-premium font-bold text-white mb-2">
+                        <span class="counter text-5xl md:text-6xl" data-target="1000" data-suffix="">0</span><span
+                            class="text-teal text-4xl font-bold">+</span>
+                    </div>
+                    <p class="text-gray-400 font-medium uppercase tracking-widest text-xs mt-2">Happy Patients</p>
+                </div>
+
+                <!-- Stat 4 -->
+                <div
+                    class="stat-card group text-center bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8 hover:border-pinnacle/50 hover:bg-white/10 transition-all duration-500">
+                    <div
+                        class="w-14 h-14 bg-pinnacle/20 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-pinnacle transition-colors duration-500">
+                        <svg class="w-7 h-7 text-pinnacle group-hover:text-white transition-colors duration-500"
+                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <div class="font-premium font-bold text-white mb-2">
+                        <span class="counter text-5xl md:text-6xl" data-target="500" data-suffix="">0</span>
+                    </div>
+                    <p class="text-gray-400 font-medium uppercase tracking-widest text-xs mt-2">Patients Yearly</p>
+                </div>
+
+            </div>
         </div>
-      </div>
     </section>
 
-    <!-- ═══ VOLUNTEER MAP SECTION ══════════════════════════════════ -->
-    <section class="map-section section" aria-labelledby="map-heading">
-      <div class="container">
-        <div class="section__header text-center">
-          <div class="section__eyebrow">Our Footprint</div>
-          <h2 class="section__title" id="map-heading">Volunteer Distribution Map</h2>
-          <p class="section__desc">Across all 47 Counties, the SISI NDIO SIFUNA movement is growing. Hover to see
-            real-time density.</p>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-mesh-gradient relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-pinnacle/5 rounded-full blur-[120px] -z-10"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-seafoam/5 rounded-full blur-[120px] -z-10"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Part 1: Intro with Jane -->
+            <div class="grid md:grid-cols-2 gap-16 items-center mb-24">
+                <div class="relative order-2 md:order-1">
+                    <div class="absolute -top-10 -left-10 w-40 h-40 bg-pinnacle/10 rounded-full blur-3xl"></div>
+                    <img src="jane.jpg" alt="Dr. Jane Nzuve"
+                        class="rounded-3xl shadow-2xl relative z-10 w-full aspect-[4/5] object-cover">
+                    <div
+                        class="absolute -right-6 -bottom-6 bg-white p-8 rounded-2xl shadow-xl z-20 hidden md:block border border-gray-100">
+                        <p class="text-pinnacle font-bold text-xl mb-1">Dr. Jane Nzuve</p>
+                        <p class="text-gray-500 text-sm">Lead Surgeon</p>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2">
+                    <p class="text-seafoam font-bold uppercase tracking-[0.3em] text-sm mb-3">Our Core</p>
+                    <h2 class="text-4xl md:text-5xl font-premium font-bold mb-8 leading-tight">The Pinnacle Dental
+                        Center</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                        We prioritize your comfort and satisfaction, providing personalized care in a friendly and
+                        welcoming environment. Trust us to transform your dental experience and leave you with a healthy
+                        and radiant smile.
+                    </p>
+                    <div class="grid grid-cols-2 gap-6 mt-10">
+                        <div
+                            class="flex items-start gap-4 p-4 rounded-2xl bg-soft-gray border border-gray-100 hover:shadow-md transition-all">
+                            <div class="w-10 h-10 bg-pinnacle/10 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="heart" class="text-pinnacle w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Personal Touch</h4>
+                                <p class="text-xs text-gray-500 mt-1">Regelialia for clinical excellence.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-start gap-4 p-4 rounded-2xl bg-soft-gray border border-gray-100 hover:shadow-md transition-all">
+                            <div class="w-10 h-10 bg-seafoam/10 rounded-xl flex items-center justify-center shrink-0">
+                                <i data-lucide="award" class="text-seafoam w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-dark">Expert Dentists</h4>
+                                <p class="text-xs text-gray-500 mt-1">Qualified specialized professionals.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 2: What We Do & Core Values -->
+            <div class="mb-24">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-4xl font-premium font-bold mb-6">What We Do</h2>
+                    <p class="text-gray-500 text-lg">We are committed to delivering comprehensive dental solutions built
+                        on a foundation of excellence and empathy.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <!-- Values -->
+                    <div
+                        class="premium-glass-card glow-pinnacle group p-8 rounded-[2rem] text-center hover:bg-pinnacle transition-all duration-500">
+                        <div
+                            class="w-14 h-14 bg-pinnacle/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-all">
+                            <i data-lucide="shield-check" class="text-pinnacle group-hover:text-white w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-sm tracking-wide group-hover:text-white">Professionalism</h4>
+                    </div>
+                    <div
+                        class="premium-glass-card glow-seafoam group p-8 rounded-[2rem] text-center hover:bg-seafoam transition-all duration-500">
+                        <div
+                            class="w-14 h-14 bg-seafoam/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-all">
+                            <i data-lucide="users" class="text-seafoam group-hover:text-white w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-sm tracking-wide group-hover:text-white">Teamwork</h4>
+                    </div>
+                    <div
+                        class="premium-glass-card glow-pinnacle group p-8 rounded-[2rem] text-center hover:bg-pinnacle transition-all duration-500">
+                        <div
+                            class="w-14 h-14 bg-pinnacle/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-all">
+                            <i data-lucide="gem" class="text-pinnacle group-hover:text-white w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-sm tracking-wide group-hover:text-white">Integrity</h4>
+                    </div>
+                    <div
+                        class="premium-glass-card glow-seafoam group p-8 rounded-[2rem] text-center hover:bg-seafoam transition-all duration-500">
+                        <div
+                            class="w-14 h-14 bg-seafoam/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-all">
+                            <i data-lucide="heart-handshake" class="text-seafoam group-hover:text-white w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-sm tracking-wide group-hover:text-white">Compassion</h4>
+                    </div>
+                    <div
+                        class="premium-glass-card glow-pinnacle group p-8 rounded-[2rem] text-center hover:bg-pinnacle transition-all duration-500">
+                        <div
+                            class="w-14 h-14 bg-pinnacle/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-white/20 transition-all">
+                            <i data-lucide="star" class="text-pinnacle group-hover:text-white w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-sm tracking-wide group-hover:text-white">Excellence</h4>
+                    </div>
+                    <div
+                        class="premium-glass-card glow-seafoam group p-8 rounded-[2rem] text-center hover:bg-seafoam transition-all duration-500">
+                        <div
+                            class="w-14 h-14 bg-seafoam/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/20">
+                            <i data-lucide="user-check" class="text-seafoam group-hover:text-white w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-bold text-sm tracking-wide group-hover:text-white">Respect</h4>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 3: Mission & Vision -->
+            <div class="relative rounded-[3rem] overflow-hidden bg-dark text-white p-12 lg:p-20 mission-mesh">
+                <div class="absolute inset-0 z-0">
+                    <img src="mission.jpg" alt="Our Mission" class="w-full h-full object-cover opacity-10">
+                    <div class="absolute inset-0 bg-gradient-to-r from-dark via-dark/70 to-transparent"></div>
+                </div>
+                <div class="relative z-10 grid md:grid-cols-2 gap-16">
+                    <div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 bg-pinnacle/20 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="target" class="text-pinnacle"></i>
+                            </div>
+                            <h3 class="text-3xl font-premium font-bold">Our Mission</h3>
+                        </div>
+                        <p class="text-gray-300 text-lg mb-8">To provide specialised Dental Service focused on improving
+                            our clients oral health through:</p>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-seafoam"></div>
+                                <span>Oral Health Education</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-seafoam"></div>
+                                <span>Preventative Dentistry</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-seafoam"></div>
+                                <span>Advanced Dental Procedures</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 bg-seafoam/20 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="eye" class="text-seafoam"></i>
+                            </div>
+                            <h3 class="text-3xl font-premium font-bold">Our Vision</h3>
+                        </div>
+                        <p class="text-gray-300 text-lg leading-relaxed">
+                            To be a leading dental health care facility providing world-class, modern and effective
+                            dental solutions to the people of Kenya and beyond.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Part 4: Features Summary -->
+            <div class="grid md:grid-cols-4 gap-8 mt-24">
+            </div>
+
+            <!-- Part 5: Staff Section -->
+            <div class="mt-32 relative">
+                <div
+                    class="absolute -top-24 left-1/2 -translate-x-1/2 w-full h-full bg-pinnacle/5 blur-[100px] -z-10 rounded-full max-w-4xl">
+                </div>
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <p class="text-seafoam font-bold uppercase tracking-[0.3em] text-sm mb-3">Our Team</p>
+                    <h2 class="text-4xl md:text-5xl font-premium font-bold mb-6">Our Qualified Staff and Doctors</h2>
+                    <p class="text-gray-500 text-lg">Meet our team of experienced and dedicated professionals who are
+                        dedicated to providing the best dental care for all our patients.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Dr. Jane Nzuve -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="jane.jpg" alt="Dr. Jane Nzuve"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-pinnacle transition-colors">
+                                Dr. Jane Nzuve</h4>
+                            <p class="text-pinnacle text-sm font-medium mb-1 uppercase tracking-wide">Orthodontist &
+                                Implantologist</p>
+                            <p class="text-gray-500 text-xs italic">Cosmetic Dentist</p>
+                        </div>
+                    </div>
+
+                    <!-- Dr Tanya Shah -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="tanya.jpg" alt="Dr Tanya Shah"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-seafoam transition-colors">
+                                Dr Tanya Shah</h4>
+                            <p class="text-seafoam text-sm font-medium mb-1 uppercase tracking-wide">Facial Esthetic</p>
+                            <p class="text-gray-500 text-xs italic">Pediatric Dentist</p>
+                        </div>
+                    </div>
+
+                    <!-- Isabella Mwemba -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="isabela.jpg" alt="Isabella Mwemba"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-pinnacle transition-colors">
+                                Isabella Mwemba</h4>
+                            <p class="text-pinnacle text-sm font-medium mb-1 uppercase tracking-wide">Chief Nurse</p>
+                        </div>
+                    </div>
+
+                    <!-- Teresa Ogutu -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="teresa.jpg" alt="Teresa Ogutu"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-seafoam transition-colors">
+                                Teresa Ogutu</h4>
+                            <p class="text-seafoam text-sm font-medium mb-1 uppercase tracking-wide">Front Office Admin
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Edna Chepwogen -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="edna.jpg" alt="Edna Chepwogen"
+                                class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-pinnacle transition-colors">
+                                Edna Chepwogen</h4>
+                            <p class="text-pinnacle text-sm font-medium mb-1 uppercase tracking-wide">House Keeping</p>
+                        </div>
+                    </div>
+
+                    <!-- Murtadha Billal -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="bilala.jpg" alt="Murtadha Billal"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-seafoam transition-colors">
+                                Murtadha Billal</h4>
+                            <p class="text-seafoam text-sm font-medium mb-1 uppercase tracking-wide">Business
+                                Administration</p>
+                        </div>
+                    </div>
+
+                    <!-- Naomi Rambira -->
+                    <div
+                        class="staff-card-glow group relative overflow-hidden rounded-[2.5rem] bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                        <div class="aspect-[3/4] overflow-hidden">
+                            <img src="naomi.jpg" alt="Naomi Rambira"
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="p-6 text-center">
+                            <h4
+                                class="text-xl font-premium font-bold text-dark group-hover:text-pinnacle transition-colors">
+                                Naomi Rambira</h4>
+                            <p class="text-pinnacle text-sm font-medium mb-1 uppercase tracking-wide">Dental Assistant
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="map-container reveal">
-          <div id="volunteer-map-container" class="kenya-map">
-            <!-- SVG Injected by app.js -->
-            <div class="skeleton" style="width:100%; height:400px; border-radius:var(--radius-lg)"></div>
-          </div>
-          <div class="map-legend">
-            <span class="legend-item"><i style="background:var(--grey-100)"></i> Few</span>
-            <span class="legend-item"><i style="background:var(--kenya-green)"></i> Many</span>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- ═══ AD BANNER (Mobile — below hero) ════════════════════════ -->
-    <div style="padding: 0 1rem;">
-      <div id="ad-banner" aria-label="Advertisement">
-        <div class="ad-placeholder">
-          <!-- Replace this with your ad code (Google AdSense / partner) -->
-          <span>📢</span>
-          <span></span>
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-soft-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <p class="text-seafoam font-bold uppercase tracking-[0.3em] text-sm mb-3">What We Offer</p>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-premium font-bold mb-4">Premium Dental Solutions</h2>
+                <p class="text-gray-500 text-base sm:text-lg">A comprehensive range of treatments delivered by
+                    specialists using the world's most advanced technology.</p>
+            </div>
+
+            <!-- JS renders cards here -->
+            <div id="services-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7"></div>
         </div>
-      </div>
+    </section>
+
+    <!-- ===== SERVICE MODAL ===== -->
+    <div id="service-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6">
+        <!-- Overlay -->
+        <div id="modal-overlay" class="absolute inset-0 bg-dark/70 backdrop-blur-sm"></div>
+        <!-- Panel -->
+        <div
+            class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto z-10 flex flex-col">
+            <!-- Image -->
+            <div class="relative h-52 sm:h-72 shrink-0 overflow-hidden rounded-t-3xl bg-gray-100">
+                <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent"></div>
+                <!-- Service name overlay on image -->
+                <div class="absolute bottom-0 left-0 p-5 sm:p-8">
+                    <div id="modal-badge"
+                        class="inline-block px-3 py-1 rounded-full text-xs font-bold text-white mb-2 bg-seafoam"></div>
+                    <h3 id="modal-title" class="text-2xl sm:text-3xl font-premium font-bold text-white"></h3>
+                </div>
+                <!-- Close button -->
+                <button id="modal-close"
+                    class="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white hover:text-dark transition-all">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-5 sm:p-8 flex flex-col gap-4">
+                <p id="modal-desc1" class="text-gray-700 leading-relaxed text-base sm:text-lg"></p>
+                <p id="modal-desc2" class="text-gray-500 leading-relaxed text-sm sm:text-base"></p>
+                <a href="#contact" id="modal-cta"
+                    onclick="document.getElementById('service-modal').classList.add('hidden'); document.getElementById('service-modal').classList.remove('flex');"
+                    class="mt-2 inline-flex items-center justify-center gap-2 bg-pinnacle text-white px-8 py-4 rounded-2xl font-bold text-base hover:bg-seafoam transition-all shadow-lg shadow-pinnacle/20 w-full sm:w-auto">
+                    Book a Consultation
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- ═══ FLAG STRIPE DIVIDER ════════════════════════════════════ -->
-    <div class="flag-stripe" aria-hidden="true"></div>
 
-    <!-- ═══ FEATURES SECTION ════════════════════════════════════════ -->
-    <section class="section" aria-labelledby="features-heading">
-      <div class="container">
-        <div class="section__header">
-          <div class="section__eyebrow">How You Can Help</div>
-          <h2 class="section__title" id="features-heading">Every Kenyan Has a Role to Play</h2>
-          <p class="section__desc">Whether you're in Nairobi or Turkana — your voice, your action, your vote matters.
-          </p>
+
+
+    <!-- Before & After Section -->
+    <section class="py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16 text-center md:text-left">
+                <div class="max-w-2xl">
+                    <h2 class="text-4xl md:text-5xl font-premium font-bold mb-6">Seeing is <span
+                            class="text-pinnacle">Believing</span>.</h2>
+                    <p class="text-gray-500 text-lg">Browse through our gallery of successful transformations. Each
+                        smile is a result of precision and passion.</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12" id="comparison-grid">
+                <!-- Comparisons will be injected by JS -->
+            </div>
         </div>
-        <div class="features-grid">
-          <div class="feature-card reveal">
-            <div class="feature-card__icon feature-card__icon--red">📅</div>
-            <h4>Rally & Event Tracker</h4>
-            <p>Find upcoming SISI NDIO SIFUNA meetups near your County. Get directions directly to every venue.</p>
-            <a href="rallies.html" class="btn btn-outline-red btn-sm" style="margin-top:1rem">View Rallies →</a>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-card__icon feature-card__icon--green">🏆</div>
-            <h4>Volunteer Task Board</h4>
-            <p>Earn your Patriot Score by completing grassroot actions — posting posters, sharing content, attending
-              rallies.</p>
-            <a href="tasks.html" class="btn btn-green btn-sm" style="margin-top:1rem">Start Tasks →</a>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-card__icon feature-card__icon--black">📦</div>
-            <h4>Resource Toolkit</h4>
-            <p>Download campaign posters, WhatsApp stickers, and talking points — optimised for low data usage.</p>
-            <a href="resources.html" class="btn btn-sm" style="margin-top:1rem;border:2px solid #000;color:#000">Get
-              Resources →</a>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-card__icon feature-card__icon--red">📍</div>
-            <h4>Localised Signup</h4>
-            <p>Register with your County, Constituency, and Ward — using official IEBC data — to connect you with local
-              organisers.</p>
-            <a href="join.html" class="btn btn-primary btn-sm" style="margin-top:1rem">Register →</a>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-card__icon feature-card__icon--green">📢</div>
-            <h4>SMS & WhatsApp Alerts</h4>
-            <p>Get urgent updates on rally changes and campaign news directly to your phone — no app download needed.
-            </p>
-            <a href="join.html" class="btn btn-green btn-sm" style="margin-top:1rem">Opt In →</a>
-          </div>
-          <div class="feature-card reveal">
-            <div class="feature-card__icon feature-card__icon--black">🇰🇪</div>
-            <h4>Spread the Word</h4>
-            <p>Share the movement on WhatsApp, Facebook, TikTok, and X. Every share reaches more Kenyans.</p>
-            <button id="share-btn" class="btn btn-sm" style="margin-top:1rem;border:2px solid #000;color:#000">Share Now
-              →</button>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- ═══ FLAG STRIPE DIVIDER ════════════════════════════════════ -->
-    <div class="flag-stripe" aria-hidden="true"></div>
+    <!-- Blog Section -->
+    <section id="blog" class="py-24 bg-soft-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-16 gap-8">
+                <div class="max-w-xl text-center md:text-left">
+                    <p class="text-seafoam font-bold uppercase tracking-[0.3em] text-sm mb-3">Our Journal</p>
+                    <h2 class="text-4xl md:text-5xl font-premium font-bold mb-6">Dental <span
+                            class="text-pinnacle">Insights</span></h2>
+                    <p class="text-gray-500 text-lg">Expert advice and the latest trends in aesthetic dentistry and oral
+                        wellness.</p>
+                </div>
+                <!-- Optional: View all link could go to a separate page later -->
+            </div>
 
-    <!-- ═══ UPCOMING RALLIES PREVIEW ════════════════════════════════ -->
-    <section class="section section--grey" aria-labelledby="rallies-heading">
-      <div class="container">
-        <div class="section__header">
-          <div class="section__eyebrow">Upcoming Events</div>
-          <h2 class="section__title" id="rallies-heading">Rallies Near You</h2>
-          <p class="section__desc">Join thousands of Kenyans at these mobilisation events across the Republic.</p>
+            <!-- Blog Grid (Dynamic) -->
+            <div id="blog-grid" class="grid md:grid-cols-3 gap-8"></div>
         </div>
-        <div id="events-list" class="events-list" aria-live="polite">
-          <!-- Loaded by app.js -->
-          <div class="skeleton" style="height:80px;border-radius:12px;margin-bottom:1rem"></div>
-          <div class="skeleton" style="height:80px;border-radius:12px;margin-bottom:1rem"></div>
-          <div class="skeleton" style="height:80px;border-radius:12px"></div>
-        </div>
-        <div class="text-center" style="margin-top:2rem">
-          <a href="rallies.html" class="btn btn-primary">View All Rallies →</a>
-        </div>
-      </div>
     </section>
 
-    <!-- ═══ JOIN CTA ════════════════════════════════════════════════ -->
-    <section class="section section--black" aria-labelledby="join-cta-heading">
-      <div class="container text-center">
-        <div class="section__eyebrow" style="color:var(--kenya-gold)">Take Action Today</div>
-        <h2 class="section__title text-white" id="join-cta-heading">Kenya Needs You Now</h2>
-        <p class="section__desc" style="color:rgba(255,255,255,0.7);max-width:500px;margin:0 auto 2rem">Every volunteer
-          registered strengthens the movement. Sign up in under 2 minutes — no app download needed.</p>
-        <a href="join.html" class="btn btn-primary btn-lg">✊ Become a Volunteer</a>
-      </div>
-    </section>
-  </main>
+    <!-- ===== BLOG MODAL ===== -->
+    <div id="blog-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 sm:p-6">
+        <!-- Overlay -->
+        <div id="blog-overlay" class="absolute inset-0 bg-dark/70 backdrop-blur-sm"></div>
+        <!-- Panel -->
+        <div
+            class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto z-10 flex flex-col">
+            <!-- Header Image -->
+            <div class="relative h-64 sm:h-96 shrink-0 overflow-hidden rounded-t-3xl bg-gray-100">
+                <img id="blog-modal-img" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent"></div>
+                <!-- Close button -->
+                <button id="blog-modal-close"
+                    class="absolute top-6 right-6 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-dark transition-all shadow-lg">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <!-- Body -->
+            <div class="p-8 sm:p-12">
+                <div class="flex items-center gap-4 text-xs font-bold text-teal uppercase tracking-widest mb-6">
+                    <span id="blog-modal-tag"></span>
+                    <span class="w-1.5 h-1.5 bg-gray-200 rounded-full"></span>
+                    <span id="blog-modal-date"></span>
+                </div>
+                <h2 id="blog-modal-title"
+                    class="text-3xl sm:text-4xl md:text-5xl font-premium font-bold mb-10 leading-tight"></h2>
 
-  <!-- ═══ FOOTER ══════════════════════════════════════════════════ -->
-  <footer class="footer" role="contentinfo">
-    <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <h3>SISI NDIO SIFUNA 🇰🇪</h3>
-        <p>A grassroot volunteer movement mobilising every Kenyan for a better tomorrow.</p>
-      </div>
-      <div class="footer__col">
-        <h4>Get Involved</h4>
-        <ul>
-          <li><a href="join.html">Join as Volunteer</a></li>
-          <li><a href="rallies.html">Find a Rally</a></li>
-          <li><a href="tasks.html">Task Board</a></li>
-          <li><a href="resources.html">Resources</a></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h4>Campaign</h4>
-        <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="privacy.html">Privacy Policy</a></li>
-          <li><a href="#">Contact HQ</a></li>
-        </ul>
-      </div>
-      <div class="footer__col">
-        <h4>Follow Us</h4>
-        <ul>
-          <li><a href="#">📘 Facebook</a></li>
-          <li><a href="#">🐦 X (Twitter)</a></li>
-          <li><a href="#">🎵 TikTok</a></li>
-          <li><a href="#">📸 Instagram</a></li>
-        </ul>
-      </div>
+                <div id="blog-modal-content" class="prose prose-lg max-w-none text-gray-600 leading-relaxed space-y-6">
+                    <!-- Article content injected here -->
+                </div>
+
+                <div
+                    class="mt-16 pt-10 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-8">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-pinnacle/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="award" class="text-pinnacle"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-dark">Clinical Team</p>
+                            <p class="text-xs text-gray-400">Pinnacle Dental Centre</p>
+                        </div>
+                    </div>
+                    <a href="#contact" onclick="closeBlogModal()"
+                        class="bg-pinnacle text-white px-8 py-4 rounded-2xl font-bold hover:bg-seafoam transition-all shadow-lg shadow-pinnacle/20">Book
+                        a Consultation</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="footer__bottom">
-      <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a></span>
-      <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
-          style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
-      <span>Made with 🇰🇪 in Kenya</span>
+
+    <!-- Trusted By / Insurance Marquee -->
+    <section class="py-16 bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-premium font-bold mb-4">Trusted <span class="text-pinnacle">By</span>
+            </h2>
+            <p class="text-gray-500 max-w-2xl mx-auto">We collaborate with industry leaders to provide the best
+                solutions for our clients.</p>
+        </div>
+        <div class="marquee-container">
+            <div class="marquee-content gap-16 md:gap-32 items-center px-4">
+                <img src="AAR logo.jpg" alt="AAR" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="Bupa Logo.png" alt="Bupa" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="Heritage Logo.png" alt="Heritage" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="MTN logo.png" alt="MTN" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="alliance logo.png" alt="Alliance" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="axa logo.png" alt="AXA" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="eabl logo.svg" alt="EABL" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="eagle logo.png" alt="Eagle" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="liaison logo.jpg" alt="Liaison" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="old mutual logo.png" alt="Old Mutual" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="pacific logo.png" alt="Pacific" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="pacis logo.jpg" alt="Pacis" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="sedgwick logo.jpg" alt="Sedgwick" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="signa logo.jpg" alt="Cigna" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="uap logo.png" alt="UAP" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+
+                <!-- Repeat for smooth loop -->
+                <img src="AAR logo.jpg" alt="AAR" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="Bupa Logo.png" alt="Bupa" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="Heritage Logo.png" alt="Heritage" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="MTN logo.png" alt="MTN" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="alliance logo.png" alt="Alliance" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="axa logo.png" alt="AXA" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="eabl logo.svg" alt="EABL" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="eagle logo.png" alt="Eagle" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="liaison logo.jpg" alt="Liaison" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="old mutual logo.png" alt="Old Mutual" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="pacific logo.png" alt="Pacific" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="pacis logo.jpg" alt="Pacis" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="sedgwick logo.jpg" alt="Sedgwick" class="h-10 md:h-14 transition-all cursor-pointer"
+                    loading="lazy">
+                <img src="signa logo.jpg" alt="Cigna" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+                <img src="uap logo.png" alt="UAP" class="h-10 md:h-14 transition-all cursor-pointer" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Booking Section -->
+    <section id="contact" class="py-24 bg-soft-gray">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-[28px] md:rounded-[40px] shadow-2xl overflow-hidden grid lg:grid-cols-2">
+                <div class="p-6 sm:p-10 md:p-12 lg:p-20">
+                    <h2 class="text-3xl md:text-4xl font-premium font-bold mb-4">Start Your <span
+                            class="text-pinnacle">Transformation</span>.</h2>
+                    <p class="text-gray-500 mb-10">Fill out the form below, and our patient coordinator will contact you
+                        to confirm your appointment at Sarit Centre.</p>
+
+                    <form id="booking-form" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Full
+                                    Name</label>
+                                <input type="text" name="name" required
+                                    class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-pinnacle focus:bg-white outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Phone
+                                    Number</label>
+                                <input type="tel" name="phone" required
+                                    class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-pinnacle focus:bg-white outline-none transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Select
+                                Service</label>
+                            <select name="service"
+                                class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-pinnacle focus:bg-white outline-none transition-all appearance-none">
+                                <option value="" disabled selected>Choose a service</option>
+                                <option>Invisalign</option>
+                                <option>Root Canal Treatment</option>
+                                <option>Dentures & Implants</option>
+                                <option>Crowns & Bridges</option>
+                                <option>Veneers</option>
+                                <option>Cosmetic Dentistry</option>
+                                <option>Dental Check-ups</option>
+                                <option>Teeth Whitening</option>
+                                <option>Braces</option>
+                                <option>Tooth Extraction</option>
+                                <option>Paediatric Dentistry</option>
+                                <option>Dental Fillings</option>
+                                <option>Dental X-rays</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Preferred
+                                Date</label>
+                            <input type="datetime-local" name="date" required
+                                class="w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-pinnacle focus:bg-white outline-none transition-all">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-pinnacle text-white py-5 rounded-2xl font-bold text-lg hover:bg-teal transition-all shadow-xl shadow-pinnacle/20 flex items-center justify-center gap-3">
+                            Confirm Appointment <i data-lucide="calendar"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="relative min-h-[400px]">
+                    <!-- Placeholder for Google Maps -->
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.8504547926174!2d36.8043063!3d-1.2613941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f173c3f0b2403%3A0xe5a3e1f0e21cd24!2sSarit%20Centre!5e0!3m2!1sen!2ske!4v1709820000000!5m2!1sen!2ske"
+                        class="absolute inset-0 w-full h-full border-0" allowfullscreen="" loading="lazy"></iframe>
+                    <div
+                        class="absolute bottom-10 left-10 right-10 bg-white/90 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-white">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div
+                                class="w-12 h-12 bg-pinnacle rounded-xl flex items-center justify-center text-white shrink-0">
+                                <i data-lucide="map-pin"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Visit Us</h4>
+                                <p class="text-gray-600">Sarit Centre, 2nd Floor, Westlands, Nairobi.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-12 h-12 bg-seafoam rounded-xl flex items-center justify-center text-white shrink-0">
+                                <i data-lucide="phone"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">Call Us</h4>
+                                <p class="text-gray-600">+254 706 076636</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12">
+                <div class="col-span-2">
+                    <div
+                        class="flex items-center mb-6 bg-white/5 inline-block p-4 rounded-2xl backdrop-blur-sm border border-white/10">
+                        <img src="pinnacle logo1_transparent.png" alt="Pinnacle Dental Logo"
+                            class="h-16 md:h-20 w-auto brightness-0 invert opacity-90">
+                    </div>
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-md">
+                        Setting the standard for premium dental care in East Africa. Our clinic at Sarit Centre offers a
+                        unique blend of clinical excellence and luxury hospitality.
+                    </p>
+                    <div class="flex gap-4 mt-8">
+                        <!-- TikTok: Brand black -->
+                        <a href="https://www.tiktok.com/@pinnacledentalcentre_?_r=1&_t=ZS-94WZ0EikD39"
+                            class="w-12 h-12 bg-black rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                            target="_blank" rel="noopener noreferrer" title="TikTok">
+                            <i data-lucide="music-2" class="text-white w-6 h-6"></i>
+                        </a>
+
+                        <!-- Instagram: Brand magenta #E4405F -->
+                        <a href="https://www.instagram.com/pinnacledentalcentre"
+                            class="w-12 h-12 bg-[#E4405F] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                            target="_blank" rel="noopener noreferrer" title="Instagram">
+                            <i data-lucide="instagram" class="text-white w-6 h-6"></i>
+                        </a>
+
+                        <!-- Facebook: Brand Blue #1877F2 -->
+                        <a href="http://www.facebook.com/pinnacledentalcentrenairobi"
+                            class="w-12 h-12 bg-[#1877F2] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                            target="_blank" rel="noopener noreferrer" title="Facebook">
+                            <i data-lucide="facebook" class="text-white w-6 h-6"></i>
+                        </a>
+
+                        <!-- YouTube: Brand Red #FF0000 -->
+                        <a href="https://www.youtube.com/@pinnacledentalcentre"
+                            class="w-12 h-12 bg-[#FF0000] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                            target="_blank" rel="noopener noreferrer" title="YouTube">
+                            <i data-lucide="youtube" class="text-white w-6 h-6"></i>
+                        </a>
+
+                        <!-- LinkedIn: Brand Blue #0077B5 -->
+                        <a href="https://www.linkedin.com/company/pinnacle-dental-centre/"
+                            class="w-12 h-12 bg-[#0077B5] rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+                            target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                            <i data-lucide="linkedin" class="text-white w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-premium font-bold text-xl mb-8">Quick Links</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><a href="#about" class="hover:text-pinnacle">About Us</a></li>
+                        <li><a href="#services" class="hover:text-pinnacle">Our Services</a></li>
+                        <li><a href="shop.html" class="hover:text-pinnacle">Dental Shop</a></li>
+                        <li><a href="#contact" class="hover:text-pinnacle">Book Appointment</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-premium font-bold text-xl mb-8">Contact Info</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-pinnacle"></i>
+                            +254 706 076636</li>
+                        <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-pinnacle"></i>
+                            pinnacledentalcentre@gmail.com</li>
+                        <li class="flex items-center gap-3"><i data-lucide="clock" class="w-5 h-5 text-pinnacle"></i>
+                            <div>
+                                <p>Mon - Sat: 08:00 - 05:00</p>
+                                <p>Sunday: 09:00 - 05:00</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-white/10 text-center text-gray-500">
+                <p>&copy; 2026 Pinnacle Dental Centre. All rights reserved. | <a href="#"
+                        class="hover:text-white underline">Privacy Policy</a> | <span style="color: #CE1126;">Powered by
+                        <a href="https://techbrain.africa" target="_blank"
+                            class="hover:text-white underline">TECHBRAIN</a></span></p>
+            </div>
+        </div>
+    </footer>
+
+
+    <a href="https://wa.me/254706076636?text=Hello%20Pinnacle%20Dental!%20I'd%20like%20to%20inquire%20about..."
+        target="_blank"
+        class="fixed bottom-6 left-4 sm:bottom-8 sm:left-6 z-[100] flex items-center gap-0 sm:gap-3 bg-[#25D366] text-white w-14 h-14 sm:w-auto sm:h-auto sm:pl-4 sm:pr-5 sm:py-3 rounded-full shadow-2xl whatsapp-btn hover:scale-105 transition-transform justify-center">
+        <!-- Official WhatsApp SVG Logo -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-7 h-7 fill-white shrink-0">
+            <path
+                d="M16 .5C7.44.5.5 7.44.5 16c0 2.82.74 5.52 2.14 7.9L.5 31.5l7.82-2.1A15.45 15.45 0 0 0 16 31.5C24.56 31.5 31.5 24.56 31.5 16S24.56.5 16 .5Zm0 28.2a13.16 13.16 0 0 1-6.72-1.84l-.48-.29-4.64 1.25 1.23-4.54-.31-.5A13.2 13.2 0 1 1 16 28.7Zm7.23-9.87c-.4-.2-2.34-1.16-2.7-1.29-.36-.13-.63-.2-.89.2s-1.02 1.29-1.25 1.55c-.23.27-.46.3-.85.1a10.76 10.76 0 0 1-3.17-1.96 11.87 11.87 0 0 1-2.19-2.73c-.23-.39 0-.6.17-.8.16-.17.36-.45.54-.67.18-.22.24-.38.36-.63.12-.26.06-.48-.03-.67-.1-.2-.89-2.14-1.22-2.93-.32-.77-.65-.67-.89-.68h-.76a1.46 1.46 0 0 0-1.06.5 4.46 4.46 0 0 0-1.39 3.32c0 1.96 1.42 3.86 1.62 4.13.2.26 2.79 4.27 6.76 5.98.95.41 1.69.65 2.26.84.95.3 1.82.26 2.5.16.76-.11 2.34-.96 2.67-1.88.33-.93.33-1.72.23-1.89-.1-.17-.36-.27-.76-.47Z" />
+        </svg>
+        <span class="hidden sm:inline font-bold text-sm whitespace-nowrap">Let's have a Chat</span>
+    </a>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Navigation Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-4', 'shadow-xl');
+                nav.classList.remove('py-2');
+            } else {
+                nav.classList.remove('py-4', 'shadow-xl');
+                nav.classList.add('py-2');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+    <!-- ElevenLabs AI Widget -->
+    <div style="position: fixed; bottom: 1.5rem; right: 1rem; z-index: 100;">
+        <elevenlabs-convai agent-id="agent_5601kdan454zfrnvj7abmajsmj93"></elevenlabs-convai>
     </div>
-  </footer>
-
-  <!-- ═══ BOTTOM NAVIGATION (Mobile) ═════════════════════════════ -->
-  <nav class="bottom-nav" aria-label="Mobile navigation" role="navigation">
-    <a href="index.html" class="bottom-nav__item active" aria-label="Home">
-      <span class="bottom-nav__icon" aria-hidden="true">🏠</span>
-      <span class="bottom-nav__label">Home</span>
-    </a>
-    <a href="rallies.html" class="bottom-nav__item" aria-label="Rallies">
-      <span class="bottom-nav__icon" aria-hidden="true">📅</span>
-      <span class="bottom-nav__label">Rallies</span>
-    </a>
-    <a href="join.html" class="bottom-nav__item bottom-nav__item--join" aria-label="Join Now">
-      <span class="bottom-nav__icon" aria-hidden="true">✊</span>
-      <span class="bottom-nav__label">Join</span>
-    </a>
-    <a href="tasks.html" class="bottom-nav__item" aria-label="Task Board">
-      <span class="bottom-nav__icon" aria-hidden="true">🏆</span>
-      <span class="bottom-nav__label">Tasks</span>
-    </a>
-    <a href="resources.html" class="bottom-nav__item" aria-label="Resources">
-      <span class="bottom-nav__icon" aria-hidden="true">📦</span>
-      <span class="bottom-nav__label">Resources</span>
-    </a>
-  </nav>
-
-  <!-- Scripts -->
-  <script src="iebc-data.js"></script>
-  <script src="kenya-map-data.js"></script>
-  <script src="app.js"></script>
+    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 </body>
 
 </html>
