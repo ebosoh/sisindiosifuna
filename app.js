@@ -53,6 +53,7 @@ async function shareApp() {
 // ─── DOM Helpers ─────────────────────────────────────────────────
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+const esc = (str) => String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 
 /**
  * Converts Google Drive share links to direct direct download/view links.
@@ -315,7 +316,14 @@ async function registerVolunteer(formData) {
     if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
 
     try {
-        const params = new URLSearchParams({ action: 'register', ...Object.fromEntries(formData) });
+        const formDataObj = Object.fromEntries(formData);
+        if (formDataObj.website_hp) { // Honeypot check
+            console.warn('Bot detected via honeypot');
+            return;
+        }
+        delete formDataObj.website_hp;
+
+        const params = new URLSearchParams({ action: 'register', ...formDataObj });
         const res = await fetch(GAS_API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -409,18 +417,18 @@ function renderEventCard(ev) {
         : `<span class="badge badge-gold">⏳ Upcoming</span>`;
     return `
     <div class="event-card reveal">
-      <div class="event-card__date"><div class="day">${day}</div><div class="month">${month}</div></div>
+      <div class="event-card__date"><div class="day">${esc(day)}</div><div class="month">${esc(month)}</div></div>
       <div class="event-card__info">
-        <div class="event-card__title">${ev.title}</div>
+        <div class="event-card__title">${esc(ev.title)}</div>
         <div class="event-card__meta">
-          <span>📍 ${ev.venue}</span>
-          <span>🕐 ${ev.time}</span>
-          <span>🗺️ ${ev.county}</span>
+          <span>📍 ${esc(ev.venue)}</span>
+          <span>🕐 ${esc(ev.time)}</span>
+          <span>🗺️ ${esc(ev.county)}</span>
         </div>
       </div>
       <div class="event-card__actions">
         ${statusBadge}
-        <a href="${ev.mapUrl}" target="_blank" rel="noopener" class="btn btn-outline-red btn-sm">📍 Map</a>
+        <a href="${esc(ev.mapUrl)}" target="_blank" rel="noopener" class="btn btn-outline-red btn-sm">📍 Map</a>
       </div>
     </div>`;
 }
@@ -540,13 +548,13 @@ async function loadResources() {
                     return `
                     <div class="resource-card reveal" style="overflow:hidden;flex-direction:column">
                         <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
-                             <img src="${thumbSrc}" alt="${r.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
+                             <img src="${esc(thumbSrc)}" alt="${esc(r.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
                              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%)"></div>
                              <a ${dlAttr} class="resource-card__dl" style="position:absolute;bottom:10px;right:10px;border-radius:8px;padding:.4rem .9rem;font-size:.8rem">⬇ Download</a>
                         </div>
                         <div class="resource-card__body" style="border-radius:0 0 12px 12px">
-                            <div class="resource-card__title">${r.title}</div>
-                            <div class="resource-card__size">${r.format} · ${r.size}</div>
+                            <div class="resource-card__title">${esc(r.title)}</div>
+                            <div class="resource-card__size">${esc(r.format)} · ${esc(r.size)}</div>
                         </div>
                     </div>`;
                 }
@@ -554,8 +562,8 @@ async function loadResources() {
                 <div class="resource-card reveal">
                     <div class="resource-card__thumb" style="background:var(--kenya-red)">📌</div>
                     <div class="resource-card__body">
-                        <div class="resource-card__title">${r.title}</div>
-                        <div class="resource-card__size">${r.format} · ${r.size}</div>
+                        <div class="resource-card__title">${esc(r.title)}</div>
+                        <div class="resource-card__size">${esc(r.format)} · ${esc(r.size)}</div>
                     </div>
                     <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
                 </div>`;
@@ -584,15 +592,15 @@ async function loadResources() {
                         <div class="sticker-card__content">
                             <div class="sticker-card__preview">${thumbHtml}</div>
                             <div class="sticker-card__info">
-                                <h4 class="sticker-card__title">${r.title}</h4>
+                                <h4 class="sticker-card__title">${esc(r.title)}</h4>
                             </div>
                         </div>
                     </div>
                     <div class="sticker-card__footer">
-                        <button onclick="shareSticker('${r.title.replace(/'/g, "\\'")}', '${r.url}')" class="btn btn-green btn-xs">
+                        <button onclick="shareSticker('${esc(r.title.replace(/'/g, "\\'"))}', '${esc(r.url)}')" class="btn btn-green btn-xs">
                             💬 Share
                         </button>
-                        ${r.url && r.url !== '#' ? `<a href="${getDirectDriveUrl(r.url)}" class="btn btn-outline-red btn-xs" download>⬇ Download</a>` : ''}
+                        ${r.url && r.url !== '#' ? `<a href="${esc(getDirectDriveUrl(r.url))}" class="btn btn-outline-red btn-xs" download>⬇ Download</a>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -604,10 +612,10 @@ async function loadResources() {
                 <div class="card reveal">
                     <div class="card__body" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
                         <div>
-                            <h4 style="margin-bottom:.25rem">${r.title}</h4>
-                            <p style="font-size:.82rem;color:var(--grey-400)">${r.format} · ${r.size}</p>
+                            <h4 style="margin-bottom:.25rem">${esc(r.title)}</h4>
+                            <p style="font-size:.82rem;color:var(--grey-400)">${esc(r.format)} · ${esc(r.size)}</p>
                         </div>
-                        <a href="${r.url}" class="btn btn-sm btn-outline-red" download>⬇ Download ${r.format}</a>
+                        <a href="${esc(r.url)}" class="btn btn-sm btn-outline-red" download>⬇ Download ${esc(r.format)}</a>
                     </div>
                 </div>
                 `).join('');
@@ -663,19 +671,19 @@ function renderVideoCard(v) {
 
     return `
     <div class="resource-card reveal" ${asyncAttr}>
-        <div class="resource-card__thumb" style="background:${brand.color};padding:0;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">
+        <div class="resource-card__thumb" style="background:${esc(brand.color)};padding:0;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center">
             ${preview}
             ${iconOverlay}
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.1)">
                 <div style="width:46px;height:46px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:1.2rem;box-shadow:0 4px 12px rgba(0,0,0,0.2)">▶</div>
             </div>
-            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;text-transform:uppercase;font-weight:bold;letter-spacing:0.5px">${platform}</div>
+            <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;text-transform:uppercase;font-weight:bold;letter-spacing:0.5px">${esc(platform)}</div>
         </div>
         <div class="resource-card__body">
-            <div class="resource-card__title">${v.title}</div>
-            <div class="resource-card__size">${v.format} · ${v.size}</div>
+            <div class="resource-card__title">${esc(v.title)}</div>
+            <div class="resource-card__size">${esc(v.format)} · ${esc(v.size)}</div>
         </div>
-        <a href="${v.url}" target="_blank" rel="noopener" class="resource-card__dl">▶ Open on ${platform}</a>
+        <a href="${esc(v.url)}" target="_blank" rel="noopener" class="resource-card__dl">▶ Open on ${esc(platform)}</a>
     </div>`;
 }
 
@@ -818,10 +826,21 @@ class PatriotScore {
                     return;
                 }
                 // Log additional context for admin verification (while keeping it private)
-                trackEvent('voter_registered_verified', { county, national_id: nationalId });
+                trackEvent('voter_registered_verified', { county, national_id: 'HIDDEN_' + nationalId.slice(-4) });
                 
-                // Also send to backend
-                fetch(`${GAS_API_URL}?action=submitTask&task=${taskId}&volunteer=${encodeURIComponent(localStorage.getItem('sisi_volunteer_name') || 'Patriot')}&county=${encodeURIComponent(county)}&national_id=${encodeURIComponent(nationalId)}`, { method: 'POST' }).catch(() => { });
+                // Also send to backend securely in POST body
+                const taskParams = new URLSearchParams({
+                    action: 'submitTask',
+                    task: taskId,
+                    volunteer: localStorage.getItem('sisi_volunteer_name') || 'Patriot',
+                    county: county,
+                    national_id: nationalId
+                });
+                fetch(GAS_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: taskParams.toString()
+                }).catch(() => { });
             }
 
             this._toggleProcess(taskId);
