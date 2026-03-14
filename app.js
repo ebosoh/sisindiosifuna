@@ -812,12 +812,16 @@ class PatriotScore {
         confirmBtn.onclick = () => {
             if (taskId === 't0') {
                 const county = $('#reg-county')?.value;
-                if (!county) {
-                    showToast('⚠️ Please mention your registration county.', 'error');
+                const nationalId = $('#reg-id')?.value;
+                if (!county || !nationalId) {
+                    showToast('⚠️ Please provide both your county and National ID.', 'error');
                     return;
                 }
                 // Log additional context for admin verification (while keeping it private)
-                trackEvent('voter_registered_verified', { county });
+                trackEvent('voter_registered_verified', { county, national_id: nationalId });
+                
+                // Also send to backend
+                fetch(`${GAS_API_URL}?action=submitTask&task=${taskId}&volunteer=${encodeURIComponent(localStorage.getItem('sisi_volunteer_name') || 'Patriot')}&county=${encodeURIComponent(county)}&national_id=${encodeURIComponent(nationalId)}`, { method: 'POST' }).catch(() => { });
             }
 
             this._toggleProcess(taskId);
