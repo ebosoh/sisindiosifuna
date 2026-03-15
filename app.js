@@ -448,7 +448,7 @@ const DEMO_RESOURCES = [
  * Universal Sharing System
  * Attempts native file sharing on mobile, falls back to text/link sharing.
  */
-async function shareSticker(title, url) {
+async function shareSticker(title, url, type = 'sticker') {
     const directUrl = getDirectDriveUrl(url);
     const domain = window.location.origin;
     const fullUrl = url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${directUrl}`;
@@ -468,7 +468,7 @@ async function shareSticker(title, url) {
                 await navigator.share({
                     files: [file],
                     title: title,
-                    text: `Check out this sticker from SISI NDIO SIFUNA! \u270a\ud83c\uddf0\ud83c\uddea`
+                    text: `Check out this ${type} from SISI NDIO SIFUNA! \u270a\ud83c\uddf0\ud83c\uddea\nhttps://sisindiosifuna.org`
                 });
                 // ─── GA4: Track sticker share ───────────────────────────────
                 trackEvent('sticker_shared', { method: 'native_file', sticker_title: title });
@@ -485,7 +485,7 @@ async function shareSticker(title, url) {
     }
 
     // 2. Fallback: Text Share (WhatsApp Web / Other)
-    const shareText = `Check out this ${title} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}`;
+    const shareText = `Check out this ${type} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}\nhttps://sisindiosifuna.org`;
     const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(waUrl, '_blank');
     // ─── GA4: Track fallback WhatsApp share ───────────────────────
@@ -550,7 +550,10 @@ async function loadResources() {
                         <div style="position:relative;width:100%;height:200px;overflow:hidden;background:#111;border-radius:12px 12px 0 0">
                              <img src="${esc(thumbSrc)}" alt="${esc(r.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">
                              <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%)"></div>
-                             <a ${dlAttr} class="resource-card__dl" style="position:absolute;bottom:10px;right:10px;border-radius:8px;padding:.4rem .9rem;font-size:.8rem">⬇ Download</a>
+                             <div style="position:absolute;inset:0;padding:10px;display:flex;flex-direction:row;align-items:flex-end;justify-content:flex-end;gap:8px;">
+                                 <button onclick="shareSticker('${esc(r.title.replace(/'/g, "\\'"))}', '${esc((r.url && r.url !== '#') ? r.url : (r.thumbnailUrl || ''))}', 'Campaign poster')" class="btn btn-green btn-xs" style="border-radius:8px;padding:.4rem .9rem;font-size:.8rem;border:none;">💬 Share</button>
+                                 <a ${dlAttr} class="resource-card__dl" style="position:static;border-radius:8px;padding:.4rem .9rem;font-size:.8rem;margin:0;">⬇ Download</a>
+                             </div>
                         </div>
                         <div class="resource-card__body" style="border-radius:0 0 12px 12px">
                             <div class="resource-card__title">${esc(r.title)}</div>
@@ -565,7 +568,10 @@ async function loadResources() {
                         <div class="resource-card__title">${esc(r.title)}</div>
                         <div class="resource-card__size">${esc(r.format)} · ${esc(r.size)}</div>
                     </div>
-                    <a ${dlAttr} class="resource-card__dl">⬇ Download</a>
+                    <div style="display:flex;flex-direction:column;gap:0.5rem;justify-content:center;padding-right:1rem;">
+                        <button onclick="shareSticker('${esc(r.title.replace(/'/g, "\\'"))}', '${esc((r.url && r.url !== '#') ? r.url : '')}', 'Campaign poster')" class="btn btn-green btn-xs">💬 Share</button>
+                        <a ${dlAttr} class="resource-card__dl" style="position:static;margin:0;">⬇ Download</a>
+                    </div>
                 </div>`;
             }).join('');
         } else {
