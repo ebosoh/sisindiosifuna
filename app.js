@@ -449,15 +449,17 @@ const DEMO_RESOURCES = [
  * Attempts native file sharing on mobile, falls back to text/link sharing.
  */
 async function shareSticker(title, url, type = 'sticker') {
-    const directUrl = getDirectDriveUrl(url);
+    const isDriveUrl = url.includes('drive.google.com') || url.includes('docs.google.com');
+    const directUrl = isDriveUrl ? getDirectDriveUrl(url) : url;
     const domain = window.location.origin;
-    const fullUrl = url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${directUrl}`;
+    // For local files, resolve against current path
+    const fullUrl = url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${url.startsWith('/') ? url.slice(1) : url}`;
 
     // 1. Try Native File Share (Mobile/Supported)
     if (navigator.canShare && navigator.share) {
         try {
-            console.log('A2HS: Attempting to fetch image for sharing:', directUrl);
-            const response = await fetch(directUrl, { mode: 'cors' });
+            console.log('A2HS: Attempting to fetch image for sharing:', fullUrl);
+            const response = await fetch(fullUrl, { mode: 'cors' });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             const blob = await response.blob();
@@ -537,11 +539,12 @@ async function loadResources() {
         if (posters.length) {
             posterGrid.innerHTML = posters.map(r => {
                 const isDriveUrl = r.url && (r.url.includes('drive.google.com') || r.url.includes('docs.google.com') || r.url.includes('googleusercontent.com'));
-                const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl);
+                const isLocalUrl = r.url && !r.url.startsWith('http') && r.url !== '#';
+                const isImageUrl = r.url && (r.url.toLowerCase().trim().endsWith('.png') || r.url.toLowerCase().trim().endsWith('.jpg') || r.url.toLowerCase().trim().endsWith('.jpeg') || r.url.toLowerCase().trim().endsWith('.webp') || isDriveUrl || isLocalUrl);
                 const hasThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') || isImageUrl;
                 const rawThumb = (r.thumbnailUrl && r.thumbnailUrl !== '#' && r.thumbnailUrl !== '') ? r.thumbnailUrl : (isImageUrl ? r.url : '');
-                const thumbSrc = getDirectDriveUrl(rawThumb, true);
-                const dlUrl = getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false);
+                const thumbSrc = (isDriveUrl || (r.thumbnailUrl && r.thumbnailUrl.includes('drive.google.com'))) ? getDirectDriveUrl(rawThumb, true) : rawThumb;
+                const dlUrl = isDriveUrl ? getDirectDriveUrl((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null), false) : ((r.url && r.url !== '#') ? r.url : (hasThumb ? r.thumbnailUrl : null));
                 const dlAttr = dlUrl ? `href="${dlUrl}" download` : `href="#" onclick="event.preventDefault();"`;
 
                 if (hasThumb) {
