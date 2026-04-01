@@ -377,12 +377,7 @@ function showSuccessScreen() {
 
 // ─── Rally Events Loader ─────────────────────────────────────────
 const DEMO_EVENTS = [
-    { id: 1, title: 'Nairobi Uhuru Park Grand Rally', county: 'Nairobi', venue: 'Uhuru Park Grounds', date: '2026-03-14', time: '10:00 AM', mapUrl: 'https://maps.google.com/?q=Uhuru+Park+Nairobi', status: 'confirmed' },
-    { id: 2, title: 'Mombasa Tononoka Youth Rally', county: 'Mombasa', venue: 'Tononoka Social Hall', date: '2026-03-21', time: '2:00 PM', mapUrl: 'https://maps.google.com/?q=Tononoka+Mombasa', status: 'confirmed' },
-    { id: 3, title: 'Kisumu Jomo Kenyatta Grounds', county: 'Kisumu', venue: 'Jomo Kenyatta Grounds', date: '2026-03-28', time: '11:00 AM', mapUrl: 'https://maps.google.com/?q=Kisumu+Grounds', status: 'confirmed' },
-    { id: 4, title: 'Nakuru Afraha Stadium Meet', county: 'Nakuru', venue: 'Afraha Stadium', date: '2026-04-04', time: '9:00 AM', mapUrl: 'https://maps.google.com/?q=Afraha+Stadium', status: 'confirmed' },
-    { id: 5, title: 'Eldoret Vocational Village Rally', county: 'Uasin Gishu', venue: 'Eldoret Town Centre', date: '2026-04-11', time: '1:00 PM', mapUrl: 'https://maps.google.com/?q=Eldoret+Town', status: 'upcoming' },
-    { id: 6, title: 'Garissa County Mobilisation Drive', county: 'Garissa', venue: 'Garissa Township Centre', date: '2026-04-18', time: '10:00 AM', mapUrl: 'https://maps.google.com/?q=Garissa', status: 'upcoming' },
+    
 ];
 
 async function loadEvents(containerId = 'events-list') {
