@@ -377,7 +377,7 @@ function showSuccessScreen() {
 
 // ─── Rally Events Loader ─────────────────────────────────────────
 const DEMO_EVENTS = [
-    
+
 ];
 
 async function loadEvents(containerId = 'events-list') {
@@ -407,9 +407,22 @@ function renderEventCard(ev) {
     const d = new Date(dateStr);
     const day = d.getDate();
     const month = d.toLocaleString('en-KE', { month: 'short' }).toUpperCase();
-    const statusBadge = ev.status === 'confirmed'
-        ? `<span class="badge badge-green">✔ Confirmed</span>`
-        : `<span class="badge badge-gold">⏳ Upcoming</span>`;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const evStatus = (ev.status || '').toLowerCase();
+
+    let statusBadge = '';
+    if (d < today) {
+        statusBadge = `<span class="badge" style="background:#e0e0e0;color:#555">🔙 Past</span>`;
+    } else if (evStatus === 'confirmed') {
+        statusBadge = `<span class="badge badge-green">✔ Confirmed</span>`;
+    } else if (evStatus === 'tentative') {
+        statusBadge = `<span class="badge" style="background:#f39c12;color:#fff">❓ Tentative</span>`;
+    } else {
+        statusBadge = `<span class="badge badge-gold">⏳ Upcoming</span>`;
+    }
+
     return `
     <div class="event-card reveal">
       <div class="event-card__date"><div class="day">${esc(day)}</div><div class="month">${esc(month)}</div></div>
@@ -831,7 +844,7 @@ class PatriotScore {
                 }
                 // Log additional context for admin verification (while keeping it private)
                 trackEvent('voter_registered_verified', { county, national_id: 'HIDDEN_' + nationalId.slice(-4) });
-                
+
                 // Also send to backend securely in POST body
                 const taskParams = new URLSearchParams({
                     action: 'submitTask',
