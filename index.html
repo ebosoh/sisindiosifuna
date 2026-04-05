@@ -81,14 +81,11 @@
           <span class="accent-green">SIFUNA</span>
         </h1>
         <p class="hero__sub">One Million Volunteers for MOTHERLAND!</p>
-        <div style="margin-bottom: 2rem;">
-          <button id="share-movement-btn" class="btn btn-primary btn-lg btn-glow">
-            ✊ Share the Movement
-          </button>
-        </div>
         <div class="hero__ctas">
+          <button id="hero-share-btn" class="btn btn-primary btn-lg btn-glow">✊ Share the Movement</button>
           <a href="join.html" class="btn btn-primary btn-lg" id="hero-join-btn">✊ Join the Movement</a>
           <a href="rallies.html" class="btn btn-secondary btn-lg">📅 Find a Rally</a>
+          <button id="hero-advice-btn" class="btn btn-outline-gold btn-lg">💡 Advice SIFUNA</button>
         </div>
       </div>
     </section>
@@ -204,6 +201,72 @@
 
     <!-- ═══ FLAG STRIPE DIVIDER ════════════════════════════════════ -->
     <div class="flag-stripe" aria-hidden="true"></div>
+
+    <!-- ═══ TELL SIFUNA DISCUSSION BOARD ═══════════════════════════ -->
+    <section class="section" aria-labelledby="opinions-heading" id="tell-sifuna">
+      <div class="container">
+        <div class="section__header">
+          <div class="section__eyebrow">Volunteer Voice</div>
+          <h2 class="section__title" id="opinions-heading">Tell Sifuna 🇰🇪</h2>
+          <p class="section__desc">What should Sifuna do to change Kenya? What is the strategy for 2027? Post your
+            anonymous recommendations below.</p>
+        </div>
+
+        <div class="opinions-grid">
+          <!-- Submission Form -->
+          <div class="card reveal">
+            <div class="card__body">
+              <h3 style="margin-bottom: 1.5rem; color: var(--kenya-red)">Submit Your Strategy</h3>
+              <form id="opinion-form" class="app-form">
+                <div class="form-group">
+                  <label for="opinion-county">Your County (Optional for Anonymity)</label>
+                  <select id="opinion-county" name="county" class="form-control">
+                    <option value="">Select County (Stay Anonymous)</option>
+                    <!-- Populated by app.js -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="opinion-text">Your Opinion / Recommendation</label>
+                  <textarea id="opinion-text" name="opinion" class="form-control" rows="5" required
+                    placeholder="E.g. Focus on youth employment strategies in rural areas..."></textarea>
+                </div>
+                <button type="submit" id="opinion-submit-btn" class="btn btn-primary btn-lg w-full">
+                  ✊ Submit Recommendation
+                </button>
+              </form>
+              <div id="opinion-success" class="opinion-success-msg" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h4>Message Received, Patriot!</h4>
+                <p>Your strategy has been logged anonymously. Together, we build the nation.</p>
+                <button onclick="resetOpinionForm()" class="btn btn-outline-red btn-sm" style="margin-top:1rem">Send
+                  Another</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 20 Insights Card -->
+          <div class="card reveal insights-card">
+            <div class="card__body">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--kenya-green)">Volunteer Insights</h3>
+                <span class="badge badge-gold">Top 20 Trending</span>
+              </div>
+              <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--grey-600)">Live aggregation of major
+                points being proposed by volunteers across the country.</p>
+
+              <div id="insights-list" class="insights-list">
+                <!-- Loaded by app.js -->
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ═══ UPCOMING RALLIES PREVIEW ════════════════════════════════ -->
     <section class="section section--grey" aria-labelledby="rallies-heading">

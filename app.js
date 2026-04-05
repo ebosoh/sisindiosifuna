@@ -185,9 +185,17 @@ function applyPersonalization() {
     }
 
     // Initialize Global Share Button
-    const shareBtn = $('#share-movement-btn');
+    const shareBtn = $('#hero-share-btn') || $('#share-movement-btn');
     if (shareBtn) {
         shareBtn.addEventListener('click', shareApp);
+    }
+
+    const adviceBtn = $('#hero-advice-btn');
+    if (adviceBtn) {
+        adviceBtn.addEventListener('click', () => {
+            const section = $('#tell-sifuna');
+            if (section) section.scrollIntoView({ behavior: 'smooth' });
+        });
     }
 }
 
@@ -1105,6 +1113,111 @@ function initShare() {
     });
 }
 
+// ─── Tell Sifuna: Discussion Board & Insights ────────────────────
+async function initOpinionsBoard() {
+    const form = $('#opinion-form');
+    const countyEl = $('#opinion-county');
+    const insightsList = $('#insights-list');
+
+    if (!form || !insightsList) return;
+
+    // 1. Populate County Dropdown (if COUNTIES exists from iebc-data.js)
+    if (typeof COUNTIES !== 'undefined' && countyEl) {
+        COUNTIES.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = c;
+            countyEl.appendChild(opt);
+        });
+    }
+
+    // 2. Handle Form Submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = $('#opinion-submit-btn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Submitting Strategy…';
+
+        try {
+            const formData = new FormData(form);
+            const params = new URLSearchParams({
+                action: 'submitOpinion',
+                county: formData.get('county') || 'Anonymous',
+                opinion: formData.get('opinion')
+            });
+
+            const res = await fetch(GAS_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: params.toString()
+            });
+
+            const data = await res.json();
+            if (data.status === 'success') {
+                form.style.display = 'none';
+                $('#opinion-success').style.display = 'block';
+                showToast('✅ Strategy shared anonymously. Bravo!', 'success');
+                trackEvent('opinion_submitted', { county: formData.get('county') || 'anonymous' });
+                // Refresh insights after a short delay
+                setTimeout(() => loadOpinionsSummary(), 2000);
+            } else {
+                throw new Error(data.message || 'Submission failed');
+            }
+        } catch (err) {
+            showToast('⚠️ Could not submit. Please try again.', 'error');
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+
+    // 3. Initial Load of Summary
+    loadOpinionsSummary();
+}
+
+async function loadOpinionsSummary() {
+    const container = $('#insights-list');
+    if (!container) return;
+
+    try {
+        const res = await fetch(`${GAS_API_URL}?action=getOpinionsSummary`, { cache: 'no-store' });
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+            container.innerHTML = data.map((item, index) => `
+                <div class="insight-item reveal" style="animation-delay: ${index * 0.05}s">
+                    <span class="insight-item__text">${esc(item.point)}</span>
+                    <span class="insight-item__count">${item.count}</span>
+                </div>
+            `).join('');
+            if (typeof initScrollReveal === 'function') initScrollReveal();
+        } else {
+            container.innerHTML = `
+                <div class="text-center" style="padding: 2rem; color: var(--grey-400)">
+                    <p>No major points extracted yet. Be the first to share a strategy!</p>
+                </div>
+            `;
+        }
+    } catch (err) {
+        container.innerHTML = '<p class="text-center" style="color:var(--kenya-red)">⚠️ Could not load insights.</p>';
+    }
+}
+
+function resetOpinionForm() {
+    const form = $('#opinion-form');
+    const success = $('#opinion-success');
+    if (form && success) {
+        form.reset();
+        form.style.display = 'block';
+        success.style.display = 'none';
+        const btn = $('#opinion-submit-btn');
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '✊ Submit Recommendation';
+        }
+    }
+}
+
 // ─── Page Init ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     logVisit();
@@ -1116,6 +1229,9 @@ document.addEventListener('DOMContentLoaded', () => {
     highlightActiveNav();
     initShare();
     applyPersonalization();
+
+    // New Discussion Board init
+    initOpinionsBoard();
 
     // ─── Service Worker & PWA Installation ───────────────────────
     if ('serviceWorker' in navigator) {
