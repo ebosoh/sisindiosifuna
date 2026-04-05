@@ -2137,11 +2137,25 @@ select.form-control {
   grid-template-columns: 1fr;
   gap: var(--sp-8);
   margin-top: var(--sp-4);
+  align-items: start;
 }
 
 @media (min-width: 900px) {
   .opinions-grid {
     grid-template-columns: 1.2fr 0.8fr;
+    align-items: stretch;
+  }
+
+  /* Insights card fills the full height of the form card */
+  .opinions-grid>.card:last-child {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .opinions-grid>.card:last-child .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 }
 
@@ -2179,6 +2193,28 @@ select.form-control {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
+  overflow-y: auto;
+  max-height: 420px;
+  /* Scrollable — capped at form card height */
+  padding-right: var(--sp-2);
+  /* room for scrollbar */
+  flex: 1;
+  /* fills remaining card height on desktop */
+  scrollbar-width: thin;
+  scrollbar-color: var(--kenya-green) transparent;
+}
+
+.insights-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.insights-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.insights-list::-webkit-scrollbar-thumb {
+  background: var(--kenya-green);
+  border-radius: var(--radius-full);
 }
 
 .insight-item {

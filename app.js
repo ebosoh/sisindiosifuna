@@ -1173,7 +1173,6 @@ async function loadOpinionsSummary() {
             container.innerHTML = data.map((item, index) => `
                 <div class="insight-item reveal" style="animation-delay: ${index * 0.05}s">
                     <span class="insight-item__text">${esc(item.point)}</span>
-                    <span class="insight-item__count">${item.percent}</span>
                 </div>
             `).join('');
             if (typeof initScrollReveal === 'function') initScrollReveal();
