@@ -183,20 +183,6 @@ function applyPersonalization() {
     if (successMsg) {
         successMsg.innerHTML = `You are now a registered volunteer in the <strong>SISI NDIO SIFUNA</strong> movement. Your commitment to this noble cause is what will move Kenya forward. <br><br> <span class="noble-cause-msg">"Pamoja Tunajenga Taifa Letu!"</span>`;
     }
-
-    // Initialize Global Share Button
-    const shareBtn = $('#hero-share-btn') || $('#share-movement-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', shareApp);
-    }
-
-    const adviceBtn = $('#hero-advice-btn');
-    if (adviceBtn) {
-        adviceBtn.addEventListener('click', () => {
-            const section = $('#tell-sifuna');
-            if (section) section.scrollIntoView({ behavior: 'smooth' });
-        });
-    }
 }
 
 // 4. Success Screen Personalization
@@ -1093,24 +1079,24 @@ function initRegisterForm() {
     });
 }
 
-// ─── Share Button ─────────────────────────────────────────────────
-function initShare() {
-    const btn = $('#share-btn');
-    if (!btn) return;
-    btn.addEventListener('click', async () => {
-        const CAMPAIGN_URL = 'https://www.sisindiosifuna.org';
-        const shareData = {
-            title: 'SISI NDIO SIFUNA 🇰🇪',
-            text: 'I just joined the SISI NDIO SIFUNA volunteer movement! Join the movement at:',
-            url: CAMPAIGN_URL
-        };
-        if (navigator.share) {
-            try { await navigator.share(shareData); } catch (_) { }
-        } else {
-            await navigator.clipboard.writeText(CAMPAIGN_URL);
-            showToast('🔗 Link copied to clipboard!');
-        }
-    });
+// ─── Hero Action Buttons ─────────────────────────────────────────
+function initHeroButtons() {
+    // 1. Share Button
+    const shareBtn = $('#hero-share-btn') || $('#share-movement-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', shareApp);
+    }
+
+    // 2. Advice Sifuna Button (Smooth Scroll)
+    const adviceBtn = $('#hero-advice-btn');
+    if (adviceBtn) {
+        adviceBtn.addEventListener('click', () => {
+            const section = $('#tell-sifuna');
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
 }
 
 // ─── Tell Sifuna: Discussion Board & Insights ────────────────────
@@ -1227,7 +1213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRegisterForm();
     initScrollReveal();
     highlightActiveNav();
-    initShare();
+    initHeroButtons();
     applyPersonalization();
 
     // New Discussion Board init
