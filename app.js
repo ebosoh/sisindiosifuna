@@ -151,7 +151,10 @@ function applyPersonalization() {
     // 3. Page specific hero sub-text / Hiding Join elements
     if (isHome) {
         const heroJoinBtn = $('#hero-join-btn');
-        if (heroJoinBtn) heroJoinBtn.style.display = 'none';
+        if (heroJoinBtn) {
+            heroJoinBtn.textContent = '✊ View Patriot Tasks';
+            heroJoinBtn.href = 'tasks.html';
+        }
 
         // Hide the big bottom Join CTA section
         const bottomJoinSec = $('section[aria-labelledby="join-cta-heading"]');
