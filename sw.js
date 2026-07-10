@@ -3,19 +3,20 @@
 // Users are NEVER prompted to install. This runs invisibly.
 // ================================================================
 
-const CACHE_NAME = 'sisi-v1';
+const CACHE_NAME = 'sisi-v4';
 const STATIC_ASSETS = [
-    '/',
-    '/index.html',
-    '/join.html',
-    '/rallies.html',
-    '/tasks.html',
-    '/resources.html',
-    '/about.html',
-    '/main.css',
-    '/app.js',
-    '/iebc-data.js',
-    '/manifest.json',
+    './',
+    './index.html',
+    './join.html',
+    './rallies.html',
+    './tasks.html',
+    './resources.html',
+    './about.html',
+    './main.css',
+    './app.js',
+    './iebc-data.js',
+    './kenya-map-data.js',
+    './manifest.json',
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap'
 ];
 
@@ -67,6 +68,8 @@ self.addEventListener('fetch', event => {
     }
 
     // Static assets: Cache-First, fallback to network
+    if (!url.protocol.startsWith('http')) return;
+
     event.respondWith(
         caches.match(event.request)
             .then(cached => {
@@ -78,6 +81,6 @@ self.addEventListener('fetch', event => {
                     return res;
                 });
             })
-            .catch(() => caches.match('/index.html'))
+            .catch(() => caches.match('./index.html'))
     );
 });
