@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+  <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SISI NDIO SIFUNA — Kenya's Volunteer Movement</title>
@@ -51,10 +59,10 @@
     <!-- Desktop navigation -->
     <nav class="desktop-nav" aria-label="Main navigation">
       <a href="index.html" class="active">Home</a>
-      <a href="pages/rallies.html">Rallies</a>
-      <a href="pages/tasks.html">Tasks</a>
-      <a href="pages/resources.html">Resources</a>
-      <a href="pages/about.html">About</a>
+      <a href="rallies.html">Rallies</a>
+      <a href="tasks.html">Tasks</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
       <a href="join.html" class="btn btn-primary btn-sm">Join Now 🇰🇪</a>
     </nav>
     <button class="app-bar__menu-btn" id="menu-btn" aria-label="Menu">
@@ -74,8 +82,10 @@
         </h1>
         <p class="hero__sub">One Million Volunteers for MOTHERLAND!</p>
         <div class="hero__ctas">
-          <a href="join.html" class="btn btn-primary btn-lg" id="hero-join-btn">✊ Join the Movement</a>
+          <a href="join.html" class="btn btn-primary btn-lg btn-glow" id="hero-join-btn">✊ Join the Movement</a>
+          <button id="hero-share-btn" class="btn btn-primary btn-lg">✊ Share the Movement</button>
           <a href="rallies.html" class="btn btn-secondary btn-lg">📅 Find a Rally</a>
+          <button id="hero-advice-btn" class="btn btn-outline-gold btn-lg">💡 Advice SIFUNA</button>
         </div>
       </div>
     </section>
@@ -98,13 +108,35 @@
       </div>
     </section>
 
+    <!-- ═══ VOLUNTEER MAP SECTION ══════════════════════════════════ -->
+    <section class="map-section section" aria-labelledby="map-heading">
+      <div class="container">
+        <div class="section__header text-center">
+          <div class="section__eyebrow">Our Footprint</div>
+          <h2 class="section__title" id="map-heading">Volunteer Distribution Map</h2>
+          <p class="section__desc">Across all 47 Counties, the SISI NDIO SIFUNA movement is growing. Hover to see
+            real-time density.</p>
+        </div>
+        <div class="map-container reveal">
+          <div id="volunteer-map-container" class="kenya-map">
+            <!-- SVG Injected by app.js -->
+            <div class="skeleton" style="width:100%; height:400px; border-radius:var(--radius-lg)"></div>
+          </div>
+          <div class="map-legend">
+            <span class="legend-item"><i style="background:var(--grey-100)"></i> Few</span>
+            <span class="legend-item"><i style="background:var(--kenya-green)"></i> Many</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ AD BANNER (Mobile — below hero) ════════════════════════ -->
     <div style="padding: 0 1rem;">
       <div id="ad-banner" aria-label="Advertisement">
         <div class="ad-placeholder">
           <!-- Replace this with your ad code (Google AdSense / partner) -->
           <span>📢</span>
-          <span>Advertisement space — contact campaign HQ to advertise here</span>
+          <span></span>
         </div>
       </div>
     </div>
@@ -170,6 +202,72 @@
     <!-- ═══ FLAG STRIPE DIVIDER ════════════════════════════════════ -->
     <div class="flag-stripe" aria-hidden="true"></div>
 
+    <!-- ═══ TELL SIFUNA DISCUSSION BOARD ═══════════════════════════ -->
+    <section class="section" aria-labelledby="opinions-heading" id="tell-sifuna">
+      <div class="container">
+        <div class="section__header">
+          <div class="section__eyebrow">Volunteer Voice</div>
+          <h2 class="section__title" id="opinions-heading">Tell Sifuna 🇰🇪</h2>
+          <p class="section__desc">What should Sifuna do to change Kenya? What is the strategy for 2027? Post your
+            anonymous recommendations below.</p>
+        </div>
+
+        <div class="opinions-grid">
+          <!-- Submission Form -->
+          <div class="card reveal">
+            <div class="card__body">
+              <h3 style="margin-bottom: 1.5rem; color: var(--kenya-red)">Submit Your Strategy</h3>
+              <form id="opinion-form" class="app-form">
+                <div class="form-group">
+                  <label for="opinion-county">Your County (Optional for Anonymity)</label>
+                  <select id="opinion-county" name="county" class="form-control">
+                    <option value="">Select County (Stay Anonymous)</option>
+                    <!-- Populated by app.js -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="opinion-text">Your Opinion / Recommendation</label>
+                  <textarea id="opinion-text" name="opinion" class="form-control" rows="5" required
+                    placeholder="E.g. Focus on youth employment strategies in rural areas..."></textarea>
+                </div>
+                <button type="submit" id="opinion-submit-btn" class="btn btn-primary btn-lg w-full">
+                  ✊ Submit Recommendation
+                </button>
+              </form>
+              <div id="opinion-success" class="opinion-success-msg" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h4>Message Received, Patriot!</h4>
+                <p>Your strategy has been logged anonymously. Together, we build the nation.</p>
+                <button onclick="resetOpinionForm()" class="btn btn-outline-red btn-sm" style="margin-top:1rem">Send
+                  Another</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 20 Insights Card -->
+          <div class="card reveal insights-card">
+            <div class="card__body">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--kenya-green)">Volunteer Insights</h3>
+                <span class="badge badge-gold">Top 20 Trending</span>
+              </div>
+              <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--grey-600)">Live aggregation of major
+                points being proposed by volunteers across the country.</p>
+
+              <div id="insights-list" class="insights-list">
+                <!-- Loaded by app.js -->
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px; margin-bottom:0.8rem"></div>
+                <div class="skeleton" style="height:40px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ UPCOMING RALLIES PREVIEW ════════════════════════════════ -->
     <section class="section section--grey" aria-labelledby="rallies-heading">
       <div class="container">
@@ -223,7 +321,7 @@
         <h4>Campaign</h4>
         <ul>
           <li><a href="about.html">About Us</a></li>
-          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
           <li><a href="#">Contact HQ</a></li>
         </ul>
       </div>
@@ -238,7 +336,9 @@
       </div>
     </div>
     <div class="footer__bottom">
-      <span>© 2026 SISI NDIO SIFUNA. All rights reserved.</span>
+      <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy Policy</a></span>
+      <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
+          style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
       <span>Made with 🇰🇪 in Kenya</span>
     </div>
   </footer>
@@ -269,6 +369,7 @@
 
   <!-- Scripts -->
   <script src="iebc-data.js"></script>
+  <script src="kenya-map-data.js"></script>
   <script src="app.js"></script>
 </body>
 
