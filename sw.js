@@ -3,7 +3,7 @@
 // Users are NEVER prompted to install. This runs invisibly.
 // ================================================================
 
-const CACHE_NAME = 'sisi-v6';
+const CACHE_NAME = 'sisi-v7';
 const STATIC_ASSETS = [
     './',
     './index.html',
@@ -67,9 +67,33 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Static assets: Cache-First, fallback to network
     if (!url.protocol.startsWith('http')) return;
 
+    // Local HTML, JS, CSS, JSON assets: Network-First to ensure instant updates
+    const isLocalAsset = url.origin === self.location.origin && 
+        (url.pathname.endsWith('.html') || 
+         url.pathname.endsWith('.js') || 
+         url.pathname.endsWith('.css') || 
+         url.pathname.endsWith('.json') || 
+         url.pathname === '/' ||
+         url.pathname.endsWith('/'));
+
+    if (isLocalAsset) {
+        event.respondWith(
+            fetch(event.request)
+                .then(res => {
+                    if (res && res.status === 200) {
+                        const clone = res.clone();
+                        caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
+                    }
+                    return res;
+                })
+                .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+        );
+        return;
+    }
+
+    // Other static assets (images, etc.): Cache-First, fallback to network
     event.respondWith(
         caches.match(event.request)
             .then(cached => {
