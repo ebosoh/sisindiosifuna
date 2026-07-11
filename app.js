@@ -127,7 +127,12 @@ function applyPersonalization() {
                 if (outcome === 'accepted') deferredPrompt = null;
                 badge.remove();
             };
-            heroBadgeContainer.insertBefore(badge, heroBadgeContainer.querySelector('.hero__badge').nextSibling);
+            const heroBadge = heroBadgeContainer.querySelector('.hero__badge');
+            if (heroBadge) {
+                heroBadgeContainer.insertBefore(badge, heroBadge.nextSibling);
+            } else {
+                heroBadgeContainer.appendChild(badge);
+            }
         }
     }
 
@@ -1062,7 +1067,7 @@ function highlightActiveNav() {
 // ─── Service Worker Registration (Silent) ─────────────────────────
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=8').catch(() => { });
+        navigator.serviceWorker.register('sw.js?v=9').catch(() => { });
     }
 }
 
@@ -1228,7 +1233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Service Worker & PWA Installation ───────────────────────
     if ('serviceWorker' in navigator) {
         console.log('A2HS: Attempting to register SW...');
-        navigator.serviceWorker.register('sw.js?v=8')
+        navigator.serviceWorker.register('sw.js?v=9')
             .then(reg => {
                 console.log('A2HS: SW Registered successfully:', reg.scope);
             })

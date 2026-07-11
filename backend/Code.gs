@@ -6,10 +6,13 @@
 
 // ══ CONFIGURATION ══════════════════════════════════════════════
 // Paste your Google Sheet ID here after creating the sheet
-const SHEET_ID        = 'YOUR_GOOGLE_SHEET_ID_HERE';
+const SHEET_ID        = '1SLf_iNq1XM1ORffEnOQmggvVTRfFGAp3QxD0_BUPBUg';
 const VOLUNTEERS_TAB  = 'Volunteers';
 const EVENTS_TAB      = 'Events';
+const RESOURCES_TAB   = 'Resources';
 const STATS_TAB       = 'SiteStats';
+const OPINIONS_TAB    = 'Opinions';
+
 
 // ══ MAIN ROUTER ═════════════════════════════════════════════════
 function doGet(e) {
@@ -21,6 +24,10 @@ function doGet(e) {
       case 'getCount':   result = getCount();    break;
       case 'logVisit':   result = logVisit();    break;
       case 'getEvents':  result = getEvents();   break;
+      case 'getResources': result = getResources(); break;
+      case 'getCountyStats': result = getCountyStats(); break;
+      case 'getTikTokThumbnail': result = getTikTokThumbnail(e.parameter.url); break;
+      case 'getOpinionsSummary': result = getOpinionsSummary(); break;
       default:           result = { status: 'error', message: 'Unknown action' };
     }
   } catch (err) {
@@ -38,6 +45,7 @@ function doPost(e) {
     switch (action) {
       case 'register':    result = registerVolunteer(e.parameter); break;
       case 'submitTask':  result = submitTask(e.parameter);        break;
+      case 'submitOpinion': result = submitOpinion(e.parameter);     break;
       case 'broadcast':   result = triggerBroadcast(e.parameter);  break;
       default:            result = { status: 'error', message: 'Unknown action' };
     }
@@ -74,8 +82,14 @@ function initSheet(sheet, tabName) {
     [EVENTS_TAB]: [
       'ID','Title','County','Venue','Date','Time','MapURL','Status','Description'
     ],
+    [RESOURCES_TAB]: [
+      'ID','Category','Title','Format','Size','Url','ThumbnailUrl','Description'
+    ],
     [STATS_TAB]: [
       'Metric','Value','LastUpdated'
+    ],
+    [OPINIONS_TAB]: [
+      'Timestamp', 'County', 'Opinion'
     ]
   };
   if (headers[tabName]) {
@@ -85,6 +99,9 @@ function initSheet(sheet, tabName) {
       .setBackground('#000000')
       .setFontColor('#FFFFFF')
       .setFontWeight('bold');
+      
+    // Seed demo data for certain tabs
+    if (tabName === OPINIONS_TAB) seedDemoOpinions();
   }
 }
 
@@ -135,28 +152,58 @@ function logVisit() {
 // ══ ACTION: Register Volunteer ════════════════════════════════════
 function registerVolunteer(params) {
   const sheet = getSheet(VOLUNTEERS_TAB);
+  // Honeypot check
+  if (params.website_hp) {
+    Logger.log('Bot submission blocked: ' + params.phone);
+    return { status: 'error', message: 'Spam detected' };
+  }
 
-  // Duplicate check by phone number
+  // Basic validation
+  const phone = (params.phone || '').replace(/\D/g, '');
+  const nationalId = (params.national_id || '').replace(/\D/g, '');
+  
+  if (phone.length < 9) {
+    return { status: 'error', message: 'Invalid phone number format' };
+  }
+
+  // Duplicate check — phone (col 3) and email (col 4)
   const data  = sheet.getDataRange().getValues();
-  const phone = (params.phone || '').replace(/\s/g, '');
+  const email = (params.email || '').trim().toLowerCase();
+
   for (let i = 1; i < data.length; i++) {
-    if ((data[i][2] || '').replace(/\s/g, '') === phone) {
-      return { status: 'duplicate', message: 'This phone number is already registered.' };
+    const rowPhone = String(data[i][2] || '').replace(/\s/g, '');
+    const rowEmail = String(data[i][3] || '').trim().toLowerCase();
+
+    if (phone && rowPhone === phone) {
+      return { status: 'duplicate', message: 'This phone number is already registered. You may already be a volunteer!' };
+    }
+    if (email && rowEmail === email) {
+      return { status: 'duplicate', message: 'This email address is already registered. You may already be a volunteer!' };
     }
   }
 
+  // Sanitize helper
+  const clean = (val) => String(val || '').trim().slice(0, 255);
+
   sheet.appendRow([
     new Date().toISOString(),
-    params.fullName    || '',
-    params.phone       || '',
-    params.email       || '',
-    params.whatsapp    || params.phone || '',
-    params.county      || '',
-    params.constituency|| '',
-    params.ward        || '',
-    params.role        || 'general',
+    clean(params.fullName),
+    phone,
+    email,
+    clean(params.whatsapp) || phone,
+    clean(params.county),
+    clean(params.constituency),
+    clean(params.ward),
+    clean(params.role) || 'general',
     ''  // IP - left blank for privacy
   ]);
+
+  // Clear map cache since a new volunteer joined
+  try {
+    CacheService.getScriptCache().remove('volunteer_county_stats');
+  } catch (e) {
+    Logger.log('Cache clear failed: ' + e.message);
+  }
 
   return { status: 'success', result: 'success', message: 'Welcome to SISI NDIO SIFUNA!' };
 }
@@ -166,30 +213,108 @@ function getEvents() {
   const sheet  = getSheet(EVENTS_TAB);
   const data   = sheet.getDataRange().getValues();
   const today  = new Date();
+  today.setHours(0, 0, 0, 0);
   const events = [];
 
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
     if (!row[0]) continue; // skip empty rows
-    const eventDate = new Date(row[4]);
-    if (eventDate >= today) {
-      events.push({
-        id:          row[0],
-        title:       row[1],
-        county:      row[2],
-        venue:       row[3],
-        date:        row[4],
-        time:        row[5],
-        mapUrl:      row[6],
-        status:      row[7],
-        description: row[8]
-      });
+    events.push({
+      id:          row[0],
+      title:       row[1],
+      county:      row[2],
+      venue:       row[3],
+      date:        row[4],
+      time:        row[5],
+      mapUrl:      row[6],
+      status:      row[7],
+      description: row[8]
+    });
+  }
+
+  // Sort upcoming events first (nearest to furthest), then past events (most recent to oldest)
+  events.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    const isPastA = dateA < today;
+    const isPastB = dateB < today;
+    
+    if (isPastA !== isPastB) {
+      return isPastA ? 1 : -1;
+    }
+    return isPastA ? (dateB - dateA) : (dateA - dateB);
+  });
+  
+  return events;
+}
+
+// ══ ACTION: Get Resources ══════════════════════════════════════════
+function getResources() {
+  const sheet = getSheet(RESOURCES_TAB);
+  const data  = sheet.getDataRange().getValues();
+  const resources = [];
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue;
+    resources.push({
+      id:           row[0],
+      category:     row[1],
+      title:        row[2],
+      format:       row[3],
+      size:         row[4],
+      url:          row[5],
+      thumbnailUrl: row[6],
+      description:  row[7]
+    });
+  }
+  return resources;
+}
+
+// ══ ACTION: Get Volunteer Distribution by County ═══════════════
+function getCountyStats() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get('volunteer_county_stats');
+
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  const sheet = getSheet(VOLUNTEERS_TAB);
+  const data = sheet.getDataRange().getValues();
+  const stats = {};
+
+  // County is at Col 6 (index 5)
+  for (let i = 1; i < data.length; i++) {
+    const county = data[i][5];
+    if (county) {
+      stats[county] = (stats[county] || 0) + 1;
     }
   }
 
-  // Sort ascending by date
-  events.sort((a, b) => new Date(a.date) - new Date(b.date));
-  return events;
+  const result = { status: 'success', stats };
+
+  // Cache result for 300 seconds (5 minutes)
+  try {
+    cache.put('volunteer_county_stats', JSON.stringify(result), 300);
+  } catch (e) {
+    Logger.log('Caching failed: ' + e.message);
+  }
+
+  return result;
+}
+
+// ══ ACTION: Get TikTok Thumbnail (Proxy to oEmbed) ══════════════════
+function getTikTokThumbnail(url) {
+  if (!url) return { status: 'error', message: 'No URL provided' };
+  try {
+    const oembedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(url)}`;
+    const response = UrlFetchApp.fetch(oembedUrl);
+    const data = JSON.parse(response.getContentText());
+    return { status: 'success', thumbnail_url: data.thumbnail_url };
+  } catch (err) {
+    return { status: 'error', message: err.message };
+  }
 }
 
 // ══ ACTION: Submit Task Completion ════════════════════════════════
@@ -238,4 +363,114 @@ function seedDemoEvents() {
   ];
   events.forEach(r => sheet.appendRow(r));
   Logger.log('Demo events seeded successfully!');
+}
+
+function seedDemoResources() {
+  const sheet = getSheet(RESOURCES_TAB);
+  const resources = [
+    [101, 'Posters', 'Official Campaign Poster 1', 'PNG', '~55 KB', 'Poster 1.png', 'Poster 1.png', 'High-quality visibility poster'],
+    [102, 'Posters', 'Official Campaign Poster 2', 'PNG', '~70 KB', 'Poster 2.png', 'Poster 2.png', 'Secondary campaign theme poster'],
+    [103, 'Stickers', 'SISI NDIO SIFUNA Sticker Pack', 'WhatsApp', '18 Stickers', '#', '', 'Official WhatsApp stickers'],
+    [104, 'Talking Points', 'Door-to-Door Canvassing Guide', 'PDF', '~350 KB', '#', '', 'Step-by-step guide for volunteers'],
+    [105, 'Videos', 'Main Campaign Ad (30s)', 'Video', '~4 MB', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '', 'High energy campaign video'],
+    [106, 'Videos', 'Youth Rally TikTok', 'Video', 'TikTok', 'https://www.tiktok.com/@user/video/123', '', 'Viral youth mobilisation video'],
+    [107, 'Videos', 'Principal Message FB', 'Video', 'FB Live', 'https://www.facebook.com/watch/?v=456', '', 'Principal address to the nation']
+  ];
+  resources.forEach(r => sheet.appendRow(r));
+  Logger.log('Demo resources seeded successfully!');
+}
+
+/**
+ * ACTION: Submit Anonymous Opinion
+ */
+function submitOpinion(params) {
+  const sheet = getSheet(OPINIONS_TAB);
+  const clean = (val) => String(val || '').trim().slice(0, 5000); // 5k limit for opinions
+  
+  sheet.appendRow([
+    new Date().toISOString(),
+    clean(params.county) || 'Anonymous',
+    clean(params.opinion)
+  ]);
+  
+  return { status: 'success', message: 'Your opinion has been received. Thank you for your strategy!' };
+}
+
+/**
+ * ACTION: Get Top 20 Opinions Summary (Frequency Analysis)
+ */
+function getOpinionsSummary() {
+  const sheet = getSheet(OPINIONS_TAB);
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) return [];
+
+  const STOP_WORDS = null; // unused — we now show full statements
+
+  // Collect all opinion texts (column 3, index 2)
+  const opinions = [];
+  for (let i = 1; i < data.length; i++) {
+    const text = (data[i][2] || '').trim();
+    if (text.length > 5) opinions.push(text);
+  }
+  if (opinions.length === 0) return [];
+
+  // Normalize for grouping: lowercase, strip punctuation, collapse spaces
+  const normalize = (t) => t.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Group opinions by their normalized text (same wording = same point)
+  const groups = {};
+  opinions.forEach(opinion => {
+    const key = normalize(opinion);
+    if (!groups[key]) {
+      groups[key] = { statement: opinion, count: 0 };
+    }
+    groups[key].count++;
+  });
+
+  // Sort by submission count descending, take top 10
+  const sorted = Object.values(groups)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+
+  const totalCount = sorted.reduce((sum, i) => sum + i.count, 0);
+
+  return sorted.map(item => ({
+    point: item.statement.charAt(0).toUpperCase() + item.statement.slice(1)
+  }));
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+function seedDemoOpinions() {
+  const sheet = getSheet(OPINIONS_TAB);
+  if (sheet.getLastRow() > 1) return; // Only seed if empty
+
+  const now = new Date().toISOString();
+  const demo = [
+    [now, 'Nairobi', 'Champion the "Niko Kadi" Movement to ensure every volunteer is registered and ready.'],
+    [now, 'Mombasa', 'We must embrace Door to Door Canvassing in every ward to reach the grassroots.'],
+    [now, 'Kisumu', 'Digital Mobilisation is key for 2027. Let us use social media to spread the truth.'],
+    [now, 'Nairobi', 'Champion the "Niko Kadi" Movement because identity is our power.'],
+    [now, 'Nakuru', 'Door to Door Canvassing will help us understand local grievances better.'],
+    [now, 'Eldoret', 'Youth Empowerment should be the pillar of our economic strategy.'],
+    [now, 'Kiambu', 'Digital Mobilisation training for all group admins is necessary.'],
+    [now, 'Nairobi', 'Champion the "Niko Kadi" Movement in all universities.'],
+    [now, 'Mombasa', 'Door to Door Canvassing in informal settlements is working well.'],
+    [now, 'Bungoma', 'Food Security policies should be prioritized in our manifesto.'],
+    [now, 'Nairobi', 'Champion the "Niko Kadi" Movement for 100% voter turnout.'],
+    [now, 'Mombasa', 'Door to Door Canvassing should be done every weekend.'],
+    [now, 'Kisumu', 'Digital Mobilisation effort needs more visual content like posters.'],
+    [now, 'Nairobi', 'Champion the "Niko Kadi" Movement everywhere.'],
+    [now, 'Kisumu', 'Digital Mobilisation is winning the online debate.'],
+    [now, 'Nakuru', 'Door to Door Canvassing is the only way to win.'],
+    [now, 'Eldoret', 'Youth Empowerment is our future.'],
+    [now, 'Bungoma', 'Food Security is a right for every Kenyan.']
+  ];
+  
+  demo.forEach(r => sheet.appendRow(r));
+  Logger.log('Demo opinions seeded successfully!');
 }

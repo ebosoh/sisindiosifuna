@@ -5,14 +5,14 @@
 1. Go to [sheets.google.com](https://sheets.google.com) and create a new spreadsheet
 2. Name it **"SISI NDIO SIFUNA Database"**
 3. Copy the Sheet ID from the URL:  
-   `https://docs.google.com/spreadsheets/d/`**`YOUR_SHEET_ID`**`/edit`
+   `https://docs.google.com/spreadsheets/d/1SLf_iNq1XM1ORffEnOQmggvVTRfFGAp3QxD0_BUPBUg/edit`
 
 ## Step 2: Set Up Apps Script
 
 1. In the spreadsheet, click **Extensions → Apps Script**
 2. Delete the default `function myFunction()` placeholder
 3. Copy the entire contents of `Code.gs` (from this folder) and paste it in
-4. Replace `'YOUR_GOOGLE_SHEET_ID_HERE'` on Line 8 with your actual Sheet ID
+4. Replace `'YOUR_GOOGLE_SHEET_ID_HERE'` on Line 9 with your actual Sheet ID (e.g., `1SLf_iNq1XM...`). **Do not paste the full URL.**
 
 ## Step 3: Seed Demo Events (Optional)
 
@@ -37,6 +37,7 @@
 2. Find line 5:  
    ```js
    const GAS_API_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+   
    ```
 3. Replace `YOUR_SCRIPT_ID` with the actual script ID from the Web App URL
 

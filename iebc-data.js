@@ -378,7 +378,7 @@ const IEBC_DATA = {
       "Sirisia": ["Lwandanyi", "Sirisia", "Namwela", "Malakisi/South Kulisiru"],
       "Kabuchai": ["Kabuchai/Chwele", "West Kabuchai", "Naitiri/Kabuyefwe", "Mukuyuni"],
       "Bumula": ["South Bukusu", "Kimaeti", "Bumula", "Khasoko", "Kabula", "Maeni"],
-      "Kanduyi": ["Mukuyuni", "Mwibale", "Township", "Bukembe West", "Bukembe East"],
+      "Kanduyi": ["Bukembe West", "Bukembe East", "Township", "Khalaba", "Musikoma", "East Sang’alo", "West Sang’alo", "Tuuti/Marakaru"],
       "Webuye East": ["Ndivisi", "Maraka", "Mihuu", "Sitikho"],
       "Webuye West": ["Matulo", "Maraka", "Sitikho"],
       "Kimilili": ["Kibingei", "Kimilili", "Maeni", "Kamukuywa"],
