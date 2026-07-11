@@ -1062,7 +1062,7 @@ function highlightActiveNav() {
 // ─── Service Worker Registration (Silent) ─────────────────────────
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=7').catch(() => { });
+        navigator.serviceWorker.register('sw.js?v=8').catch(() => { });
     }
 }
 
@@ -1228,7 +1228,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Service Worker & PWA Installation ───────────────────────
     if ('serviceWorker' in navigator) {
         console.log('A2HS: Attempting to register SW...');
-        navigator.serviceWorker.register('sw.js?v=7')
+        navigator.serviceWorker.register('sw.js?v=8')
             .then(reg => {
                 console.log('A2HS: SW Registered successfully:', reg.scope);
             })

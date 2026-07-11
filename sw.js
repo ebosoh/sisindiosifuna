@@ -3,7 +3,7 @@
 // Users are NEVER prompted to install. This runs invisibly.
 // ================================================================
 
-const CACHE_NAME = 'sisi-v7';
+const CACHE_NAME = 'sisi-v8';
 const STATIC_ASSETS = [
     './',
     './index.html',
@@ -80,15 +80,17 @@ self.addEventListener('fetch', event => {
 
     if (isLocalAsset) {
         event.respondWith(
-            fetch(event.request)
-                .then(res => {
-                    if (res && res.status === 200) {
-                        const clone = res.clone();
-                        caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
-                    }
-                    return res;
-                })
-                .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+            caches.open(CACHE_NAME).then(cache => {
+                return cache.match(event.request).then(cached => {
+                    const fetchPromise = fetch(event.request).then(networkResponse => {
+                        if (networkResponse && networkResponse.status === 200) {
+                            cache.put(event.request, networkResponse.clone());
+                        }
+                        return networkResponse;
+                    }).catch(() => { });
+                    return cached || fetchPromise;
+                });
+            })
         );
         return;
     }
