@@ -985,8 +985,8 @@ async function initVolunteerMap() {
             const displayName = (typeof IEBC_DATA !== 'undefined') 
                 ? (Object.keys(IEBC_DATA).find(k => k.toUpperCase() === p.id.toUpperCase()) || p.id)
                 : p.id;
-            // Changed boundary stroke from white to semi-transparent dark grey for visibility
-            return `<path id="county-${p.id.replace(/\s+/g, '-')}" class="map-county" d="${p.d}" fill="${color}" stroke="rgba(0, 0, 0, 0.2)" stroke-width="0.8" data-name="${esc(displayName)}" data-count="${count}" />`;
+            // Changed boundary stroke to a darker semi-transparent black and slightly thicker for visibility
+            return `<path id="county-${p.id.replace(/\s+/g, '-')}" class="map-county" d="${p.d}" fill="${color}" stroke="rgba(0, 0, 0, 0.4)" stroke-width="1" data-name="${esc(displayName)}" data-count="${count}" />`;
         }).join('');
 
         // Deeper drop-shadow to emphasize the "National Outline"

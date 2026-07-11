@@ -1944,8 +1944,8 @@ select.form-control {
 
 .kenya-map path {
   fill: var(--grey-100);
-  stroke: rgba(0, 0, 0, 0.2);
-  stroke-width: 0.8;
+  stroke: rgba(0, 0, 0, 0.4);
+  stroke-width: 1px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
