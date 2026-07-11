@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+    <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Resource Toolkit — SISI NDIO SIFUNA</title>
@@ -15,7 +23,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="main.css?v=7" />
 </head>
 
 <body>
@@ -55,7 +63,7 @@
 
         <!-- Ad Banner -->
         <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:1.5rem">
-            <div class="ad-placeholder"><span>📢</span><span>Advertisement — contact HQ</span></div>
+            <div class="ad-placeholder"><span>📢</span><span></span></div>
         </div>
 
         <!-- Category: Posters -->
@@ -64,40 +72,12 @@
                 <h2 id="posters-heading" style="font-size:1.1rem">📌 Campaign Posters</h2>
                 <span class="badge badge-green">Low Data</span>
             </div>
-            <div class="resources-grid">
-                <div class="resource-card reveal">
-                    <div class="resource-card__thumb" style="background:linear-gradient(135deg,#000,#CE1126)">📌</div>
-                    <div class="resource-card__body">
-                        <div class="resource-card__title">Main Campaign Poster A4</div>
-                        <div class="resource-card__size">WebP · ~120 KB</div>
-                    </div>
-                    <a href="#" class="resource-card__dl" download>⬇ Download</a>
-                </div>
-                <div class="resource-card reveal">
-                    <div class="resource-card__thumb" style="background:linear-gradient(135deg,#006600,#CE1126)">📱
-                    </div>
-                    <div class="resource-card__body">
-                        <div class="resource-card__title">WhatsApp Story Poster</div>
-                        <div class="resource-card__size">WebP · ~80 KB</div>
-                    </div>
-                    <a href="#" class="resource-card__dl" download>⬇ Download</a>
-                </div>
-                <div class="resource-card reveal">
-                    <div class="resource-card__thumb" style="background:linear-gradient(135deg,#CE1126,#000)">🛡️</div>
-                    <div class="resource-card__body">
-                        <div class="resource-card__title">Youth Mobilisation Poster</div>
-                        <div class="resource-card__size">WebP · ~95 KB</div>
-                    </div>
-                    <a href="#" class="resource-card__dl" download>⬇ Download</a>
-                </div>
-                <div class="resource-card reveal">
-                    <div class="resource-card__thumb" style="background:linear-gradient(135deg,#000,#006600)">👩</div>
-                    <div class="resource-card__body">
-                        <div class="resource-card__title">Women's Campaign Poster</div>
-                        <div class="resource-card__size">WebP · ~90 KB</div>
-                    </div>
-                    <a href="#" class="resource-card__dl" download>⬇ Download</a>
-                </div>
+            <div class="resources-grid" id="posters-grid">
+                <!-- Loaded by app.js -->
+                <div class="skeleton" style="height:200px;border-radius:12px"></div>
+                <div class="skeleton" style="height:200px;border-radius:12px"></div>
+                <div class="skeleton" style="height:200px;border-radius:12px"></div>
+                <div class="skeleton" style="height:200px;border-radius:12px"></div>
             </div>
         </section>
 
@@ -107,18 +87,8 @@
                 <h2 id="stickers-heading" style="font-size:1.1rem">💬 WhatsApp Sticker Pack</h2>
                 <span class="badge badge-red">Hot</span>
             </div>
-            <div class="card reveal">
-                <div class="card__body">
-                    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
-                        <div style="font-size:3rem;line-height:1">🎉🇰🇪✊🌟💪🗳️</div>
-                        <div>
-                            <h4 style="margin-bottom:.5rem">SISI NDIO SIFUNA Sticker Pack</h4>
-                            <p style="font-size:.85rem;color:var(--grey-600);margin-bottom:1rem">18 custom stickers for
-                                WhatsApp — patriotic, fun, shareable. Add to your chats and spread the word!</p>
-                            <a href="#" class="btn btn-primary">💬 Add to WhatsApp</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="resources-grid" id="stickers-grid">
+                <div class="skeleton" style="height:120px;border-radius:12px"></div>
             </div>
         </section>
 
@@ -128,47 +98,11 @@
                 <h2 id="talking-heading" style="font-size:1.1rem">📝 Talking Points & Scripts</h2>
                 <span class="badge badge-green">Updated</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:.75rem">
-                <div class="card reveal">
-                    <div class="card__body"
-                        style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                        <div>
-                            <h4 style="margin-bottom:.25rem">Door-to-Door Canvassing Guide</h4>
-                            <p style="font-size:.82rem;color:var(--grey-400)">PDF · 4 pages · ~350 KB</p>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-red" download>⬇ Download PDF</a>
-                    </div>
-                </div>
-                <div class="card reveal">
-                    <div class="card__body"
-                        style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                        <div>
-                            <h4 style="margin-bottom:.25rem">WhatsApp Group Broadcast Script</h4>
-                            <p style="font-size:.82rem;color:var(--grey-400)">PDF · 2 pages · ~180 KB</p>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-red" download>⬇ Download PDF</a>
-                    </div>
-                </div>
-                <div class="card reveal">
-                    <div class="card__body"
-                        style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                        <div>
-                            <h4 style="margin-bottom:.25rem">Key Policy Talking Points (Swahili)</h4>
-                            <p style="font-size:.82rem;color:var(--grey-400)">PDF · 3 pages · ~200 KB</p>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-red" download>⬇ Download PDF</a>
-                    </div>
-                </div>
-                <div class="card reveal">
-                    <div class="card__body"
-                        style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-                        <div>
-                            <h4 style="margin-bottom:.25rem">Social Media Caption Pack</h4>
-                            <p style="font-size:.82rem;color:var(--grey-400)">TXT · 50 ready-to-use captions</p>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-red" download>⬇ Download TXT</a>
-                    </div>
-                </div>
+            <div style="display:flex;flex-direction:column;gap:.75rem" id="talking-grid">
+                <div class="skeleton" style="height:80px;border-radius:12px"></div>
+                <div class="skeleton" style="height:80px;border-radius:12px"></div>
+                <div class="skeleton" style="height:80px;border-radius:12px"></div>
+                <div class="skeleton" style="height:80px;border-radius:12px"></div>
             </div>
         </section>
 
@@ -178,25 +112,9 @@
                 <h2 id="video-heading" style="font-size:1.1rem">🎥 Campaign Videos</h2>
                 <span class="badge badge-green">Low Data</span>
             </div>
-            <div class="resources-grid">
-                <div class="resource-card reveal">
-                    <div class="resource-card__thumb"
-                        style="background:linear-gradient(135deg,#000,#CE1126);font-size:2rem">▶</div>
-                    <div class="resource-card__body">
-                        <div class="resource-card__title">Main Campaign Ad (30s)</div>
-                        <div class="resource-card__size">MP4 · ~4 MB (compressed)</div>
-                    </div>
-                    <a href="#" class="resource-card__dl" download>⬇ Download</a>
-                </div>
-                <div class="resource-card reveal">
-                    <div class="resource-card__thumb"
-                        style="background:linear-gradient(135deg,#006600,#000);font-size:2rem">▶</div>
-                    <div class="resource-card__body">
-                        <div class="resource-card__title">Youth Rally Hype Video (15s)</div>
-                        <div class="resource-card__size">MP4 · ~2 MB (compressed)</div>
-                    </div>
-                    <a href="#" class="resource-card__dl" download>⬇ Download</a>
-                </div>
+            <div class="resources-grid" id="videos-grid">
+                <div class="skeleton" style="height:200px;border-radius:12px"></div>
+                <div class="skeleton" style="height:200px;border-radius:12px"></div>
             </div>
         </section>
 
@@ -208,7 +126,11 @@
     <footer class="footer">
         <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
         <div class="footer__bottom" style="max-width:960px;padding:0 1.25rem">
-            <span>© 2026 SISI NDIO SIFUNA</span><span>Made with 🇰🇪 in Kenya</span>
+            <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy
+                    Policy</a></span>
+            <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
+                    style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
+            <span>Made with 🇰🇪 in Kenya</span>
         </div>
     </footer>
 
@@ -225,8 +147,8 @@
                 class="bottom-nav__label">Resources</span></a>
     </nav>
 
-    <script src="iebc-data.js"></script>
-    <script src="app.js"></script>
+    <script src="iebc-data.js?v=7"></script>
+    <script src="app.js?v=7"></script>
 </body>
 
 </html>

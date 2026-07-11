@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+    <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Rallies & Events — SISI NDIO SIFUNA</title>
@@ -15,7 +23,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="main.css?v=7" />
     <style>
         .filter-bar {
             background: var(--kenya-white);
@@ -65,12 +73,19 @@
             flex-shrink: 0;
         }
 
+        .map-wrapper {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            display: none;
+            overflow: hidden;
+            background: var(--grey-100);
+        }
+
         .map-embed {
             width: 100%;
             height: 300px;
             border: none;
-            border-radius: var(--radius-lg);
-            display: none;
+            display: block;
         }
 
         @media (min-width: 768px) {
@@ -140,7 +155,7 @@
 
         <!-- Ad Banner -->
         <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:1.5rem">
-            <div class="ad-placeholder"><span>📢</span><span>Advertisement — contact HQ</span></div>
+            <div class="ad-placeholder"><span>📢</span><span></span></div>
         </div>
 
         <!-- List View -->
@@ -151,9 +166,12 @@
         </div>
 
         <!-- Map View -->
-        <iframe id="map-view" class="map-embed" src="https://maps.google.com/maps?q=Kenya&output=embed&z=6"
-            title="Kenya rally map" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+        <div id="map-view" class="map-wrapper" style="position:relative;">
+            <iframe class="map-embed" src="https://maps.google.com/maps?q=Kenya&output=embed&z=6"
+                title="Kenya rally map" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <div class="venue-pin"></div>
+        </div>
 
         <!-- No results -->
         <div id="no-events" style="display:none;text-align:center;padding:3rem 1rem">
@@ -171,7 +189,10 @@
     <footer class="footer" role="contentinfo">
         <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
         <div class="footer__bottom" style="max-width:900px;padding:0 1.25rem">
-            <span>© 2026 SISI NDIO SIFUNA</span>
+            <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy
+                    Policy</a></span>
+            <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
+                    style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
             <span>Made with 🇰🇪 in Kenya</span>
         </div>
     </footer>
@@ -189,8 +210,8 @@
                 class="bottom-nav__label">Resources</span></a>
     </nav>
 
-    <script src="iebc-data.js"></script>
-    <script src="app.js"></script>
+    <script src="iebc-data.js?v=7"></script>
+    <script src="app.js?v=7"></script>
     <script>
         // Filter chips
         let currentFilter = 'all';
@@ -210,7 +231,8 @@
             const cards = document.querySelectorAll('.event-card');
             let visible = 0;
             cards.forEach(card => {
-                const county = card.querySelector('.event-card__meta span:nth-child(3)')?.textContent.replace('🗺️ ', '') || '';
+                const countySpan = card.querySelector('.event-card__meta span:nth-child(3)');
+                const county = countySpan ? countySpan.textContent.replace('🗺️', '').trim() : '';
                 const show = currentFilter === 'all' || county === currentFilter;
                 card.style.display = show ? '' : 'none';
                 if (show) visible++;
@@ -239,10 +261,10 @@
             document.getElementById('view-list').style.color = '';
         });
 
-        // After events load, filter and count
-        const origLoad = window.loadEvents;
+        // Initial load and filter
+        window.addEventListener('eventsLoaded', filterEvents);
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(filterEvents, 1000);
+            if (document.querySelectorAll('.event-card').length) filterEvents();
         });
     </script>
 </body>

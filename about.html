@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+    <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>About — SISI NDIO SIFUNA</title>
@@ -15,7 +23,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="main.css?v=7" />
 </head>
 
 <body>
@@ -131,7 +139,7 @@
         <!-- Ad Banner -->
         <div style="padding:0 1.25rem;max-width:960px;margin:0 auto">
             <div id="ad-banner" aria-label="Advertisement" style="margin:2rem 0">
-                <div class="ad-placeholder"><span>📢</span><span>Advertisement — contact HQ</span></div>
+                <div class="ad-placeholder"><span>📢</span><span></span></div>
             </div>
         </div>
 
@@ -193,6 +201,7 @@
                 <h4>Campaign</h4>
                 <ul>
                     <li><a href="about.html">About Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
                     <li><a href="#">Contact HQ</a></li>
                 </ul>
             </div>
@@ -205,7 +214,13 @@
                 </ul>
             </div>
         </div>
-        <div class="footer__bottom"><span>© 2026 SISI NDIO SIFUNA</span><span>Made with 🇰🇪 in Kenya</span></div>
+        <div class="footer__bottom">
+            <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy
+                    Policy</a></span>
+            <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
+                    style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
+            <span>Made with 🇰🇪 in Kenya</span>
+        </div>
     </footer>
 
     <nav class="bottom-nav" aria-label="Mobile navigation">
@@ -221,8 +236,8 @@
                 class="bottom-nav__label">Resources</span></a>
     </nav>
 
-    <script src="iebc-data.js"></script>
-    <script src="app.js"></script>
+    <script src="iebc-data.js?v=7"></script>
+    <script src="app.js?v=7"></script>
 </body>
 
 </html>

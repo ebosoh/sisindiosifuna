@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+    <!-- ═══ Google Analytics 4 ═══════════════════════════════════════ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3WDQ3381NV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-3WDQ3381NV', { send_page_view: true });
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Join the Movement — SISI NDIO SIFUNA</title>
@@ -15,7 +23,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="main.css?v=7" />
 </head>
 
 <body>
@@ -64,7 +72,7 @@
         <!-- Ad Banner -->
         <div id="ad-banner" aria-label="Advertisement" style="margin-bottom:2rem">
             <div class="ad-placeholder">
-                <span>📢</span><span>Advertisement — contact HQ to place your ad here</span>
+                <span>📢</span><span></span>
             </div>
         </div>
 
@@ -126,6 +134,11 @@
                     </select>
                 </div>
 
+                <div class="form-group" style="display:none !important" aria-hidden="true">
+                    <label for="website_hp">Website</label>
+                    <input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off">
+                </div>
+
                 <div class="form-group">
                     <label class="form-label" for="role">How Would You Like to Help?</label>
                     <select class="form-control" id="role" name="role">
@@ -168,7 +181,10 @@
     <footer class="footer" role="contentinfo" style="margin-top:2rem">
         <div class="flag-stripe footer__flag-stripe" aria-hidden="true"></div>
         <div class="footer__bottom" style="max-width:800px;padding:0 1rem">
-            <span>© 2026 SISI NDIO SIFUNA</span>
+            <span>© 2026 SISI NDIO SIFUNA · <a href="privacy.html" style="text-decoration:underline">Privacy
+                    Policy</a></span>
+            <span>Powered by <a href="https://techbrain.africa" target="_blank" rel="noopener"
+                    style="font-weight:700;color:#CE1126">TECHBRAIN</a></span>
             <span>Made with 🇰🇪 in Kenya</span>
         </div>
     </footer>
@@ -187,8 +203,8 @@
                 class="bottom-nav__label">Resources</span></a>
     </nav>
 
-    <script src="iebc-data.js"></script>
-    <script src="app.js"></script>
+    <script src="iebc-data.js?v=7"></script>
+    <script src="app.js?v=7"></script>
 </body>
 
 </html>
