@@ -3,7 +3,7 @@
 // Users are NEVER prompted to install. This runs invisibly.
 // ================================================================
 
-const CACHE_NAME = 'sisi-v9';
+const CACHE_NAME = 'sisi-v10';
 const STATIC_ASSETS = [
     './',
     './index.html',

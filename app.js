@@ -477,10 +477,13 @@ async function shareSticker(title, url, type = 'sticker') {
 
             if (navigator.canShare({ files: [file] })) {
                 console.log('A2HS: Native sharing started with file.');
+                const shareText = type === 'sticker'
+                    ? `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`
+                    : `Check out this ${type} from SISI NDIO SIFUNA! \u270a\ud83c\uddf0\ud83c\uddea\nhttps://sisindiosifuna.org`;
                 await navigator.share({
                     files: [file],
                     title: title,
-                    text: `Check out this ${type} from SISI NDIO SIFUNA! \u270a\ud83c\uddf0\ud83c\uddea\nhttps://sisindiosifuna.org`
+                    text: shareText
                 });
                 // ─── GA4: Track sticker share ───────────────────────────────
                 trackEvent('sticker_shared', { method: 'native_file', sticker_title: title });
@@ -497,7 +500,9 @@ async function shareSticker(title, url, type = 'sticker') {
     }
 
     // 2. Fallback: Text Share (WhatsApp Web / Other)
-    const shareText = `Check out this ${type} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}\nhttps://sisindiosifuna.org`;
+    const shareText = type === 'sticker'
+        ? `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`
+        : `Check out this ${type} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}\nhttps://sisindiosifuna.org`;
     const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(waUrl, '_blank');
     // ─── GA4: Track fallback WhatsApp share ───────────────────────
@@ -1067,7 +1072,7 @@ function highlightActiveNav() {
 // ─── Service Worker Registration (Silent) ─────────────────────────
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js?v=9').catch(() => { });
+        navigator.serviceWorker.register('sw.js?v=10').catch(() => { });
     }
 }
 
@@ -1233,7 +1238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Service Worker & PWA Installation ───────────────────────
     if ('serviceWorker' in navigator) {
         console.log('A2HS: Attempting to register SW...');
-        navigator.serviceWorker.register('sw.js?v=9')
+        navigator.serviceWorker.register('sw.js?v=10')
             .then(reg => {
                 console.log('A2HS: SW Registered successfully:', reg.scope);
             })
