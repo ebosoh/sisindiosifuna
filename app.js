@@ -975,25 +975,23 @@ async function initVolunteerMap() {
     }
 
     const updateMapUI = (stats = {}) => {
-        const counts = Object.values(stats);
-        const maxVolunteers = Math.max(...counts, 1);
+        const normalizeName = (name) => String(name || '').replace(/-/g, ' ').replace(/\s+County\s*$/i, '').trim().toUpperCase();
 
-        // Multi-hue sequential scale for better clarity
+        // Use absolute thresholds to prevent high-outliers (like Nairobi) from squashing the colors to grey/pale green
         const getColorScale = (count) => {
             if (count === 0) return 'var(--grey-200)';
-            const ratio = count / maxVolunteers;
-            if (ratio < 0.25) return '#dcfce7'; // Pale Green
-            if (ratio < 0.5) return '#4ade80';  // Mid Green
-            if (ratio < 0.75) return '#166534'; // Deep Green
-            return '#fbbf24'; // Gold (High growth)
+            if (count < 5) return '#dcfce7';   // Pale Green (Growing: 1-4)
+            if (count < 20) return '#4ade80';  // Mid Green (Active: 5-19)
+            if (count < 100) return '#166534'; // Deep Green (Strong: 20-99)
+            return '#fbbf24';                  // Gold (Peak growth: 100+)
         };
 
         const pathsHTML = KENYA_MAP_DATA.paths.map(p => {
-            const statKey = Object.keys(stats).find(k => k.toUpperCase() === p.id.toUpperCase());
+            const statKey = Object.keys(stats).find(k => normalizeName(k) === normalizeName(p.id));
             const count = statKey ? stats[statKey] : 0;
             const color = getColorScale(count);
             const displayName = (typeof IEBC_DATA !== 'undefined') 
-                ? (Object.keys(IEBC_DATA).find(k => k.toUpperCase() === p.id.toUpperCase()) || p.id)
+                ? (Object.keys(IEBC_DATA).find(k => normalizeName(k) === normalizeName(p.id)) || p.id)
                 : p.id;
             // Changed boundary stroke to a darker semi-transparent black and slightly thicker for visibility
             return `<path id="county-${p.id.replace(/\s+/g, '-')}" class="map-county" d="${p.d}" fill="${color}" stroke="rgba(0, 0, 0, 0.4)" stroke-width="1" data-name="${esc(displayName)}" data-count="${count}" />`;

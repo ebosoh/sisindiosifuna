@@ -286,8 +286,15 @@ function getCountyStats() {
 
   // County is at Col 6 (index 5)
   for (let i = 1; i < data.length; i++) {
-    const county = data[i][5];
+    let county = String(data[i][5] || '').trim();
     if (county) {
+      // Normalize common manual entries like "Nairobi County" -> "Nairobi"
+      county = county.replace(/\s+County\s*$/i, '').trim();
+      // Ensure proper title-casing (e.g. "uasin gishu" -> "Uasin Gishu")
+      county = county.split(' ').map(function(word) {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }).join(' ');
+
       stats[county] = (stats[county] || 0) + 1;
     }
   }
