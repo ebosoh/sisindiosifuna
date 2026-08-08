@@ -241,6 +241,157 @@ p {
   }
 }
 
+/* ─── Glowing Top Corner Banner (Paybill) ────────────────────── */
+.top-glow-banner {
+  position: relative;
+  z-index: 105;
+  background: linear-gradient(90deg, #031407 0%, #170407 50%, #031407 100%);
+  border-bottom: 2px solid #00e676;
+  box-shadow: 0 4px 22px rgba(0, 230, 118, 0.38), 0 0 20px rgba(206, 17, 38, 0.3);
+  padding: 8px var(--sp-4);
+  color: var(--kenya-white);
+  animation: glow-pulse-border 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-border {
+  0%, 100% {
+    border-bottom-color: #00e676;
+    box-shadow: 0 3px 20px rgba(0, 230, 118, 0.42), 0 0 15px rgba(245, 197, 24, 0.25);
+  }
+  50% {
+    border-bottom-color: #f5c518;
+    box-shadow: 0 3px 26px rgba(245, 197, 24, 0.6), 0 0 22px rgba(206, 17, 38, 0.45);
+  }
+}
+
+.top-glow-banner__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  text-align: center;
+}
+
+.top-glow-banner__lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.top-glow-banner__lead .glow-dot {
+  width: 9px;
+  height: 9px;
+  background-color: #00e676;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px #00e676, 0 0 20px #00e676;
+  animation: beacon-ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes beacon-ping {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 8px #00e676;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.75;
+    box-shadow: 0 0 18px #00e676, 0 0 28px #00e676;
+  }
+}
+
+.top-glow-banner__lead .glow-pill-badge {
+  background: rgba(0, 230, 118, 0.16);
+  border: 1px solid rgba(0, 230, 118, 0.55);
+  color: #00e676;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.top-glow-banner__info {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.paybill-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.paybill-label {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.paybill-num {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffd700;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.7), 0 0 24px rgba(255, 215, 0, 0.45);
+}
+
+.paybill-acc {
+  font-family: var(--font-display);
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.paybill-sep {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  margin: 0 2px;
+}
+
+.top-glow-banner__copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 215, 0, 0.16);
+  border: 1px solid rgba(255, 215, 0, 0.6);
+  color: #ffd700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.top-glow-banner__copy-btn:hover {
+  background: #ffd700;
+  color: #000;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+  transform: translateY(-1px);
+}
+
+.top-glow-banner__copy-btn:active {
+  transform: scale(0.95);
+}
+
 /* ─── Top App Bar ─────────────────────────────────────────────── */
 .app-bar {
   position: sticky;

@@ -1218,12 +1218,44 @@ function resetOpinionForm() {
     }
 }
 
+// ─── Paybill Banner Logic ─────────────────────────────────────────
+function initPaybillBanner() {
+    const copyBtn = $('#copy-paybill-top-btn') || $('#copy-paybill-btn');
+    if (!copyBtn) return;
+    copyBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const paybillText = '3033049';
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(paybillText);
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = paybillText;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+            }
+            showToast('✅ Paybill 3033049 copied to clipboard!', 'success');
+            const span = copyBtn.querySelector('span');
+            if (span) {
+                const originalText = span.textContent;
+                span.textContent = 'Copied! ✅';
+                setTimeout(() => { span.textContent = originalText; }, 2500);
+            }
+        } catch (err) {
+            showToast('Paybill: 3033049 | Account: Your Phone Number', 'info', 4000);
+        }
+    });
+}
+
 // ─── Page Init ────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     logVisit();
     fetchStats();
     setInterval(fetchStats, POLL_INTERVAL);
 
+    initPaybillBanner();
     initRegisterForm();
     initScrollReveal();
     highlightActiveNav();
