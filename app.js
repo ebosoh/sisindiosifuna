@@ -564,12 +564,23 @@ async function shareToPlatform(platform) {
         case 'facebook': {
             try {
                 await navigator.clipboard.writeText(text);
-                showToast('📋 Message copied to clipboard! Opening Facebook...', 'info', 3500);
+                showToast('📋 Message & link copied! Opening Facebook...', 'info', 3500);
             } catch (_) {
                 showToast('Opening Facebook...', 'info', 2000);
             }
             const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cleanShareUrl)}`;
-            window.open(fbUrl, '_blank', 'noopener,noreferrer');
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                window.open(fbUrl, '_blank');
+            } else {
+                const w = 650, h = 480;
+                const left = Math.max(0, (window.innerWidth - w) / 2 + window.screenX);
+                const top = Math.max(0, (window.innerHeight - h) / 2 + window.screenY);
+                const win = window.open(fbUrl, 'fb_share', `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`);
+                if (!win || win.closed || typeof win.closed === 'undefined') {
+                    window.open(fbUrl, '_blank');
+                }
+            }
             trackEvent('share_platform', { platform: 'facebook', title });
             break;
         }
