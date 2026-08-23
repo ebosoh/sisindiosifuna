@@ -27,28 +27,13 @@ function trackEvent(eventName, params = {}) {
  * Share the App URL
  */
 async function shareApp() {
-    const shareData = {
+    const shareText = `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE THE MOVEMENT. Be Part of the Change!!!\nhttps://sisindiosifuna.org`;
+    openShareModal({
         title: 'SISI NDIO SIFUNA 🇰🇪',
-        text: 'Join Kenya\'s fastest-growing volunteer movement! ✊',
-        url: window.location.origin + window.location.pathname.replace(/index\.html$/, '')
-    };
-
-    try {
-        if (navigator.share) {
-            await navigator.share(shareData);
-            console.log('A2HS: App shared successfully');
-            trackEvent('share_movement', { method: 'native_share' });
-        } else {
-            // Fallback for desktop: Copy to clipboard or open a simple link
-            const shareUrl = shareData.url;
-            await navigator.clipboard.writeText(shareUrl);
-            showToast('✅ Link copied to clipboard! Share it with your friends.', 'success');
-            trackEvent('share_movement', { method: 'clipboard' });
-        }
-    } catch (err) {
-        if (err.name === 'AbortError') return;
-        console.error('A2HS: Share failed:', err);
-    }
+        text: shareText,
+        url: 'https://sisindiosifuna.org',
+        type: 'movement'
+    });
 }
 
 // ─── DOM Helpers ─────────────────────────────────────────────────
@@ -456,74 +441,239 @@ const DEMO_RESOURCES = [
 ];
 
 /**
- * Universal Sharing System
- * Attempts native file sharing on mobile, uses native text/link sharing on desktop (without downloading file),
- * and falls back to WhatsApp Web.
+ * Universal Social Share Modal System
+ * Loads all sharing apps: WhatsApp, Facebook, TikTok, Instagram, X, Telegram, and Copy.
+ */
+let activeShareData = null;
+
+function openShareModal({ title = 'SISI NDIO SIFUNA', url = 'https://sisindiosifuna.org', text = '', fileUrl = '', type = 'sticker' } = {}) {
+    const defaultText = `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`;
+    const shareText = text || defaultText;
+    const shareUrl = url || 'https://sisindiosifuna.org';
+
+    activeShareData = { title, text: shareText, url: shareUrl, fileUrl, type };
+
+    let overlay = $('#share-modal-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'share-modal-overlay';
+        overlay.className = 'modal-overlay';
+        document.body.appendChild(overlay);
+    }
+
+    const hasNativeShare = !!(navigator.share);
+
+    overlay.innerHTML = `
+        <div class="modal" style="max-width:440px;max-height:92vh;display:flex;flex-direction:column;border-radius:16px;">
+            <div class="modal__header" style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;background:#000;color:#fff;">
+                <h3 style="margin:0;font-size:1.15rem;display:flex;align-items:center;gap:0.5rem;">
+                    <span>📣</span> Share SISI NDIO SIFUNA
+                </h3>
+                <button class="modal-close" onclick="closeShareModal()" aria-label="Close modal" style="position:static;font-size:1.4rem;color:#fff;background:none;border:none;cursor:pointer;line-height:1;">&times;</button>
+            </div>
+            <div class="modal__body" style="overflow-y:auto;padding:1.25rem;">
+                <div class="share-preview-box">
+                    <div class="share-preview-box__title">Share Message & Link</div>
+                    <div>${esc(shareText)}</div>
+                </div>
+
+                <div style="font-weight:700;font-size:0.8rem;text-transform:uppercase;color:var(--grey-600);margin-bottom:0.5rem;letter-spacing:0.5px">
+                    Choose App to Share:
+                </div>
+
+                <div class="share-modal-grid">
+                    <button class="share-app-btn share-btn--whatsapp" onclick="shareToPlatform('whatsapp')">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.41-1.75-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.71 4.3 3.8 2.53 1.09 2.53.73 2.99.69.46-.04 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.18-.47-.3z"/></svg>
+                        <span>WhatsApp</span>
+                    </button>
+
+                    <button class="share-app-btn share-btn--facebook" onclick="shareToPlatform('facebook')">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <span>Facebook</span>
+                    </button>
+
+                    <button class="share-app-btn share-btn--tiktok" onclick="shareToPlatform('tiktok')">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.298-.002.595.042.88.13V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.48 6.3 6.3 0 0 0 1.86-4.48V8.71a8.19 8.19 0 0 0 4.91 1.62V6.89c-.34-.04-.68-.11-1-.2z"/></svg>
+                        <span>TikTok</span>
+                    </button>
+
+                    <button class="share-app-btn share-btn--instagram" onclick="shareToPlatform('instagram')">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        <span>Instagram</span>
+                    </button>
+
+                    <button class="share-app-btn share-btn--x" onclick="shareToPlatform('x')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        <span>X / Twitter</span>
+                    </button>
+
+                    <button class="share-app-btn share-btn--telegram" onclick="shareToPlatform('telegram')">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 0 0-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                        <span>Telegram</span>
+                    </button>
+
+                    <button class="share-app-btn share-btn--copy" onclick="shareToPlatform('copy')">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span>Copy Message</span>
+                    </button>
+
+                    ${hasNativeShare ? `
+                    <button class="share-app-btn share-btn--native" onclick="shareToPlatform('native')">
+                        <span>📱 Device Share Menu</span>
+                    </button>` : ''}
+                </div>
+            </div>
+            <div class="modal__footer" style="padding:0.75rem 1.25rem;background:#f9f9f9;border-top:1px solid #eee;">
+                <button class="btn btn-secondary btn-sm" onclick="closeShareModal()">Close</button>
+            </div>
+        </div>
+    `;
+
+    overlay.classList.add('show');
+    overlay.onclick = (e) => {
+        if (e.target === overlay) closeShareModal();
+    };
+}
+
+function closeShareModal() {
+    const overlay = $('#share-modal-overlay');
+    if (overlay) overlay.classList.remove('show');
+}
+
+async function shareToPlatform(platform) {
+    const data = activeShareData || {
+        title: 'SISI NDIO SIFUNA',
+        text: `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`,
+        url: 'https://sisindiosifuna.org'
+    };
+
+    const text = data.text;
+    const url = data.url || 'https://sisindiosifuna.org';
+    const title = data.title || 'SISI NDIO SIFUNA';
+
+    switch (platform) {
+        case 'whatsapp': {
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            window.open(waUrl, '_blank');
+            trackEvent('share_platform', { platform: 'whatsapp', title });
+            break;
+        }
+        case 'facebook': {
+            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+            window.open(fbUrl, '_blank');
+            trackEvent('share_platform', { platform: 'facebook', title });
+            break;
+        }
+        case 'tiktok': {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('📋 Message & link copied! Opening TikTok...', 'info', 3500);
+            } catch (_) {
+                showToast('Opening TikTok...', 'info', 2000);
+            }
+            setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 400);
+            trackEvent('share_platform', { platform: 'tiktok', title });
+            break;
+        }
+        case 'instagram': {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('📋 Message & link copied! Opening Instagram...', 'info', 3500);
+            } catch (_) {
+                showToast('Opening Instagram...', 'info', 2000);
+            }
+            setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 400);
+            trackEvent('share_platform', { platform: 'instagram', title });
+            break;
+        }
+        case 'x': {
+            const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+            window.open(xUrl, '_blank');
+            trackEvent('share_platform', { platform: 'x', title });
+            break;
+        }
+        case 'telegram': {
+            const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+            window.open(tgUrl, '_blank');
+            trackEvent('share_platform', { platform: 'telegram', title });
+            break;
+        }
+        case 'copy': {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('✅ Share message and link copied to clipboard!', 'success');
+            } catch (_) {
+                showToast('Could not copy automatically. Please copy manually.', 'warning');
+            }
+            trackEvent('share_platform', { platform: 'clipboard', title });
+            break;
+        }
+        case 'native': {
+            if (navigator.share) {
+                try {
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                        (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
+
+                    if (isMobile && data.fileUrl && navigator.canShare) {
+                        try {
+                            const res = await fetch(data.fileUrl, { mode: 'cors' });
+                            if (res.ok) {
+                                const blob = await res.blob();
+                                const file = new File([blob], `${(title || 'sisi_ndio_sifuna').replace(/\s+/g, '_')}.png`, { type: blob.type || 'image/png' });
+                                if (navigator.canShare({ files: [file] })) {
+                                    await navigator.share({
+                                        files: [file],
+                                        title: title,
+                                        text: text
+                                    });
+                                    trackEvent('share_platform', { method: 'native_file', title });
+                                    return;
+                                }
+                            }
+                        } catch (e) {
+                            if (e.name === 'AbortError') return;
+                        }
+                    }
+
+                    await navigator.share({ title, text, url });
+                    trackEvent('share_platform', { method: 'native_share', title });
+                } catch (err) {
+                    if (err.name !== 'AbortError') console.warn('Native share failed:', err);
+                }
+            }
+            break;
+        }
+    }
+}
+
+// Global window mappings
+window.openShareModal = openShareModal;
+window.closeShareModal = closeShareModal;
+window.shareToPlatform = shareToPlatform;
+
+// Close modal on Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeShareModal();
+});
+
+/**
+ * Universal Sharing Handler for Stickers and Posters
  */
 async function shareSticker(title, url, type = 'sticker') {
     const isDriveUrl = url && (url.includes('drive.google.com') || url.includes('docs.google.com'));
     const directUrl = isDriveUrl ? getDirectDriveUrl(url) : url;
     const domain = window.location.origin;
-    // For local files, resolve against current path
-    const fullUrl = url ? (url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${url.startsWith('/') ? url.slice(1) : url}`) : '';
+    const fullUrl = url ? (url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${url.startsWith('/') ? url.slice(1) : url}`) : 'https://sisindiosifuna.org';
 
     const shareText = `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`;
 
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-        (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
-
-    // 1. Try Native File Share on Mobile ONLY
-    if (isMobile && navigator.canShare && navigator.share && fullUrl) {
-        try {
-            console.log('A2HS: Attempting to fetch image for mobile sharing:', fullUrl);
-            const response = await fetch(fullUrl, { mode: 'cors' });
-            if (response.ok) {
-                const blob = await response.blob();
-                const file = new File([blob], `${(title || 'sisi_ndio_sifuna').replace(/\s+/g, '_')}.png`, { type: blob.type || 'image/png' });
-
-                if (navigator.canShare({ files: [file] })) {
-                    console.log('A2HS: Mobile native sharing started with file.');
-                    await navigator.share({
-                        files: [file],
-                        title: title || 'SISI NDIO SIFUNA',
-                        text: shareText
-                    });
-                    trackEvent('sticker_shared', { method: 'native_file', sticker_title: title });
-                    return;
-                }
-            }
-        } catch (err) {
-            if (err.name === 'AbortError') {
-                console.log('A2HS: User cancelled share dialog.');
-                return;
-            }
-            console.warn('A2HS: Mobile share-as-file failed:', err);
-        }
-    }
-
-    // 2. Native Text/Link Share (Desktop Web Share / Mobile text share)
-    if (navigator.share) {
-        try {
-            console.log('A2HS: Attempting native text share...');
-            await navigator.share({
-                title: title || 'SISI NDIO SIFUNA',
-                text: shareText
-            });
-            trackEvent('sticker_shared', { method: 'native_share', sticker_title: title });
-            return;
-        } catch (err) {
-            if (err.name === 'AbortError') {
-                console.log('A2HS: User cancelled share dialog.');
-                return;
-            }
-            console.warn('A2HS: Native text share failed, falling back to WhatsApp:', err);
-        }
-    }
-
-    // 3. Fallback: Direct WhatsApp Link
-    const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(waUrl, '_blank');
-    trackEvent('sticker_shared', { method: 'whatsapp_link', sticker_title: title });
+    openShareModal({
+        title: title || 'SISI NDIO SIFUNA',
+        text: shareText,
+        url: 'https://sisindiosifuna.org',
+        fileUrl: fullUrl,
+        type: type
+    });
 }
 
 async function loadResources() {
@@ -1113,11 +1263,9 @@ function initRegisterForm() {
 
 // ─── Hero Action Buttons ─────────────────────────────────────────
 function initHeroButtons() {
-    // 1. Share Button
-    const shareBtn = $('#hero-share-btn') || $('#share-movement-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', shareApp);
-    }
+    // 1. Share Buttons
+    const shareBtns = $$('#hero-share-btn, #share-movement-btn, #share-btn');
+    shareBtns.forEach(btn => btn.addEventListener('click', shareApp));
 
     // 2. Advice Sifuna Button (Smooth Scroll)
     const adviceBtn = $('#hero-advice-btn');

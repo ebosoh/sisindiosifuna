@@ -2491,3 +2491,82 @@ select.form-control {
 .w-full {
   width: 100%;
 }
+
+/* --- Universal Social Share Modal --------------------------- */
+.share-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 380px) {
+  .share-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.share-app-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md, 10px);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff !important;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.share-app-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  color: #fff !important;
+}
+
+.share-app-btn:active {
+  transform: translateY(0);
+}
+
+.share-app-btn svg {
+  flex-shrink: 0;
+}
+
+.share-btn--whatsapp { background: #25D366; }
+.share-btn--facebook { background: #1877F2; }
+.share-btn--tiktok { background: #010101; border: 1px solid #333; }
+.share-btn--instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.share-btn--x { background: #000000; border: 1px solid #333; }
+.share-btn--telegram { background: #229ED9; }
+.share-btn--copy { background: #2f3542; }
+.share-btn--native { background: var(--kenya-green, #006600); grid-column: 1 / -1; justify-content: center; }
+
+.share-preview-box {
+  background: var(--grey-100, #f7f7f7);
+  border: 1px solid var(--grey-300, #e0e0e0);
+  border-radius: var(--radius-md, 10px);
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--grey-800, #222);
+  line-height: 1.45;
+  position: relative;
+  word-break: break-word;
+  white-space: pre-line;
+}
+
+.share-preview-box__title {
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--grey-500, #777);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.5px;
+}
