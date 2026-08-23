@@ -46,6 +46,7 @@ async function shareApp() {
             trackEvent('share_movement', { method: 'clipboard' });
         }
     } catch (err) {
+        if (err.name === 'AbortError') return;
         console.error('A2HS: Share failed:', err);
     }
 }
@@ -456,56 +457,72 @@ const DEMO_RESOURCES = [
 
 /**
  * Universal Sharing System
- * Attempts native file sharing on mobile, falls back to text/link sharing.
+ * Attempts native file sharing on mobile, uses native text/link sharing on desktop (without downloading file),
+ * and falls back to WhatsApp Web.
  */
 async function shareSticker(title, url, type = 'sticker') {
-    const isDriveUrl = url.includes('drive.google.com') || url.includes('docs.google.com');
+    const isDriveUrl = url && (url.includes('drive.google.com') || url.includes('docs.google.com'));
     const directUrl = isDriveUrl ? getDirectDriveUrl(url) : url;
     const domain = window.location.origin;
     // For local files, resolve against current path
-    const fullUrl = url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${url.startsWith('/') ? url.slice(1) : url}`;
+    const fullUrl = url ? (url.startsWith('http') ? directUrl : `${domain}${window.location.pathname.replace('resources.html', '')}${url.startsWith('/') ? url.slice(1) : url}`) : '';
 
-    // 1. Try Native File Share (Mobile/Supported)
-    if (navigator.canShare && navigator.share) {
+    const shareText = `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`;
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
+
+    // 1. Try Native File Share on Mobile ONLY
+    if (isMobile && navigator.canShare && navigator.share && fullUrl) {
         try {
-            console.log('A2HS: Attempting to fetch image for sharing:', fullUrl);
+            console.log('A2HS: Attempting to fetch image for mobile sharing:', fullUrl);
             const response = await fetch(fullUrl, { mode: 'cors' });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (response.ok) {
+                const blob = await response.blob();
+                const file = new File([blob], `${(title || 'sisi_ndio_sifuna').replace(/\s+/g, '_')}.png`, { type: blob.type || 'image/png' });
 
-            const blob = await response.blob();
-            const file = new File([blob], `${title.replace(/\s+/g, '_')}.png`, { type: blob.type });
-
-            if (navigator.canShare({ files: [file] })) {
-                console.log('A2HS: Native sharing started with file.');
-                const shareText = type === 'sticker'
-                    ? `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`
-                    : `Check out this ${type} from SISI NDIO SIFUNA! \u270a\ud83c\uddf0\ud83c\uddea\nhttps://sisindiosifuna.org`;
-                await navigator.share({
-                    files: [file],
-                    title: title,
-                    text: shareText
-                });
-                // ─── GA4: Track sticker share ───────────────────────────────
-                trackEvent('sticker_shared', { method: 'native_file', sticker_title: title });
-                return;
-            } else {
-                console.warn('A2HS: Browser says it cannot share this specific file object.');
+                if (navigator.canShare({ files: [file] })) {
+                    console.log('A2HS: Mobile native sharing started with file.');
+                    await navigator.share({
+                        files: [file],
+                        title: title || 'SISI NDIO SIFUNA',
+                        text: shareText
+                    });
+                    trackEvent('sticker_shared', { method: 'native_file', sticker_title: title });
+                    return;
+                }
             }
         } catch (err) {
-            console.error('A2HS: Share-as-file failed:', err);
-            if (err.message.toLocaleLowerCase().includes('fetch') || err.name === 'TypeError') {
-                showToast('ℹ️ Sharing as link (the image source is protected by security)', 'info', 3000);
+            if (err.name === 'AbortError') {
+                console.log('A2HS: User cancelled share dialog.');
+                return;
             }
+            console.warn('A2HS: Mobile share-as-file failed:', err);
         }
     }
 
-    // 2. Fallback: Text Share (WhatsApp Web / Other)
-    const shareText = type === 'sticker'
-        ? `WanTam ☝️ Join SISI NDIO SIFUNA! and SHARE A STICKER. Be Part of the Change!!!\nhttps://sisindiosifuna.org`
-        : `Check out this ${type} from SISI NDIO SIFUNA! ✊🇰🇪\nView/Download: ${fullUrl}\nhttps://sisindiosifuna.org`;
+    // 2. Native Text/Link Share (Desktop Web Share / Mobile text share)
+    if (navigator.share) {
+        try {
+            console.log('A2HS: Attempting native text share...');
+            await navigator.share({
+                title: title || 'SISI NDIO SIFUNA',
+                text: shareText
+            });
+            trackEvent('sticker_shared', { method: 'native_share', sticker_title: title });
+            return;
+        } catch (err) {
+            if (err.name === 'AbortError') {
+                console.log('A2HS: User cancelled share dialog.');
+                return;
+            }
+            console.warn('A2HS: Native text share failed, falling back to WhatsApp:', err);
+        }
+    }
+
+    // 3. Fallback: Direct WhatsApp Link
     const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
     window.open(waUrl, '_blank');
-    // ─── GA4: Track fallback WhatsApp share ───────────────────────
     trackEvent('sticker_shared', { method: 'whatsapp_link', sticker_title: title });
 }
 
