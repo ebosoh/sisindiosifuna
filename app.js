@@ -559,7 +559,13 @@ async function shareToPlatform(platform) {
             break;
         }
         case 'facebook': {
-            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast('📋 Message copied to clipboard! Opening Facebook...', 'info', 3500);
+            } catch (_) {
+                showToast('Opening Facebook...', 'info', 2000);
+            }
+            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
             window.open(fbUrl, '_blank');
             trackEvent('share_platform', { platform: 'facebook', title });
             break;
